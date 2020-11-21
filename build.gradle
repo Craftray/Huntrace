@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+    id 'io.izzel.taboolib' version '1.2'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.0'
+}
+
+group = 'io.izzel.taboolib.example'
+version = '1.0.0'
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+taboolib {
+    tabooLibVersion = '5.43'
+    loaderVersion = '2.7'
+    classifier = null
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'ink.ptms.core:v11600:11600:all'
+    compile 'org.jetbrains.kotlin:kotlin-stdlib'
+    compileOnly fileTree(dir: 'libs', includes: ['*.jar'])
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        include 'plugin.yml'
+        expand(
+                name: rootProject.name,
+                main: project.group + ".boot.PluginBoot",
+                version: project.version,
+                libVersion: taboolib.tabooLibVersion,
+                loaderVersion: taboolib.loaderVersion
+        )
+    }
+}
