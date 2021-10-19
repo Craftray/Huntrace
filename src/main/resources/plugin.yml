@@ -1,15 +1,4 @@
-
-
-#         Powered by TabooLib 5.0         #
-
-
-name: ${name}
-main: ${main}
-version: ${version}
-authors: ['坏黑']
-
-api-version: 1.13
-
-lib-download: true
-lib-version: ${libVersion}
-loader-version: ${loaderVersion}
+name: Huntrace
+main: io.craftray.huntrace.Main
+version: 1.0.0=SNAPSHOT
+api-version: 1.17
