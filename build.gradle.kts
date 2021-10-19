@@ -7,8 +7,22 @@ plugins {
 taboolib {
     install("common")
     install("platform-bukkit")
-    classifier = null
-    version = "6.0.1"
+    install("module-configuration")
+    install("module-chat")
+    install("module-lang")
+    version = "6.0.3-5"
+
+    description {
+        contributors {
+            name("小白").description("Huntrace")
+            name("Kylepoops")
+        }
+        // 依赖选项
+//        dependencies {
+//            name("ExamplePlugin")
+//            name("ExamplePlugin").optional(true)
+//        }
+    }
 }
 
 repositories {
@@ -17,8 +31,6 @@ repositories {
 }
 
 dependencies {
-    compileOnly("ink.ptms.core:v11701:11701:mapped")
-    compileOnly("ink.ptms.core:v11701:11701:universal")
     compileOnly(kotlin("stdlib"))
     compileOnly("io.papermc.paper:paper-api:1.17-R0.1-SNAPSHOT")
     compileOnly(fileTree("libs"))
