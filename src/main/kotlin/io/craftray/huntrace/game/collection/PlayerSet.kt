@@ -1,4 +1,4 @@
-package io.craftray.huntrace.game
+package io.craftray.huntrace.game.collection
 
 import org.bukkit.Location
 import org.bukkit.entity.Player

@@ -1,4 +1,4 @@
-package io.craftray.huntrace.game.compass
+package io.craftray.huntrace.game.schedular
 
 import io.craftray.huntrace.Main
 import io.craftray.huntrace.Utils

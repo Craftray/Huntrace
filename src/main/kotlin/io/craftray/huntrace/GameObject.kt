@@ -6,7 +6,7 @@ import org.bukkit.Location
 import org.bukkit.World
 
 data class Distance private constructor(private val value: Long) {
-    fun isLimited() = value != -1L
+    fun isLimited() = value > 0
 
     fun get() =
         if (isLimited()) value
@@ -15,7 +15,10 @@ data class Distance private constructor(private val value: Long) {
     companion object {
         fun unlimited() = Distance(-1L)
 
-        fun limited(value: Long) = Distance(value)
+        fun limited(value: Long): Distance {
+            if (value <= 0) throw IllegalArgumentException("distance must be greater than 0")
+            return Distance(value)
+        }
     }
 }
 

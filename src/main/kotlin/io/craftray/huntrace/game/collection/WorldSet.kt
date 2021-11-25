@@ -1,4 +1,4 @@
-package io.craftray.huntrace.world
+package io.craftray.huntrace.game.collection
 
 import org.bukkit.World
 

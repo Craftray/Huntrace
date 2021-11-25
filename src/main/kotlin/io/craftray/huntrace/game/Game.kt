@@ -1,6 +1,8 @@
 package io.craftray.huntrace.game
 
-import io.craftray.huntrace.game.compass.CompassUpdater
+import io.craftray.huntrace.game.collection.PlayerSet
+import io.craftray.huntrace.game.collection.WorldSet
+import io.craftray.huntrace.game.schedular.CompassUpdater
 import io.craftray.huntrace.game.listener.HuntraceGameListener
 import io.craftray.huntrace.rule.RuleSet
 import io.craftray.huntrace.world.*
