@@ -38,16 +38,6 @@ class Game(val rules: RuleSet) {
         runningGame.remove(this)
     }
 
-    fun teleportTo() {
-        this.survivor.teleport(worlds.overworld.spawnLocation)
-        this.hunters.forEach { it.teleport(worlds.overworld.spawnLocation) }
-    }
-
-    fun teleportFrom() {
-        this.survivor.let { it.teleport(players.getPreviousLocation(it)) }
-        this.hunters.forEach { it.teleport(players.getPreviousLocation(it)) }
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
