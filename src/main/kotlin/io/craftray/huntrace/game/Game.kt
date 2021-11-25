@@ -1,13 +1,8 @@
 package io.craftray.huntrace.game
 
 import io.craftray.huntrace.game.compass.CompassUpdater
-import io.craftray.huntrace.multiverse.MultiverseWorldManager.toMVWorld
 import io.craftray.huntrace.rule.RuleSet
-import io.craftray.huntrace.world.WorldController.deleteWorlds
-import io.craftray.huntrace.world.WorldController.generateWorlds
-import io.craftray.huntrace.world.WorldController.linkWorlds
-import io.craftray.huntrace.world.WorldController.unlinkWorlds
-import io.craftray.huntrace.world.WorldSet
+import io.craftray.huntrace.world.*
 import kotlin.properties.Delegates
 
 class Game(val rules: RuleSet) {
@@ -43,24 +38,14 @@ class Game(val rules: RuleSet) {
         runningGame.remove(this)
     }
 
-    fun matchResult(result: GameResult) = when(result) {
-        GameResult.HUNTER_WIN -> this.hunterWin()
-        GameResult.SURVIVOR_WIN -> this.survivorWin()
-        GameResult.SURVIVOR_QUIT -> this.survivorQuit()
-    }
-
-    fun hunterWin() {}
-    fun survivorWin() {}
-    fun survivorQuit() {}
-
     fun teleportTo() {
-        players.getSurvivor().teleport(worlds.overworld.spawnLocation)
-        players.getHunters().forEach { it.teleport(worlds.overworld.spawnLocation) }
+        this.survivor.teleport(worlds.overworld.spawnLocation)
+        this.hunters.forEach { it.teleport(worlds.overworld.spawnLocation) }
     }
 
     fun teleportFrom() {
-        players.getSurvivor().let { it.teleport(players.getPreviousLocation(it)) }
-        players.getHunters().forEach { it.teleport(players.getPreviousLocation(it)) }
+        this.survivor.let { it.teleport(players.getPreviousLocation(it)) }
+        this.hunters.forEach { it.teleport(players.getPreviousLocation(it)) }
     }
 
     override fun equals(other: Any?): Boolean {

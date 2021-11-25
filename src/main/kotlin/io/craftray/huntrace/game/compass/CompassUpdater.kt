@@ -4,6 +4,8 @@ import io.craftray.huntrace.Main
 import io.craftray.huntrace.Utils
 import io.craftray.huntrace.Utils.bukkitRunnableOf
 import io.craftray.huntrace.game.Game
+import io.craftray.huntrace.game.hunters
+import io.craftray.huntrace.game.survivor
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
@@ -19,8 +21,8 @@ class CompassUpdater(game: Game) {
     private lateinit var deceptionFindRunnable: BukkitRunnable
     private lateinit var deceptionRunnable: BukkitRunnable
     private val deceptionList = mutableListOf<Player>()
-    private val hunters = game.players.getHunters()
-    private val survivor = game.players.getSurvivor()
+    private val hunters = game.hunters
+    private val survivor = game.survivor
     private val worlds = game.worlds
 
     fun init() {

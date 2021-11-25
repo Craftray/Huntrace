@@ -26,7 +26,7 @@ class PlayerSet {
 
     @Throws(IllegalStateException::class)
     fun removeHunter(player: Player) {
-        if (lock) throw IllegalStateException("Game has been started")
+        if (lock && player.isOnline) throw IllegalStateException("Game has been started")
         this.hunters.remove(player)
         this.priviousLocations.remove(player)
     }
@@ -45,7 +45,7 @@ class PlayerSet {
 
     fun getSurvivor() = survivor
 
-    fun getHunters() = hunters.toSet()
+    fun getHunters() = hunters
 
     fun getPreviousLocation(player: Player): Location {
         return priviousLocations[player] ?: throw IllegalStateException("Player ${player.name} is not in the game")
