@@ -8,6 +8,7 @@ import io.craftray.huntrace.game.hunters
 import io.craftray.huntrace.game.survivor
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -15,6 +16,7 @@ import org.bukkit.scheduler.BukkitRunnable
 import kotlin.jvm.Throws
 import kotlin.random.Random
 
+@Suppress("PrivatePropertyName")
 class CompassUpdater(game: Game) {
     private val rule = game.rules.CompassRule
     private lateinit var trackRunnable: BukkitRunnable
@@ -24,6 +26,8 @@ class CompassUpdater(game: Game) {
     private val hunters = game.hunters
     private val survivor = game.survivor
     private val worlds = game.worlds
+    private val OVERWORLD_NETHER_MULTIPLE = 8.0
+    private val NETHER_OVERWORLD_MULTIPLE = 0.125
 
     fun init() {
         this.initTrack()
@@ -39,6 +43,10 @@ class CompassUpdater(game: Game) {
         this.trackRunnable = bukkitRunnableOf {
             val activeHunters = hunters.asSequence().filter { it !in deceptionList}
             for (hunter in activeHunters.filter {it.world == survivor.world }) {
+                if (!this.isDistanceValid(hunter.location, survivor.location)) {
+                    this.missMessage(hunter, survivor)
+                    continue
+                }
                 for (item in hunter.inventory) {
                     if (item.type == Material.COMPASS) {
                         val compass = item.itemMeta as org.bukkit.inventory.meta.CompassMeta
@@ -50,25 +58,35 @@ class CompassUpdater(game: Game) {
             }
             if (survivor.world == worlds.overworld) {
                 for (hunter in activeHunters.filter {it.world == worlds.nether }) {
-                for (item in hunter.inventory) {
-                    if (item.type == Material.COMPASS) {
-                        val compass = item.itemMeta as org.bukkit.inventory.meta.CompassMeta
-                        compass.lodestone = survivor.location.multiply(8.0)
-                        item.itemMeta = compass
-                        this.trackMassage(hunter, survivor)
+                    if (!this.isDistanceValid(hunter.location, survivor.location, NETHER_OVERWORLD_MULTIPLE)) {
+                        this.missMessage(hunter, survivor)
+                        continue
                     }
-                }}
+                    for (item in hunter.inventory) {
+                        if (item.type == Material.COMPASS) {
+                            val compass = item.itemMeta as org.bukkit.inventory.meta.CompassMeta
+                            compass.lodestone = survivor.location.multiply(NETHER_OVERWORLD_MULTIPLE)
+                            item.itemMeta = compass
+                            this.trackMassage(hunter, survivor)
+                        }
+                    }
+                }
             }
             if (survivor.world == worlds.nether) {
                 for (hunter in activeHunters.filter {it.world == worlds.overworld }) {
-                for (item in hunter.inventory) {
-                    if (item.type == Material.COMPASS) {
-                        val compass = item.itemMeta as org.bukkit.inventory.meta.CompassMeta
-                        compass.lodestone = survivor.location.multiply(0.125)
-                        item.itemMeta = compass
-                        this.trackMassage(hunter, survivor)
+                    if (!this.isDistanceValid(hunter.location, survivor.location, OVERWORLD_NETHER_MULTIPLE)) {
+                        this.missMessage(hunter, survivor)
+                        continue
                     }
-                }}
+                    for (item in hunter.inventory) {
+                        if (item.type == Material.COMPASS) {
+                            val compass = item.itemMeta as org.bukkit.inventory.meta.CompassMeta
+                            compass.lodestone = survivor.location.multiply(OVERWORLD_NETHER_MULTIPLE)
+                            item.itemMeta = compass
+                            this.trackMassage(hunter, survivor)
+                        }
+                    }
+                }
             }
             if (survivor.world == worlds.theEnd) {
                 for (hunter in activeHunters.filterNot {it.world == worlds.theEnd }) {
@@ -137,6 +155,10 @@ class CompassUpdater(game: Game) {
         hunter.sendActionBar(Component.text("Signal is not good.").color(NamedTextColor.RED))
     }
 
+    private fun missMessage(hunter: Player, survivor: Player) {
+        hunter.sendActionBar(Component.text("You re missing").color(NamedTextColor.RED))
+    }
+
     private fun stopTrack() {
         this.trackRunnable.cancel()
     }
@@ -144,5 +166,9 @@ class CompassUpdater(game: Game) {
     private fun stopDeception() {
         this.deceptionFindRunnable.cancel()
         this.deceptionRunnable.cancel()
+    }
+
+    private fun isDistanceValid(hunter: Location, survivor: Location, multiple: Double = 1.0): Boolean {
+        return rule.distanceLimit.isLimited() && hunter.multiply(multiple).distance(survivor) <= rule.distanceLimit.get()
     }
 }
