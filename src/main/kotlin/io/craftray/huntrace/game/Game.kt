@@ -1,6 +1,7 @@
 package io.craftray.huntrace.game
 
 import io.craftray.huntrace.game.compass.CompassUpdater
+import io.craftray.huntrace.game.listener.HuntraceGameListener
 import io.craftray.huntrace.rule.RuleSet
 import io.craftray.huntrace.world.*
 import kotlin.properties.Delegates
@@ -9,6 +10,8 @@ class Game(val rules: RuleSet) {
     val gameID = java.util.UUID.randomUUID()!!
 
     private val compassUpdater = CompassUpdater(this)
+
+    private lateinit var listener: HuntraceGameListener
 
     lateinit var worlds: WorldSet
         private set
@@ -21,6 +24,7 @@ class Game(val rules: RuleSet) {
     fun init() {
         players.lock()
         runningGame.add(this)
+        this.listener = HuntraceGameListener(this).also { it.register() }
         this.compassUpdater.init()
         this.generateWorlds()
         this.linkWorlds()
@@ -29,6 +33,7 @@ class Game(val rules: RuleSet) {
     }
 
     fun finish(result: GameResult) {
+        this.listener.unregister()
         this.teleportFrom()
         this.matchResult(result)
         this.compassUpdater.stop()
