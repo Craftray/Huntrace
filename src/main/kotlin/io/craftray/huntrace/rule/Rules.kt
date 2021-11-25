@@ -17,6 +17,7 @@ data class WorldRule(
 data class CompassRule(
     var updateInterval: Long = 20L,
     var displayDistance: Boolean = false,
+    var deception: Boolean = false,
     var crossWorldTrack: Boolean = false,
     var distanceLimit: Distance = Distance.unlimited()
 ) : Rule, Serializable

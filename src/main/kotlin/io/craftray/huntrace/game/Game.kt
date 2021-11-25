@@ -1,5 +1,6 @@
 package io.craftray.huntrace.game
 
+import io.craftray.huntrace.game.compass.CompassUpdater
 import io.craftray.huntrace.rule.RuleSet
 import io.craftray.huntrace.world.WorldController.deleteWorlds
 import io.craftray.huntrace.world.WorldController.generateWorlds
@@ -11,6 +12,8 @@ import kotlin.properties.Delegates
 class Game(val rules: RuleSet) {
     val gameID = java.util.UUID.randomUUID()!!
 
+    private val compassUpdater = CompassUpdater(this)
+
     lateinit var worlds: WorldSet
         private set
 
@@ -20,12 +23,14 @@ class Game(val rules: RuleSet) {
     var endTime by Delegates.notNull<Long>()
 
     fun init() {
+        this.compassUpdater.init()
         this.generateWorlds()
         this.linkWorlds()
         this.startTime = System.currentTimeMillis()
     }
 
     fun finish() {
+        this.compassUpdater.stop()
         this.unlinkWorlds()
         this.deleteWorlds()
         this.endTime = System.currentTimeMillis()

@@ -4,7 +4,6 @@ import com.onarandombox.MultiverseCore.MultiverseCore
 import com.onarandombox.MultiverseNetherPortals.MultiverseNetherPortals
 import com.onarandombox.multiverseinventories.MultiverseInventories
 import org.bukkit.Bukkit
-import org.bukkit.World
 
 object MultiverseManager {
     lateinit var MVCore: MultiverseCore
