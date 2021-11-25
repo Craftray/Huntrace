@@ -1,6 +1,6 @@
 package io.craftray.huntrace.world
 
-import io.craftray.huntrace.Game
+import io.craftray.huntrace.game.Game
 import io.craftray.huntrace.multiverse.MultiverseWorldBuilder
 import io.craftray.huntrace.multiverse.MultiverseWorldManager
 import io.craftray.huntrace.multiverse.MultiverseWorldManager.delete

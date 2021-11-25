@@ -4,7 +4,6 @@ import io.craftray.huntrace.game_object.Distance
 import io.craftray.huntrace.game_object.Spawnpoint
 import org.bukkit.WorldType
 import java.io.Serializable
-import kotlin.random.Random
 
 interface Rule
 

@@ -3,79 +3,73 @@ package io.craftray.huntrace.world
 import org.bukkit.World
 
 // proxy for non-null type field
+@Suppress("PropertyName")
 class WorldSet {
-    private val worldSetImpl = WorldSetImpl()
+    private var _overworld: World? = null
+        get() = field ?: throw IllegalStateException("World \"overworld\" is not set")
+        set(value) {
+            if (field != null) throw IllegalStateException("World \"overworld\" already set")
+            if (value!!.environment == World.Environment.NORMAL) field = value
+            else throw IllegalArgumentException("Environment of world \"overworld\" must be \"NORMAL\" but it is ${value.environment}")
+        }
+
+    private var _nether: World? = null
+        get() = field ?: throw IllegalStateException("World \"nether\" is not set")
+        set(value) {
+            if (field != null) throw IllegalStateException("World \"nether\" already set")
+            if (value!!.environment == World.Environment.NETHER) field = value
+            else throw IllegalArgumentException("Environment of world \"nether\" must be \"NETHER\" but it is ${value.environment}")
+        }
+
+    private var _theEnd: World? = null
+        get() = field ?: throw IllegalStateException("World \"theEnd\" is not set")
+        set(value) {
+            if (field != null) throw IllegalStateException("World \"theEnd\" already set")
+            if (value!!.environment == World.Environment.THE_END) field = value
+            else throw IllegalArgumentException("Environment of world \"theEnd\" must be \"THE_END\" but it is ${value.environment}")
+        }
 
     var overworld: World
-        get() = worldSetImpl.overworld!!
+        get() = _overworld!!
         set(value) {
-            worldSetImpl.overworld = value
+            _overworld = value
         }
 
     var nether: World
-        get() = worldSetImpl.nether!!
+        get() = _nether!!
         set(value) {
-            worldSetImpl.nether = value
+            _nether = value
         }
 
     var theEnd: World
-        get() = worldSetImpl.theEnd!!
+        get() = _theEnd!!
         set(value) {
-            worldSetImpl.theEnd = value
+            _theEnd = value
         }
 
-    override fun toString() = worldSetImpl.toString()
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
 
-    override fun hashCode() = worldSetImpl.hashCode()
+        other as WorldSet
 
-    @Suppress("ReplaceCallWithBinaryOperator")
-    override fun equals(other: Any?) = worldSetImpl.equals(other)
+        if (_overworld != other._overworld) return false
+        if (_nether != other._nether) return false
+        if (_theEnd != other._theEnd) return false
 
-    class WorldSetImpl {
-        var overworld: World? = null
-            get() = field ?: throw IllegalStateException("World \"overworld\" is not set")
-            set(value) {
-                if (field != null) throw IllegalStateException("World \"overworld\" already set")
-                if (value!!.environment == World.Environment.NORMAL) field = value
-                else throw IllegalArgumentException("Environment of world \"overworld\" must be \"NORMAL\" but it is ${value.environment}")
-            }
-
-        var nether: World? = null
-            get() = field ?: throw IllegalStateException("World \"nether\" is not set")
-            set(value) {
-                if (field != null) throw IllegalStateException("World \"nether\" already set")
-                if (value!!.environment == World.Environment.NETHER) field = value
-                else throw IllegalArgumentException("Environment of world \"nether\" must be \"NETHER\" but it is ${value.environment}")
-            }
-
-        var theEnd: World? = null
-            get() = field ?: throw IllegalStateException("World \"theEnd\" is not set")
-            set(value) {
-                if (field != null) throw IllegalStateException("World \"theEnd\" already set")
-                if (value!!.environment == World.Environment.THE_END) field = value
-                else throw IllegalArgumentException("Environment of world \"theEnd\" must be \"THE_END\" but it is ${value.environment}")
-            }
-
-        override fun toString() = "WorldSet(overworld=$overworld, nether=$nether, theEnd=$theEnd)"
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (this.javaClass != other?.javaClass) return false
-
-            other as WorldSet
-
-            if (overworld != other.overworld) return false
-            if (nether != other.nether) return false
-            if (theEnd != other.theEnd) return false
-
-            return true
-        }
-
-        override fun hashCode(): Int {
-            var result = overworld?.hashCode() ?: 0
-            result = 31 * result + (nether?.hashCode() ?: 0)
-            result = 31 * result + (theEnd?.hashCode() ?: 0)
-            return result
-        }
+        return true
     }
+
+    override fun hashCode(): Int {
+        var result = _overworld?.hashCode() ?: 0
+        result = 31 * result + (_nether?.hashCode() ?: 0)
+        result = 31 * result + (_theEnd?.hashCode() ?: 0)
+        return result
+    }
+
+    override fun toString(): String {
+        return "WorldSet(overworld=$_overworld, nether=$_nether, theEnd=$_theEnd)"
+    }
+
+
 }

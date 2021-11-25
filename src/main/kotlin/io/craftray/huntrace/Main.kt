@@ -1,5 +1,6 @@
 package io.craftray.huntrace
 
+import io.craftray.huntrace.multiverse.MultiverseManager
 import org.bukkit.Bukkit
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.info
@@ -15,7 +16,7 @@ object Main : Plugin() {
     lateinit var config: SecuredFile
 
     override fun onEnable() {
-        info("Hello Huntrace!")
+        MultiverseManager.initMultiverse()
     }
 
 }
