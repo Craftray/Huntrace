@@ -19,29 +19,21 @@ class PlayerSet {
 
     @Throws(IllegalStateException::class)
     fun addHunter(player: Player) {
-        if (lock) {
-            throw IllegalStateException("Game has been started")
-        }
+        if (lock) throw IllegalStateException("Game has been started")
         this.hunters.add(player)
         this.priviousLocations[player] = player.location
     }
 
     @Throws(IllegalStateException::class)
     fun removeHunter(player: Player) {
-        if (lock) {
-            throw IllegalStateException("Game has been started")
-        }
+        if (lock) throw IllegalStateException("Game has been started")
         this.hunters.remove(player)
         this.priviousLocations.remove(player)
     }
 
-    fun getSurvivor() = survivor
-
     @Throws(IllegalStateException::class)
     fun setSurvivor(player: Player) {
-        if (lock) {
-            throw IllegalStateException("Game has been started")
-        }
+        if (lock) throw IllegalStateException("Game has been started")
         if (player != survivor) {
             if (this::survivor.isInitialized) {
                 this.priviousLocations.remove(survivor)
@@ -50,6 +42,8 @@ class PlayerSet {
             this.priviousLocations[player] = player.location
         }
     }
+
+    fun getSurvivor() = survivor
 
     fun getHunters() = hunters.toSet()
 
