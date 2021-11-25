@@ -43,7 +43,8 @@ class CompassUpdater(game: Game) {
         this.trackRunnable = bukkitRunnableOf {
             val activeHunters = hunters.asSequence().filter { it !in deceptionList}
             for (hunter in activeHunters.filter {it.world == survivor.world }) {
-                if (!this.isDistanceValid(hunter.location, survivor.location)) {
+                val distance = survivor.location.distance(hunter.location)
+                if (!this.isDistanceValid(distance)) {
                     this.missMessage(hunter, survivor)
                     continue
                 }
@@ -52,13 +53,15 @@ class CompassUpdater(game: Game) {
                         val compass = item.itemMeta as org.bukkit.inventory.meta.CompassMeta
                         compass.lodestone = survivor.location
                         item.itemMeta = compass
-                        this.trackMassage(hunter, survivor)
+                        this.trackMassage(hunter, survivor, distance)
                     }
                 }
             }
+            if (!rule.crossWorldTrack) return@bukkitRunnableOf
             if (survivor.world == worlds.overworld) {
                 for (hunter in activeHunters.filter {it.world == worlds.nether }) {
-                    if (!this.isDistanceValid(hunter.location, survivor.location, NETHER_OVERWORLD_MULTIPLE)) {
+                    val distance = survivor.location.distance(hunter.location.multiply(NETHER_OVERWORLD_MULTIPLE))
+                    if (!this.isDistanceValid(distance)) {
                         this.missMessage(hunter, survivor)
                         continue
                     }
@@ -67,14 +70,15 @@ class CompassUpdater(game: Game) {
                             val compass = item.itemMeta as org.bukkit.inventory.meta.CompassMeta
                             compass.lodestone = survivor.location.multiply(NETHER_OVERWORLD_MULTIPLE)
                             item.itemMeta = compass
-                            this.trackMassage(hunter, survivor)
+                            this.trackMassage(hunter, survivor, distance)
                         }
                     }
                 }
             }
             if (survivor.world == worlds.nether) {
                 for (hunter in activeHunters.filter {it.world == worlds.overworld }) {
-                    if (!this.isDistanceValid(hunter.location, survivor.location, OVERWORLD_NETHER_MULTIPLE)) {
+                    val distance = survivor.location.distance(hunter.location.multiply(OVERWORLD_NETHER_MULTIPLE))
+                    if (!this.isDistanceValid(distance)) {
                         this.missMessage(hunter, survivor)
                         continue
                     }
@@ -83,7 +87,7 @@ class CompassUpdater(game: Game) {
                             val compass = item.itemMeta as org.bukkit.inventory.meta.CompassMeta
                             compass.lodestone = survivor.location.multiply(OVERWORLD_NETHER_MULTIPLE)
                             item.itemMeta = compass
-                            this.trackMassage(hunter, survivor)
+                            this.trackMassage(hunter, survivor, distance)
                         }
                     }
                 }
@@ -145,10 +149,18 @@ class CompassUpdater(game: Game) {
         }
     }
 
-    private fun trackMassage(hunter: Player, survivor: Player) {
-        hunter.sendActionBar(Component.text("You are now tracking ").color(NamedTextColor.GRAY)
+    private fun trackMassage(hunter: Player, survivor: Player, distance: Double) {
+        val component = Component.text("You are now tracking ").color(NamedTextColor.GRAY)
                                     .append(Component.text(survivor.name).color(NamedTextColor.GREEN))
-                                    .append(Component.text(".").color(NamedTextColor.GRAY)))
+                                    .append(Component.text(".").color(NamedTextColor.GRAY))
+
+        if (rule.displayDistance) {
+            component.append(Component.newline())
+                            .append(Component.text("Distance: ").color(NamedTextColor.GRAY))
+                            .append(Component.text(distance).color(NamedTextColor.GREEN))
+        }
+
+        hunter.sendActionBar(component)
     }
 
     private fun deceptionMessage(hunter: Player, survivor: Player) {
@@ -168,7 +180,7 @@ class CompassUpdater(game: Game) {
         this.deceptionRunnable.cancel()
     }
 
-    private fun isDistanceValid(hunter: Location, survivor: Location, multiple: Double = 1.0): Boolean {
-        return rule.distanceLimit.isLimited() && hunter.multiply(multiple).distance(survivor) <= rule.distanceLimit.get()
+    private fun isDistanceValid(distance: Double): Boolean {
+        return rule.distanceLimit.isLimited() && distance <= rule.distanceLimit.get()
     }
 }
