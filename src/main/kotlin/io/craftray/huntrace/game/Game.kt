@@ -1,6 +1,7 @@
 package io.craftray.huntrace.game
 
 import io.craftray.huntrace.game.compass.CompassUpdater
+import io.craftray.huntrace.multiverse.MultiverseWorldManager.toMVWorld
 import io.craftray.huntrace.rule.RuleSet
 import io.craftray.huntrace.world.WorldController.deleteWorlds
 import io.craftray.huntrace.world.WorldController.generateWorlds
@@ -23,17 +24,43 @@ class Game(val rules: RuleSet) {
     var endTime by Delegates.notNull<Long>()
 
     fun init() {
+        players.lock()
+        runningGame.add(this)
         this.compassUpdater.init()
         this.generateWorlds()
         this.linkWorlds()
+        this.teleportTo()
         this.startTime = System.currentTimeMillis()
     }
 
-    fun finish() {
+    fun finish(result: GameResult) {
+        this.teleportFrom()
+        this.matchResult(result)
         this.compassUpdater.stop()
         this.unlinkWorlds()
         this.deleteWorlds()
         this.endTime = System.currentTimeMillis()
+        runningGame.remove(this)
+    }
+
+    fun matchResult(result: GameResult) = when(result) {
+        GameResult.HUNTER_WIN -> this.hunterWin()
+        GameResult.SURVIVOR_WIN -> this.survivorWin()
+        GameResult.SURVIVOR_QUIT -> this.survivorQuit()
+    }
+
+    fun hunterWin() {}
+    fun survivorWin() {}
+    fun survivorQuit() {}
+
+    fun teleportTo() {
+        players.getSurvivor().teleport(worlds.overworld.spawnLocation)
+        players.getHunters().forEach { it.teleport(worlds.overworld.spawnLocation) }
+    }
+
+    fun teleportFrom() {
+        players.getSurvivor().let { it.teleport(players.getPreviousLocation(it)) }
+        players.getHunters().forEach { it.teleport(players.getPreviousLocation(it)) }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -49,5 +76,9 @@ class Game(val rules: RuleSet) {
 
     override fun hashCode(): Int {
         return gameID.hashCode()
+    }
+
+    companion object {
+        val runningGame = mutableSetOf<Game>()
     }
 }

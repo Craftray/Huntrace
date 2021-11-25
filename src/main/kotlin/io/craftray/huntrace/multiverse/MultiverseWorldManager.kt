@@ -10,6 +10,10 @@ object MultiverseWorldManager {
     fun World.delete() = MultiverseManager.MVCore.mvWorldManager.deleteWorld(this.name)
 
     fun linkWorlds(overworld: World, nether: World, theEnd: World) {
+        overworld.toMVWorld().setRespawnToWorld(overworld.name)
+        nether.toMVWorld().setRespawnToWorld(overworld.name)
+        theEnd.toMVWorld().setRespawnToWorld(overworld.name)
+
         MultiverseManager.MVNP.run {
             this.addWorldLink(overworld.name, nether.name, PortalType.NETHER)
             this.addWorldLink(nether.name, overworld.name, PortalType.NETHER)

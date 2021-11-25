@@ -5,6 +5,7 @@ import io.craftray.huntrace.multiverse.MultiverseWorldBuilder
 import io.craftray.huntrace.multiverse.MultiverseWorldManager
 import io.craftray.huntrace.multiverse.MultiverseWorldManager.delete
 import org.bukkit.World
+import kotlin.random.Random
 
 object WorldController {
     fun Game.generateWorlds() : WorldSet {

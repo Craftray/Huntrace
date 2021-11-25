@@ -19,8 +19,8 @@ class CompassUpdater(game: Game) {
     private lateinit var deceptionFindRunnable: BukkitRunnable
     private lateinit var deceptionRunnable: BukkitRunnable
     private val deceptionList = mutableListOf<Player>()
-    private val hunters = game.players.hunters
-    private val survivor = game.players.survivors
+    private val hunters = game.players.getHunters()
+    private val survivor = game.players.getSurvivor()
     private val worlds = game.worlds
 
     fun init() {
@@ -127,12 +127,12 @@ class CompassUpdater(game: Game) {
 
     private fun trackMassage(hunter: Player, survivor: Player) {
         hunter.sendActionBar(Component.text("You are now tracking ").color(NamedTextColor.GRAY)
-                                .append(Component.text(survivor.name).color(NamedTextColor.GREEN))
-                                .append(Component.text(".").color(NamedTextColor.GRAY)))
+                                    .append(Component.text(survivor.name).color(NamedTextColor.GREEN))
+                                    .append(Component.text(".").color(NamedTextColor.GRAY)))
     }
 
     private fun deceptionMessage(hunter: Player, survivor: Player) {
-        hunter.sendActionBar(Component.text("Signal is not good").color(NamedTextColor.RED))
+        hunter.sendActionBar(Component.text("Signal is not good.").color(NamedTextColor.RED))
     }
 
     private fun stopTrack() {
