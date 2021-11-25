@@ -28,11 +28,15 @@ taboolib {
 repositories {
     mavenCentral()
     maven("https://papermc.io/repo/repository/maven-public/")
+    maven("https://repo.onarandombox.com/content/groups/public/")
 }
 
 dependencies {
     compileOnly(kotlin("stdlib"))
     compileOnly("io.papermc.paper:paper-api:1.17-R0.1-SNAPSHOT")
+    compileOnly("com.onarandombox.multiversecore:Multiverse-Core:4.3.1")
+    compileOnly("com.onarandombox.multiverseinventories:Multiverse-Inventories:4.2.2")
+    compileOnly("com.onarandombox.multiversenetherportals:Multiverse-NetherPortals:4.2.1")
     compileOnly(fileTree("libs"))
 }
 

@@ -1,5 +1,6 @@
 package io.craftray.huntrace
 
+import org.bukkit.Bukkit
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.function.info
 import taboolib.module.configuration.Config

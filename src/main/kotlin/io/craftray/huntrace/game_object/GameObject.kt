@@ -20,7 +20,7 @@ data class Distance private constructor(private val value: Long) {
 }
 
 data class Spawnpoint private constructor(private val value: Location?) {
-    fun isSet() = value == null
+    fun isSet() = value != null
 
     fun get() =
         if (isSet()) value!!

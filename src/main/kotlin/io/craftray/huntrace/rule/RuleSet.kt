@@ -1,6 +1,8 @@
 package io.craftray.huntrace.rule
 
-class RuleSet(
+import java.io.Serializable
+
+data class RuleSet(
     var worldRule: WorldRule,
     var CompassRule: CompassRule
-)
+) : Serializable
