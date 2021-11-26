@@ -11,6 +11,11 @@ enum class GameResult {
 
 class GameResultMatcher(private val game: Game) {
 
+    /**
+     * Match and process the result of the game
+     * @author Kylepoops
+     * @param result The result
+     */
     fun match(result: GameResult) = when (result) {
         GameResult.HUNTER_WIN -> this.hunterWin()
         GameResult.SURVIVOR_WIN -> this.survivorWin()

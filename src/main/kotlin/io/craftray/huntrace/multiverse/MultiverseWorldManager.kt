@@ -5,10 +5,24 @@ import org.bukkit.PortalType
 import org.bukkit.World
 
 object MultiverseWorldManager {
+    /**
+     * Case to multiverse world
+     * @author Kylepoops
+     */
     fun World.toMVWorld() = MultiverseManager.MVCore.mvWorldManager.getMVWorld(this)!!
 
+    /**
+     * Delete the world
+     * @author Kylepoops
+     */
     fun World.delete() = MultiverseManager.MVCore.mvWorldManager.deleteWorld(this.name)
 
+    /**
+     * Link the three dimensions' gateway
+     * @param overworld the overworld
+     * @param nether the nether
+     * @param theEnd the end
+     */
     fun linkWorlds(overworld: World, nether: World, theEnd: World) {
         overworld.toMVWorld().setRespawnToWorld(overworld.name)
         nether.toMVWorld().setRespawnToWorld(overworld.name)
@@ -23,6 +37,12 @@ object MultiverseWorldManager {
         }
     }
 
+    /**
+     * Link players' inventory of the three dimensions
+     * @param overworld the overworld
+     * @param nether the nether
+     * @param theEnd the end
+     */
     fun linkInventories(overworld: World, nether: World, theEnd: World) {
         MultiverseManager.MVInv.run {
             val group = this.groupManager.newEmptyGroup(overworld.name).apply {
@@ -37,6 +57,13 @@ object MultiverseWorldManager {
         }
     }
 
+    /**
+     * Unlink the three dimensions' gateway
+     * @author Kylepoops
+     * @param overworld the overworld
+     * @param nether the nether
+     * @param theEnd the end
+     */
     fun unlinkWorlds(overworld: World, nether: World, theEnd: World) {
         MultiverseManager.MVNP.run {
             this.removeWorldLink(overworld.name, nether.name, PortalType.NETHER)
@@ -47,6 +74,13 @@ object MultiverseWorldManager {
         }
     }
 
+    /**
+     * Unlink players' inventory of the three dimensions
+     * @author Kylepoops
+     * @param overworld the overworld
+     * @param nether the nether
+     * @param theEnd the end
+     */
     fun unlinkInventories(overworld: World, nether: World, theEnd: World) {
         MultiverseManager.MVInv.run {
             this.groupManager.getGroup(overworld.name)?.let {

@@ -22,18 +22,33 @@ class PlayerSet {
 
     private val previousLocations = mutableMapOf<Player, Location>()
 
+    /**
+     * Lock the set to prevent changes during the game is running
+     * @author Kylepoops
+     * @exception IllegalStateException if the set is already locked
+     */
     @Throws(IllegalStateException::class)
     fun lock() {
         if (lock) throw IllegalStateException("PlayerSet is already locked")
         lock = true
     }
 
+    /**
+     * Add a hunter to this set
+     * @author Kylepoops
+     * @exception IllegalStateException if the set is locked
+     */
     @Throws(IllegalStateException::class)
     fun addHunter(player: Player) {
         if (lock) throw IllegalStateException("Game has been started")
         this.hunters.add(player)
     }
 
+    /**
+     * Removes a player from the set
+     * @author Kylepoops
+     * @exception IllegalStateException if the set is locked
+     */
     @Throws(IllegalStateException::class)
     fun removeHunter(player: Player) {
         if (lock && player.isOnline) throw IllegalStateException("Game has been started")
@@ -41,12 +56,25 @@ class PlayerSet {
         this.previousLocations.remove(player)
     }
 
+    /**
+     * Store the location of every player in the set
+     * @author Kylepoops
+     * @exception IllegalStateException if the set isn't locked
+     */
+    @Throws(IllegalStateException::class)
     fun storeLocation() {
+        if (!lock) throw IllegalArgumentException("PlayerSet must be locked before storing locations")
         this.previousLocations[survivor] = this.survivor.location
         this.hunters.forEach { this.previousLocations[it] = it.location }
     }
 
 
+    /**
+     * get the previous location of a player
+     * @author Kylepoops
+     * @param player the player to get the location of
+     * @return the location
+     */
     fun getPreviousLocation(player: Player): Location {
         return previousLocations[player] ?: throw IllegalStateException("Player ${player.name} is not in the game")
     }

@@ -10,6 +10,10 @@ object MultiverseManager {
     lateinit var MVInv: MultiverseInventories
     lateinit var MVNP: MultiverseNetherPortals
 
+    /**
+     * Initialize Multiverse Core, Multiverse Inventories, and Multiverse Nether Portals.
+     * @author: Kylepoops
+     */
     @Throws(IllegalArgumentException::class)
     fun initMultiverse() {
         val core = Bukkit.getServer().pluginManager.getPlugin("Multiverse-Core") as? MultiverseCore?
@@ -24,6 +28,4 @@ object MultiverseManager {
             throw IllegalArgumentException("Cannot initialize Multiverse")
         }
     }
-
-
 }

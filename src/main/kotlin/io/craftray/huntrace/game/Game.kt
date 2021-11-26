@@ -16,6 +16,7 @@ class Game(rules: RuleSet) {
     private lateinit var listener: HuntraceGameListener
     private val players = PlayerSet()
     private val resultMatcher = GameResultMatcher(this)
+    private var initialized = false
 
     var startTime by Delegates.notNull<Long>()
         private set
@@ -33,6 +34,11 @@ class Game(rules: RuleSet) {
     val hunters
         get() = this.players.hunters
 
+    /**
+     * Initialize a game
+     * Generate three dimension, setup CompassUpdater, GameWorldController and GameResultMatcher
+     * @author Kylepoops
+     */
     fun init() {
         this.rules = this.rules.immutableCopy()
         this.compassUpdater = CompassUpdater(this)
@@ -40,9 +46,17 @@ class Game(rules: RuleSet) {
         this.listener = HuntraceGameListener(this).also { it.register() }
         this.worldController.generateWorlds()
         this.worldController.linkWorlds()
+        this.initialized = true
     }
 
+    /**
+     * Start a initialized game
+     * @author Kylepoops
+     * @exception IllegalStateException if the game is not initialized
+     */
+    @Throws(IllegalStateException::class)
     fun start() {
+        if (!this.initialized) { throw IllegalStateException("Game is not initialized") }
         this.players.lock()
         this.players.storeLocation()
         runningGame.add(this)
@@ -51,6 +65,10 @@ class Game(rules: RuleSet) {
         this.startTime = System.currentTimeMillis()
     }
 
+    /**
+     * Finish a game
+     * @author Kylepoops
+     */
     fun finish(result: GameResult) {
         this.listener.unregister()
         this.teleportFrom()
@@ -62,15 +80,37 @@ class Game(rules: RuleSet) {
         runningGame.remove(this)
     }
 
+    /**
+     * Add a hunter to the game
+     * @author Kylepoops
+     * @param player the hunter to add
+     * @exception IllegalStateException if the game is started
+     */
+    @Throws(IllegalStateException::class)
     fun addHunter(player: Player) = this.players.addHunter(player)
 
+    /**
+     * remove a hunter from the game
+     * @author Kylepoops
+     * @param player the hunter to remove
+     * @exception IllegalStateException if the game is started and the hunter is still online
+     */
+    @Throws(IllegalStateException::class)
     fun removeHunter(player: Player) = this.players.removeHunter(player)
 
+    /**
+     * teleport all players to the location before the game start
+     * @author Kylepoops
+     */
     private fun teleportFrom() {
         this.survivor.let { it.teleport(players.getPreviousLocation(it)) }
         this.hunters.forEach { it.teleport(players.getPreviousLocation(it)) }
     }
 
+    /**
+     * teleport all player to the game
+     * @author Kylepoops
+     */
     private fun teleportTo() {
         this.survivor.teleport(worlds.overworld.spawnLocation)
         this.hunters.forEach { it.teleport(worlds.overworld.spawnLocation) }
