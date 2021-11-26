@@ -178,6 +178,6 @@ class CompassUpdater(game: Game) {
     }
 
     private fun isDistanceValid(distance: Double): Boolean {
-        return rule.distanceLimit.isLimited() && distance <= rule.distanceLimit.get()
+        return !(rule.distanceLimit.isLimited() && distance >= rule.distanceLimit.get())
     }
 }
