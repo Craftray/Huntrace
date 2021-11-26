@@ -54,7 +54,7 @@ class HuntraceGameListener(private val game: Game) : Listener {
      * @author Kylepoops
      */
     @EventHandler
-    fun onENtityDeath(event: EntityDeathEvent) {
+    fun onEntityDeath(event: EntityDeathEvent) {
         if (event.entity.type == EntityType.ENDER_DRAGON && event.entity.world == game.worlds.theEnd) {
             game.finish(GameResult.SURVIVOR_WIN)
         }

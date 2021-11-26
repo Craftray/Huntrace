@@ -24,17 +24,33 @@ class CompassUpdater(val game: Game) {
     private val worlds = game.worlds
     private val OVERWORLD_NETHER_MULTIPLE = 8.0
     private val NETHER_OVERWORLD_MULTIPLE = 0.125
+    private var started = false
 
+    /**
+     * Start the updater
+     * @author Kylepoops
+     */
     fun start() {
+        if (started) throw IllegalStateException("CompassUpdater is already started")
         this.initTrack()
         if (this.rule.deception) { this.initDeception() }
+        this.started = true
     }
 
+    /**
+     * Stop the updater
+     * @author Kylepoops
+     */
     fun stop() {
+        if (!started) throw IllegalStateException("CompassUpdater is not started")
         this.stopTrack()
         if (this.rule.deception) { this.stopDeception() }
     }
 
+    /**
+     * Start tracking
+     * @author Kylepoops
+     */
     private fun initTrack() {
         this.trackRunnable = bukkitRunnableOf {
             val activeHunters = hunters.asSequence().filter { it !in deceptionList}
@@ -102,6 +118,10 @@ class CompassUpdater(val game: Game) {
         this.trackRunnable.runTaskTimer(Main.plugin, 600, rule.updateInterval)
     }
 
+    /**
+     * Start deceiving
+     * @author Kylepoops
+     */
     private fun initDeception() {
         this.deceptionFindRunnable = bukkitRunnableOf {
             for (hunter in hunters) {
@@ -132,7 +152,7 @@ class CompassUpdater(val game: Game) {
             }}
         }
 
-        this.deceptionFindRunnable.runTaskTimer(Main.plugin, 600, rule.updateInterval)
+        this.deceptionFindRunnable.runTaskTimerAsynchronously(Main.plugin, 600, rule.updateInterval)
 
         this.deceptionRunnable.runTaskTimer(Main.plugin, 600, rule.updateInterval)
     }

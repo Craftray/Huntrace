@@ -10,6 +10,10 @@ abstract class HuntraceGameEvent(async: Boolean) : Event(async) {
     constructor() : this(false)
 }
 
+/**
+ * Thrown after a game finishes
+ * @author Kylepoops
+ */
 class HuntraceGameFinishEvent(val game: Game, val result: GameResult) : HuntraceGameEvent(true) {
     override fun getHandlers(): HandlerList {
         return handlerList
@@ -21,6 +25,10 @@ class HuntraceGameFinishEvent(val game: Game, val result: GameResult) : Huntrace
     }
 }
 
+/**
+ * Thrown after a game starts
+ * @author Kylepoops
+ */
 class HuntraceGameStartEvent(val game: Game) : HuntraceGameEvent() {
     override fun getHandlers(): HandlerList {
         return handlerList
@@ -32,6 +40,10 @@ class HuntraceGameStartEvent(val game: Game) : HuntraceGameEvent() {
     }
 }
 
+/**
+ * Thrown after a player joins a game
+ * @author Kylepoops
+ */
 class HuntraceGameHunterQuitEvent(val game: Game, val player: Player) : HuntraceGameEvent(true) {
     override fun getHandlers(): HandlerList {
         return handlerList
@@ -43,6 +55,10 @@ class HuntraceGameHunterQuitEvent(val game: Game, val player: Player) : Huntrace
     }
 }
 
+/**
+ * Thrown after a compass is updated in the game
+ * @author Kylepoops
+ */
 class HuntraceGameCompassUpdateEvent(
     val game: Game,
     val result: Result,
