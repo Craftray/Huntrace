@@ -4,11 +4,8 @@ import io.craftray.huntrace.Main
 import io.craftray.huntrace.Utils
 import io.craftray.huntrace.Utils.bukkitRunnableOf
 import io.craftray.huntrace.game.Game
-import io.craftray.huntrace.game.hunters
-import io.craftray.huntrace.game.survivor
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -18,7 +15,7 @@ import kotlin.random.Random
 
 @Suppress("PrivatePropertyName")
 class CompassUpdater(game: Game) {
-    private val rule = game.rules.CompassRule
+    private val rule = game.rules.compassRule
     private lateinit var trackRunnable: BukkitRunnable
     private lateinit var deceptionFindRunnable: BukkitRunnable
     private lateinit var deceptionRunnable: BukkitRunnable

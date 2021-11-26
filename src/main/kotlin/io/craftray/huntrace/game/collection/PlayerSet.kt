@@ -5,11 +5,22 @@ import org.bukkit.entity.Player
 import kotlin.jvm.Throws
 
 class PlayerSet {
-    private val hunters = mutableSetOf<Player>()
-    private lateinit var survivor: Player
+    val hunters = mutableSetOf<Player>()
+    private lateinit var _survivor: Player
     private var lock = false
+    var survivor: Player
+        get() = _survivor
+        set(value) {
+            if (lock) throw IllegalStateException("Game has been started")
+            if (value != this._survivor) {
+                if (this::_survivor.isInitialized) {
+                    this.previousLocations.remove(_survivor)
+                }
+                this._survivor = value
+            }
+        }
 
-    private val priviousLocations = mutableMapOf<Player, Location>()
+    private val previousLocations = mutableMapOf<Player, Location>()
 
     @Throws(IllegalStateException::class)
     fun lock() {
@@ -21,33 +32,22 @@ class PlayerSet {
     fun addHunter(player: Player) {
         if (lock) throw IllegalStateException("Game has been started")
         this.hunters.add(player)
-        this.priviousLocations[player] = player.location
     }
 
     @Throws(IllegalStateException::class)
     fun removeHunter(player: Player) {
         if (lock && player.isOnline) throw IllegalStateException("Game has been started")
         this.hunters.remove(player)
-        this.priviousLocations.remove(player)
+        this.previousLocations.remove(player)
     }
 
-    @Throws(IllegalStateException::class)
-    fun setSurvivor(player: Player) {
-        if (lock) throw IllegalStateException("Game has been started")
-        if (player != survivor) {
-            if (this::survivor.isInitialized) {
-                this.priviousLocations.remove(survivor)
-            }
-            this.survivor = player
-            this.priviousLocations[player] = player.location
-        }
+    fun storeLocation() {
+        this.previousLocations[survivor] = this.survivor.location
+        this.hunters.forEach { this.previousLocations[it] = it.location }
     }
 
-    fun getSurvivor() = survivor
-
-    fun getHunters() = hunters
 
     fun getPreviousLocation(player: Player): Location {
-        return priviousLocations[player] ?: throw IllegalStateException("Player ${player.name} is not in the game")
+        return previousLocations[player] ?: throw IllegalStateException("Player ${player.name} is not in the game")
     }
 }
