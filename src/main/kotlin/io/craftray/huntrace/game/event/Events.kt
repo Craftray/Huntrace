@@ -6,9 +6,11 @@ import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
-abstract class HuntraceGameEvent : Event()
+abstract class HuntraceGameEvent(async: Boolean) : Event(async) {
+    constructor() : this(false)
+}
 
-class HuntraceGameFinishEvent(val game: Game, val result: GameResult) : HuntraceGameEvent() {
+class HuntraceGameFinishEvent(val game: Game, val result: GameResult) : HuntraceGameEvent(true) {
     override fun getHandlers(): HandlerList {
         return handlerList
     }
@@ -30,7 +32,7 @@ class HuntraceGameStartEvent(val game: Game) : HuntraceGameEvent() {
     }
 }
 
-class HuntraceGameHunterQuitEvent(val game: Game, val player: Player) : HuntraceGameEvent() {
+class HuntraceGameHunterQuitEvent(val game: Game, val player: Player) : HuntraceGameEvent(true) {
     override fun getHandlers(): HandlerList {
         return handlerList
     }
@@ -47,7 +49,7 @@ class HuntraceGameCompassUpdateEvent(
     val hunter: Player,
     val survivor: Player,
     val distance: Double? = null
-) : HuntraceGameEvent() {
+) : HuntraceGameEvent(true) {
     override fun getHandlers(): HandlerList {
         return handlerList
     }
