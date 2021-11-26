@@ -1,6 +1,6 @@
 plugins {
     java
-    id("io.izzel.taboolib") version "1.30"
+    id("io.izzel.taboolib") version "1.31"
     id("org.jetbrains.kotlin.jvm") version "1.6.0"
 }
 
@@ -11,6 +11,8 @@ taboolib {
     install("module-chat")
     install("module-lang")
     install("module-ui")
+    options("skip-kotlin")
+    options("skip-env")
     version = "6.0.4-7"
 
     description {
@@ -18,11 +20,17 @@ taboolib {
             name("小白").description("Huntrace")
             name("Kylepoops")
         }
-        // 依赖选项
-//        dependencies {
-//            name("ExamplePlugin")
-//            name("ExamplePlugin").optional(true)
-//        }
+
+        dependencies {
+            name("Multiverse-Core")
+            name("Multiverse-Inventories")
+            name("Multiverse-NetherPortals")
+        }
+
+        bukkitNodes = mapOf(
+            "api-version" to "1.17",
+            "libraries" to listOf("org.jetbrains.kotlin:kotlin-stdlib:1.6.0")
+        )
     }
 }
 
