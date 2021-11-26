@@ -10,7 +10,8 @@ taboolib {
     install("module-configuration")
     install("module-chat")
     install("module-lang")
-    version = "6.0.3-5"
+    install("module-ui")
+    version = "6.0.4-7"
 
     description {
         contributors {
