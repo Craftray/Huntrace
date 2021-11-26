@@ -6,7 +6,8 @@ enum class GameResult {
     HUNTER_WIN,
     SURVIVOR_WIN,
     SURVIVOR_QUIT,
-    HUNTER_QUIT
+    HUNTER_QUIT,
+    ABORT
 }
 
 class GameResultMatcher(private val game: Game) {
@@ -21,6 +22,7 @@ class GameResultMatcher(private val game: Game) {
         GameResult.SURVIVOR_WIN -> this.survivorWin()
         GameResult.SURVIVOR_QUIT -> this.survivorQuit()
         GameResult.HUNTER_QUIT -> this.hunterQuit()
+        GameResult.ABORT -> this.abort()
     }
 
     private fun hunterWin() {
@@ -41,5 +43,10 @@ class GameResultMatcher(private val game: Game) {
     private fun hunterQuit() {
         game.hunters.forEach { it.sendMessage(Component.text("hunter quit")) }
         game.survivor.sendMessage(Component.text("hunter quit"))
+    }
+
+    private fun abort() {
+        game.hunters.forEach { it.sendMessage(Component.text("abort")) }
+        game.survivor.sendMessage(Component.text("abort"))
     }
 }

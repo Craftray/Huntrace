@@ -18,7 +18,7 @@ class GameBuilder {
      * @exception IllegalStateException if the world rule has already been set
      */
     @Throws(IllegalStateException::class)
-    fun withRule(rule: WorldRule) {
+    fun withRule(rule: WorldRule) = this.apply {
         if (this::worldRule.isInitialized) {
             throw IllegalStateException("World rule already set")
         }
@@ -31,7 +31,7 @@ class GameBuilder {
      * @exception IllegalStateException if the compass rule has already been set
      */
     @Throws(IllegalStateException::class)
-    fun withRule(rule: CompassRule) {
+    fun withRule(rule: CompassRule) = this.apply {
         if (this::compassRule.isInitialized) {
             throw IllegalStateException("Compass rule already set")
         }
@@ -44,9 +44,8 @@ class GameBuilder {
      * @exception IllegalStateException if either the world rule or compass rule has already been set
      */
     @Throws(IllegalStateException::class)
-    fun withRules(rules: RuleSet) {
-        this.withRule(rules.worldRule)
-        this.withRule(rules.compassRule)
+    fun withRules(rules: RuleSet) = this.apply {
+        this.withRule(rules.worldRule).withRule(rules.compassRule)
     }
 
     /**
@@ -55,7 +54,7 @@ class GameBuilder {
      * @exception IllegalStateException if the survivor has already been set
      */
     @Throws(IllegalStateException::class)
-    fun withSurvivor(survivor: Player) {
+    fun withSurvivor(survivor: Player) = this.apply {
         if (this::survivor.isInitialized) {
             throw IllegalStateException("Survivor already set")
         }
@@ -66,7 +65,7 @@ class GameBuilder {
      * Add a hunter to the game
      * @param hunter the hunter
      */
-    fun withHunter(hunter: Player) {
+    fun withHunter(hunter: Player) = this.apply {
         this.hunters.add(hunter)
     }
 
@@ -74,7 +73,7 @@ class GameBuilder {
      * Add a list of hunters to the game
      * @param hunters the hunters
      */
-    fun withHunters(hunters: Collection<Player>) {
+    fun withHunters(hunters: Collection<Player>) = this.apply {
         this.hunters.addAll(hunters)
     }
 
@@ -82,7 +81,7 @@ class GameBuilder {
      * Add a list of hunters to the game
      * @param hunters the hunters
      */
-    fun withHunters(vararg hunters: Player) {
+    fun withHunters(vararg hunters: Player) = this.apply {
         this.hunters.addAll(hunters)
     }
 

@@ -80,6 +80,22 @@ class Game(rules: RuleSet) {
         runningGame.remove(this)
     }
 
+    fun abort() = finish(GameResult.ABORT)
+
+    fun quit(player: Player): Boolean {
+        if (this.survivor == player) {
+            this.finish(GameResult.SURVIVOR_QUIT)
+            return true
+        } else if (this.hunters.contains(player)) {
+            if (this.hunters.size <= 1) finish(GameResult.HUNTER_QUIT)
+            player.teleport(this.players.getPreviousLocation(player))
+            this.removeHunter(player)
+            return true
+        }
+
+        return false
+    }
+
     /**
      * Add a hunter to the game
      * @author Kylepoops

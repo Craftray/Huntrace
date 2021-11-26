@@ -47,6 +47,10 @@ class WorldSet {
             _theEnd = value
         }
 
+    fun contains(world: World): Boolean {
+        return world == overworld || world == nether || world == theEnd
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

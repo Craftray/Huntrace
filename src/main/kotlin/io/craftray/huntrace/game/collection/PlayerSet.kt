@@ -51,7 +51,8 @@ class PlayerSet {
      */
     @Throws(IllegalStateException::class)
     fun removeHunter(player: Player) {
-        if (lock && player.isOnline) throw IllegalStateException("Game has been started")
+        if (lock && player.isOnline && hunters.size <= 1)
+            throw IllegalStateException("Cannot remove hunter when they is the only online one left after locked")
         this.hunters.remove(player)
         this.previousLocations.remove(player)
     }
