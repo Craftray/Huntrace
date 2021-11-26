@@ -134,5 +134,9 @@ class Game(rules: RuleSet) {
 
     companion object {
         val runningGame = mutableSetOf<Game>()
+
+        fun getGameByPlayer(player: Player) =
+                                runningGame.find { it.players.contains(player) } ?:
+                                throw IllegalArgumentException("Player is not in any game")
     }
 }

@@ -70,12 +70,22 @@ class PlayerSet {
 
 
     /**
-     * get the previous location of a player
+     * Get the previous location of a player
      * @author Kylepoops
      * @param player the player to get the location of
      * @return the location
      */
     fun getPreviousLocation(player: Player): Location {
         return previousLocations[player] ?: throw IllegalStateException("Player ${player.name} is not in the game")
+    }
+
+    /**
+     * Whether the player are in this set
+     * @author Kylepoops
+     * @param player the player to check
+     * @return the result
+     */
+    fun contains(player: Player): Boolean {
+        return this.hunters.contains(player) || this.survivor == player
     }
 }
