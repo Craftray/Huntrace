@@ -134,5 +134,25 @@ class Game(rules: RuleSet) {
 
     companion object {
         val runningGame = mutableSetOf<Game>()
+
+        /**
+         * Find the game by given player
+         * @author Kylepoops
+         * @param player the player to find
+         * @return the game or null if not found
+         */
+        fun findGameByPlayerOrNull(player: Player) = runningGame.find { it.players.contains(player) }
+
+        /**
+         * Get the game by given player
+         * @author Kylepoops
+         * @param player the player to find
+         * @return the game
+         * @exception IllegalArgumentException if the game is not found
+         */
+        @Throws(IllegalArgumentException::class)
+        fun getGameByPlayer(player: Player): Game {
+            return findGameByPlayerOrNull(player) ?: throw IllegalArgumentException("This player is not in any game")
+        }
     }
 }
