@@ -11,16 +11,18 @@ import kotlin.properties.Delegates
 
 class Game(rules: RuleSet) {
     val gameID = UUID.randomUUID()!!
-    private val compassUpdater = CompassUpdater(this)
+    private lateinit var compassUpdater: CompassUpdater
+    private lateinit var worldController: GameWorldController
     private lateinit var listener: HuntraceGameListener
     private val players = PlayerSet()
     private val resultMatcher = GameResultMatcher(this)
-    private val worldController = GameWorldController(this)
+
     var startTime by Delegates.notNull<Long>()
+        private set
     var endTime by Delegates.notNull<Long>()
+        private set
     lateinit var worlds: WorldSet
         private set
-
     var rules = rules
         private set
 
@@ -33,6 +35,8 @@ class Game(rules: RuleSet) {
 
     fun init() {
         this.rules = this.rules.immutableCopy()
+        this.compassUpdater = CompassUpdater(this)
+        this.worldController = GameWorldController(this)
         this.listener = HuntraceGameListener(this).also { it.register() }
         this.worldController.generateWorlds()
         this.worldController.linkWorlds()
@@ -43,7 +47,7 @@ class Game(rules: RuleSet) {
         this.players.storeLocation()
         runningGame.add(this)
         this.teleportTo()
-        this.compassUpdater.init()
+        this.compassUpdater.start()
         this.startTime = System.currentTimeMillis()
     }
 

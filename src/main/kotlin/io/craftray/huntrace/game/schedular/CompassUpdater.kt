@@ -26,7 +26,7 @@ class CompassUpdater(game: Game) {
     private val OVERWORLD_NETHER_MULTIPLE = 8.0
     private val NETHER_OVERWORLD_MULTIPLE = 0.125
 
-    fun init() {
+    fun start() {
         this.initTrack()
         if (this.rule.deception) { this.initDeception() }
     }
