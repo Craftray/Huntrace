@@ -1,9 +1,9 @@
 package io.craftray.huntrace.game
 
 import io.craftray.huntrace.game.collection.WorldSet
-import io.craftray.huntrace.multiverse.MultiverseWorldBuilder
-import io.craftray.huntrace.multiverse.MultiverseWorldManager
-import io.craftray.huntrace.multiverse.MultiverseWorldManager.delete
+import io.craftray.huntrace.game.multiverse.MultiverseWorldBuilder
+import io.craftray.huntrace.game.multiverse.MultiverseWorldManager
+import io.craftray.huntrace.game.multiverse.MultiverseWorldManager.delete
 import org.bukkit.World
 
 class GameWorldController(private val game: Game) {
@@ -17,7 +17,9 @@ class GameWorldController(private val game: Game) {
      * Generate the three dimensions of a game
      * @author Kylepoops
      * @return the world set
+     * @exception IllegalStateException if the game has already been generated
      */
+    @Throws(IllegalStateException::class)
     fun generateWorlds(): WorldSet {
         if (generated)  throw IllegalStateException("Worlds have already been generated")
 
@@ -60,6 +62,7 @@ class GameWorldController(private val game: Game) {
      * @author Kylepoops
      * @exception IllegalStateException if the worlds have not been generated or have been deleted
      */
+    @Throws(IllegalStateException::class)
     fun deleteWorlds() = game.worlds.run {
         if (!generated) throw IllegalStateException("Worlds have not been generated")
         if (deleted) throw IllegalStateException("Worlds have already been deleted")
@@ -74,6 +77,7 @@ class GameWorldController(private val game: Game) {
      * @author Kylepoops
      * @exception IllegalStateException if the worlds have not been generated or have been deleted or linked
      */
+    @Throws(IllegalStateException::class)
     fun linkWorlds() = game.worlds.run {
         if (!generated) throw IllegalStateException("Worlds have not been generated")
         if (deleted) throw IllegalStateException("Worlds have already been deleted")
@@ -88,6 +92,7 @@ class GameWorldController(private val game: Game) {
      * @author Kylepoops
      * @exception IllegalStateException if the worlds have not been generated or have been deleted, linked or unlinked
      */
+    @Throws(IllegalStateException::class)
     fun unlinkWorlds() = game.worlds.run {
         if(!generated) throw IllegalStateException("Worlds have not been generated")
         if(deleted) throw IllegalStateException("Worlds have already been deleted")

@@ -1,4 +1,4 @@
-package io.craftray.huntrace.multiverse
+package io.craftray.huntrace.game.multiverse
 
 import com.onarandombox.MultiverseCore.MultiverseCore
 import com.onarandombox.MultiverseNetherPortals.MultiverseNetherPortals

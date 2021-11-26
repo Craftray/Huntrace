@@ -1,6 +1,6 @@
 package io.craftray.huntrace
 
-import io.craftray.huntrace.multiverse.MultiverseManager
+import io.craftray.huntrace.game.multiverse.MultiverseManager
 import taboolib.common.platform.Plugin
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.SecuredFile

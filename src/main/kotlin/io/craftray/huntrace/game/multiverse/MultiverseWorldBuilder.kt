@@ -1,4 +1,4 @@
-package io.craftray.huntrace.multiverse
+package io.craftray.huntrace.game.multiverse
 
 import io.craftray.huntrace.game_object.Spawnpoint
 import org.bukkit.World
