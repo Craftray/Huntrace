@@ -2,7 +2,6 @@ package io.craftray.huntrace.game.listener
 
 import io.craftray.huntrace.game.Game
 import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerMoveEvent
 

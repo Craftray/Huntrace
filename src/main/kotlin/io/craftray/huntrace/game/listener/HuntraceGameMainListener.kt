@@ -1,17 +1,11 @@
 package io.craftray.huntrace.game.listener
 
-import io.craftray.huntrace.Main
 import io.craftray.huntrace.game.Game
 import io.craftray.huntrace.game.GameResult
-import org.bukkit.Bukkit
 import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
-import org.bukkit.event.HandlerList
-import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDeathEvent
 import org.bukkit.event.entity.PlayerDeathEvent
-import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
 class HuntraceGameMainListener(private val game: Game) : HuntraceGameListener() {
@@ -22,7 +16,9 @@ class HuntraceGameMainListener(private val game: Game) : HuntraceGameListener() 
      */
     @EventHandler
     fun onPlayerDeath(event: PlayerDeathEvent) {
-        if (event.entity == game.survivor) game.finish(GameResult.HUNTER_WIN)
+        if (event.entity !in this.game.survivors) return
+        if (this.game.survivors.size == 1) this.game.finish(GameResult.HUNTER_WIN)
+        else this.game.turnToSpectator(event.entity)
     }
 
     /**
@@ -31,8 +27,8 @@ class HuntraceGameMainListener(private val game: Game) : HuntraceGameListener() 
      */
     @EventHandler
     fun onEntityDeath(event: EntityDeathEvent) {
-        if (event.entity.type == EntityType.ENDER_DRAGON && event.entity.world == game.worlds.theEnd) {
-            game.finish(GameResult.SURVIVOR_WIN)
+        if (event.entity.type == EntityType.ENDER_DRAGON && event.entity.world == this.game.worlds.theEnd) {
+            this.game.finish(GameResult.SURVIVOR_WIN)
         }
     }
 
@@ -44,8 +40,18 @@ class HuntraceGameMainListener(private val game: Game) : HuntraceGameListener() 
      */
     @EventHandler
     fun onPlayerQuit(event: PlayerQuitEvent) {
-        if (event.player == game.survivor) game.finish(GameResult.SURVIVOR_QUIT)
-        if (event.player in game.hunters) game.removeHunter(event.player)
-        if (game.hunters.isEmpty()) game.finish(GameResult.HUNTER_QUIT)
+        if (event.player in this.game.survivors) {
+            if (this.game.survivors.size == 1) {
+                this.game.finish(GameResult.SURVIVOR_QUIT)
+                return
+            }
+            this.game.removeSurvivor(event.player)
+        } else if (event.player in this.game.hunters) {
+            if (this.game.hunters.size == 1) {
+                this.game.finish(GameResult.HUNTER_QUIT)
+                return
+            }
+            this.game.removeHunter(event.player)
+        }
     }
 }

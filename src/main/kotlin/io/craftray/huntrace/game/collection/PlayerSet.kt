@@ -6,20 +6,10 @@ import kotlin.jvm.Throws
 
 class PlayerSet {
     val hunters = mutableSetOf<Player>()
-    private lateinit var _survivor: Player
-    private var lock = false
-    var survivor: Player
-        get() = _survivor
-        set(value) {
-            if (lock) throw IllegalStateException("Game has been started")
-            if (value != this._survivor) {
-                if (this::_survivor.isInitialized) {
-                    this.previousLocations.remove(_survivor)
-                }
-                this._survivor = value
-            }
-        }
+    val survivors = mutableSetOf<Player>()
+    val spectators = mutableSetOf<Player>()
 
+    private var lock = false
     private val previousLocations = mutableMapOf<Player, Location>()
 
     /**
@@ -45,6 +35,16 @@ class PlayerSet {
     }
 
     /**
+     * Add a survivor to this set
+     * @author Kylepoops
+     * @exception IllegalStateException if the set is locked
+     */
+    fun addSurvivor(player: Player) {
+        if (lock) throw IllegalStateException("Game has been started")
+        this.survivors.add(player)
+    }
+
+    /**
      * Removes a player from the set
      * @author Kylepoops
      * @exception IllegalStateException if the set is locked
@@ -58,6 +58,28 @@ class PlayerSet {
     }
 
     /**
+     * Removes a survivor from the set
+     * @author Kylepoops
+     * @exception IllegalStateException if the set is locked
+     */
+    @Throws(IllegalStateException::class)
+    fun removeSurvivor(player: Player) {
+        if (lock && player.isOnline && survivors.size <= 1)
+            throw IllegalStateException("Cannot remove hunter when they is the only online one left after locked")
+        this.survivors.remove(player)
+        this.previousLocations.remove(player)
+    }
+
+    fun addSpectator(player: Player) {
+        this.spectators.add(player)
+    }
+
+    fun removeSpectator(player: Player) {
+        this.spectators.remove(player)
+        this.previousLocations.remove(player)
+    }
+
+    /**
      * Store the location of every player in the set
      * @author Kylepoops
      * @exception IllegalStateException if the set isn't locked
@@ -65,8 +87,9 @@ class PlayerSet {
     @Throws(IllegalStateException::class)
     fun storeLocation() {
         if (!lock) throw IllegalArgumentException("PlayerSet must be locked before storing locations")
-        this.previousLocations[survivor] = this.survivor.location
         this.hunters.forEach { this.previousLocations[it] = it.location }
+        this.survivors.forEach { this.previousLocations[it] = it.location }
+        this.spectators.forEach { this.previousLocations[it] = it.location }
     }
 
 
@@ -87,6 +110,6 @@ class PlayerSet {
      * @return the result
      */
     fun contains(player: Player): Boolean {
-        return this.hunters.contains(player) || this.survivor == player
+        return this.hunters.contains(player) || this.survivors.contains(player)
     }
 }

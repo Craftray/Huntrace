@@ -9,7 +9,7 @@ import kotlin.jvm.Throws
 class GameBuilder {
     private lateinit var worldRule: WorldRule
     private lateinit var compassRule: CompassRule
-    private lateinit var survivor: Player
+    private val survivors = mutableSetOf<Player>()
     private val hunters = mutableSetOf<Player>()
 
     /**
@@ -55,10 +55,23 @@ class GameBuilder {
      */
     @Throws(IllegalStateException::class)
     fun withSurvivor(survivor: Player) = this.apply {
-        if (this::survivor.isInitialized) {
-            throw IllegalStateException("Survivor already set")
-        }
-        this.survivor = survivor
+        this.survivors.add(survivor)
+    }
+
+    /**
+     * Add a list of survivor to the game
+     * @param survivors the hunters
+     */
+    fun withSurvivors(survivors: Collection<Player>) = this.apply {
+        this.survivors.addAll(survivors)
+    }
+
+    /**
+     * Add a list of hunters to the game
+     * @param survivors the hunters
+     */
+    fun withSurvivors(vararg survivors: Player) = this.apply {
+        this.hunters.addAll(survivors)
     }
 
     /**
@@ -92,13 +105,13 @@ class GameBuilder {
      */
     @Throws(IllegalStateException::class)
     fun build(): Game {
-        if (!this::survivor.isInitialized || this.hunters.isEmpty() || !this::worldRule.isInitialized || this::compassRule.isInitialized) {
+        if (this.survivors.isEmpty() || this.hunters.isEmpty() || !this::worldRule.isInitialized || this::compassRule.isInitialized) {
             throw IllegalStateException("GameBuilder is not fully initialized")
         }
         val rules = RuleSet(worldRule, compassRule)
         return Game(rules).apply {
-            this.survivor = this@GameBuilder.survivor
-            this@GameBuilder.hunters.forEach { this.addHunter(it) }
+            survivors.forEach { this.addSurvivor(it) }
+            hunters.forEach { this.addHunter(it) }
         }
     }
 

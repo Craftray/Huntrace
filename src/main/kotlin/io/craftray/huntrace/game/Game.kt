@@ -11,6 +11,7 @@ import io.craftray.huntrace.game.listener.HuntraceGameMainListener
 import io.craftray.huntrace.game.listener.HuntraceGamePrepareStateListener
 import io.craftray.huntrace.game.schedular.CompassUpdater
 import io.craftray.huntrace.rule.RuleSet
+import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import java.util.*
 import kotlin.properties.Delegates
@@ -22,7 +23,6 @@ class Game(rules: RuleSet) {
     private lateinit var mainListener: HuntraceGameMainListener
     private lateinit var prepareListener: HuntraceGamePrepareStateListener
     private val players = PlayerSet()
-    private val resultMatcher = GameResultMatcher(this)
 
     var state = State.WAITING
         private set
@@ -35,12 +35,14 @@ class Game(rules: RuleSet) {
     var rules = rules
         private set
 
-    var survivor
-        get() = this.players.survivor
-        set(value) { this.players.survivor = value }
+    val survivors
+        get() = this.players.survivors
 
     val hunters
         get() = this.players.hunters
+
+    val spectators
+        get() = this.players.spectators
 
     /**
      * Initialize a game
@@ -69,6 +71,7 @@ class Game(rules: RuleSet) {
         this.players.storeLocation()
         runningGame.add(this)
         this.teleportTo()
+        this.turnGameModeTo()
         this.compassUpdater.start()
         this.startTime = System.currentTimeMillis()
         HuntraceGameStartEvent(this).callEvent()
@@ -92,8 +95,8 @@ class Game(rules: RuleSet) {
     fun finish(result: GameResult) {
         if (this.state != State.RUNNING) throw IllegalStateException("Game is not started")
         this.mainListener.unregister()
+        this.turnGameModeFrom()
         this.teleportFrom()
-        this.resultMatcher.match(result)
         this.compassUpdater.stop()
         this.worldController.unlinkWorlds()
         this.worldController.deleteWorlds()
@@ -121,20 +124,47 @@ class Game(rules: RuleSet) {
     fun quit(player: Player): Boolean {
         if (this.state != State.RUNNING) throw IllegalStateException("Game is not started")
 
-        if (this.survivor == player) {
+        if (player in this.survivors && this.survivors.size <= 1) {
             this.finish(GameResult.SURVIVOR_QUIT)
             return true
-        } else if (this.hunters.contains(player) && this.hunters.size <= 1) {
+        } else if (player in this.hunters && this.hunters.size <= 1) {
             this.finish(GameResult.HUNTER_QUIT)
             return true
-        } else if (this.hunters.contains(player) && this.hunters.size > 1) {
+        } else if (player in this.hunters && this.hunters.size > 1) {
             player.teleport(this.players.getPreviousLocation(player))
             this.removeHunter(player)
+            HuntraceGameHunterQuitEvent(this, player).callEvent()
+            return true
+        } else if (player in this.survivors && this.survivors.size > 1) {
+            player.teleport(this.players.getPreviousLocation(player))
+            this.removeSurvivor(player)
             HuntraceGameHunterQuitEvent(this, player).callEvent()
             return true
         }
 
         return false
+    }
+
+    fun turnToSpectator(player: Player) {
+        if (this.state != State.RUNNING) {
+            throw IllegalStateException("Can turn player to a spectator only when the game is running")
+        }
+
+        if (player in this.hunters) {
+            if (this.hunters.size == 1) {
+                throw IllegalStateException("Can't turn player to a spectator when there is only one hunter")
+            }
+            this.removeHunter(player)
+            this.addSpectator(player)
+        } else if (player in this.survivors) {
+            if (this.survivors.size == 1) {
+                throw IllegalStateException("Can't turn player to a spectator when there is only one survivor")
+            }
+            this.removeSurvivor(player)
+            this.addSpectator(player)
+        }
+
+        this.turnGameModeTo(player)
     }
 
     /**
@@ -147,6 +177,33 @@ class Game(rules: RuleSet) {
     fun addHunter(player: Player) = this.players.addHunter(player)
 
     /**
+     * Add a survivor to the game
+     * @author Kylepoops
+     * @param player the hunter to add
+     * @exception IllegalStateException if the game is started
+     */
+    @Throws(IllegalStateException::class)
+    fun addSurvivor(player: Player) = this.players.addSurvivor(player)
+
+    /**
+     * Add a spectator to the game
+     * @author Kylepoops
+     * @param player the hunter to add
+     * @exception IllegalStateException if the game is started
+     */
+    @Throws(IllegalStateException::class)
+    fun addSpectator(player: Player) = this.players.addSpectator(player)
+
+    /**
+     * remove a spectator from the game
+     * @author Kylepoops
+     * @param player the hunter to remove
+     * @exception IllegalStateException if the game is started and the hunter is still online
+     */
+    @Throws(IllegalStateException::class)
+    fun removeSpectator(player: Player) = this.players.removeSpectator(player)
+
+    /**
      * remove a hunter from the game
      * @author Kylepoops
      * @param player the hunter to remove
@@ -156,11 +213,20 @@ class Game(rules: RuleSet) {
     fun removeHunter(player: Player) = this.players.removeHunter(player)
 
     /**
+     * remove a survivor from the game
+     * @author Kylepoops
+     * @param player the hunter to remove
+     * @exception IllegalStateException if the game is started and the hunter is still online
+     */
+    @Throws(IllegalStateException::class)
+    fun removeSurvivor(player: Player) = this.players.removeSurvivor(player)
+
+    /**
      * teleport all players to the location before the game start
      * @author Kylepoops
      */
     private fun teleportFrom() {
-        this.survivor.let { it.teleport(players.getPreviousLocation(it)) }
+        this.survivors.forEach { it.teleport(players.getPreviousLocation(it)) }
         this.hunters.forEach { it.teleport(players.getPreviousLocation(it)) }
     }
 
@@ -169,8 +235,32 @@ class Game(rules: RuleSet) {
      * @author Kylepoops
      */
     private fun teleportTo() {
-        this.survivor.teleport(worlds.overworld.spawnLocation)
+        this.survivors.forEach { it.teleport(worlds.overworld.spawnLocation) }
         this.hunters.forEach { it.teleport(worlds.overworld.spawnLocation) }
+        this.spectators.forEach { it.teleport(worlds.overworld.spawnLocation) }
+    }
+
+    private fun turnGameModeTo(player: Player) = when(player) {
+        in this.hunters -> player.gameMode = GameMode.SURVIVAL
+        in this.survivors -> player.gameMode = GameMode.SURVIVAL
+        in this.spectators -> player.gameMode = GameMode.SPECTATOR
+        else -> throw IllegalArgumentException("Player is not in the game")
+    }
+
+    private fun turnGameModeTo() {
+        this.hunters.forEach { this.turnGameModeTo(it) }
+        this.survivors.forEach { this.turnGameModeTo(it) }
+        this.spectators.forEach { this.turnGameModeTo(it) }
+    }
+
+    private fun turnGameModeFrom(player: Player) {
+        player.gameMode = GameMode.SURVIVAL
+    }
+
+    private fun turnGameModeFrom() {
+        this.hunters.forEach { this.turnGameModeFrom(it) }
+        this.survivors.forEach { this.turnGameModeFrom(it) }
+        this.spectators.forEach { this.turnGameModeFrom(it) }
     }
 
 
