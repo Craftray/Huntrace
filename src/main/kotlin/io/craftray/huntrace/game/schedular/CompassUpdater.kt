@@ -3,10 +3,13 @@ package io.craftray.huntrace.game.schedular
 import io.craftray.huntrace.Main
 import io.craftray.huntrace.Utils
 import io.craftray.huntrace.Utils.bukkitRunnableOf
+import io.craftray.huntrace.Utils.literalDistanceOf
+import io.craftray.huntrace.Utils.transformWorld
 import io.craftray.huntrace.game.Game
 import io.craftray.huntrace.game.event.HuntraceGameCompassUpdateEvent
 import io.craftray.huntrace.game.event.HuntraceGameCompassUpdateEvent.Result
 import org.bukkit.Material
+import org.bukkit.World
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitRunnable
@@ -15,15 +18,13 @@ import kotlin.random.Random
 @Suppress("PrivatePropertyName")
 class CompassUpdater(val game: Game) {
     private val rule = game.rules.compassRule
-    private lateinit var trackRunnable: BukkitRunnable
+    private val trackRunnableMap = mutableMapOf<Player, BukkitRunnable>()
     private lateinit var deceptionFindRunnable: BukkitRunnable
     private lateinit var deceptionRunnable: BukkitRunnable
     private val deceptionList = mutableListOf<Player>()
+    private val targets = game.compassTarget
     private val hunters = game.hunters
-    private val survivor = game.survivor
     private val worlds = game.worlds
-    private val OVERWORLD_NETHER_MULTIPLE = 8.0
-    private val NETHER_OVERWORLD_MULTIPLE = 0.125
     private var started = false
 
     /**
@@ -52,70 +53,42 @@ class CompassUpdater(val game: Game) {
      * @author Kylepoops
      */
     private fun initTrack() {
-        this.trackRunnable = bukkitRunnableOf {
-            val activeHunters = hunters.asSequence().filter { it !in deceptionList}
-            for (hunter in activeHunters.filter {it.world == survivor.world }) {
-                val distance = survivor.location.distance(hunter.location)
+        for (hunter in this.hunters) {
+            val run = bukkitRunnableOf {
+                if (hunter in deceptionList || hunter.world !in worlds) {
+                    return@bukkitRunnableOf
+                }
+                val target = targets.targetOf(hunter)
+                if (hunter.world != target.world) {
+                    HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent()
+                }
+                if (hunter.world.environment != World.Environment.THE_END &&
+                    target.world.environment == World.Environment.THE_END
+                ) {
+                    restoreCompass(hunter.inventory.itemInMainHand)
+                    HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent()
+                    return@bukkitRunnableOf
+                }
+                val distance = hunter.location.literalDistanceOf(target.location)
                 if (!this.isDistanceValid(distance)) {
                     HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent()
-                    continue
+                    return@bukkitRunnableOf
                 }
                 for (item in hunter.inventory) {
                     if (item.type == Material.COMPASS) {
                         val compass = item.itemMeta as org.bukkit.inventory.meta.CompassMeta
-                        compass.lodestone = survivor.location
+                        compass.lodestone = target.location.transformWorld(hunter.world)
                         item.itemMeta = compass
                         HuntraceGameCompassUpdateEvent(game, Result.SUCCESS, hunter).callEvent()
                     }
                 }
             }
-            if (!rule.crossWorldTrack) return@bukkitRunnableOf
-            if (survivor.world == worlds.overworld) {
-                for (hunter in activeHunters.filter {it.world == worlds.nether }) {
-                    val distance = survivor.location.distance(hunter.location.multiply(NETHER_OVERWORLD_MULTIPLE))
-                    if (!this.isDistanceValid(distance)) {
-                        HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent()
-                        continue
-                    }
-                    for (item in hunter.inventory) {
-                        if (item.type == Material.COMPASS) {
-                            val compass = item.itemMeta as org.bukkit.inventory.meta.CompassMeta
-                            compass.lodestone = survivor.location.multiply(NETHER_OVERWORLD_MULTIPLE)
-                            item.itemMeta = compass
-                            HuntraceGameCompassUpdateEvent(game, Result.SUCCESS, hunter).callEvent()
-                        }
-                    }
-                }
-            }
-            if (survivor.world == worlds.nether) {
-                for (hunter in activeHunters.filter {it.world == worlds.overworld }) {
-                    val distance = survivor.location.distance(hunter.location.multiply(OVERWORLD_NETHER_MULTIPLE))
-                    if (!this.isDistanceValid(distance)) {
-                        HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent()
-                        continue
-                    }
-                    for (item in hunter.inventory) {
-                        if (item.type == Material.COMPASS) {
-                            val compass = item.itemMeta as org.bukkit.inventory.meta.CompassMeta
-                            compass.lodestone = survivor.location.multiply(OVERWORLD_NETHER_MULTIPLE)
-                            item.itemMeta = compass
-                            HuntraceGameCompassUpdateEvent(game, Result.SUCCESS, hunter).callEvent()
-                        }
-                    }
-                }
-            }
-            if (survivor.world == worlds.theEnd) {
-                for (hunter in activeHunters.filterNot {it.world == worlds.theEnd }) {
-                for (item in hunter.inventory) {
-                    if (item.type == Material.COMPASS) {
-                        restoreCompass(item)
-                        HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent()
-                    }
-                }}
-            }
+            this.trackRunnableMap[hunter] = run
         }
 
-        this.trackRunnable.runTaskTimer(Main.plugin, 600, rule.updateInterval)
+        trackRunnableMap.forEach {
+            it.value.runTaskTimer(Main.plugin, 600, rule.updateInterval)
+        }
     }
 
     /**
@@ -145,7 +118,7 @@ class CompassUpdater(val game: Game) {
             for (item in hunter.inventory) {
                 if (item.type == Material.COMPASS) {
                     val compass = item.itemMeta as org.bukkit.inventory.meta.CompassMeta
-                    compass.lodestone = survivor.location.multiply(Random.nextDouble(2.0))
+                    compass.lodestone = hunter.location.multiply(Random.nextDouble(2.0))
                     item.itemMeta = compass
                     HuntraceGameCompassUpdateEvent(game, Result.DECEPTION, hunter).callEvent()
                 }
@@ -166,8 +139,8 @@ class CompassUpdater(val game: Game) {
         }
     }
 
-    private fun stopTrack() {
-        this.trackRunnable.cancel()
+    private fun stopTrack() = this.trackRunnableMap.forEach {
+        it.value.cancel()
     }
 
     private fun stopDeception() {

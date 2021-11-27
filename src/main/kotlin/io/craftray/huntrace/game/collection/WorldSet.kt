@@ -47,7 +47,7 @@ class WorldSet {
             _theEnd = value
         }
 
-    fun contains(world: World): Boolean {
+    operator fun contains(world: World): Boolean {
         return world == overworld || world == nether || world == theEnd
     }
 

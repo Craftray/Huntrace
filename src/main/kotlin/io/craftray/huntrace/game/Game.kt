@@ -2,6 +2,7 @@ package io.craftray.huntrace.game
 
 import io.craftray.huntrace.Main
 import io.craftray.huntrace.Utils.bukkitRunnableOf
+import io.craftray.huntrace.game.collection.CompassTarget
 import io.craftray.huntrace.game.collection.PlayerSet
 import io.craftray.huntrace.game.collection.WorldSet
 import io.craftray.huntrace.game.event.HuntraceGameFinishEvent
@@ -23,9 +24,12 @@ class Game(rules: RuleSet) {
     private lateinit var mainListener: HuntraceGameMainListener
     private lateinit var prepareListener: HuntraceGamePrepareStateListener
     private val players = PlayerSet()
-
     var state = State.WAITING
         private set
+
+    lateinit var compassTarget: CompassTarget
+        private set
+
     var startTime by Delegates.notNull<Long>()
         private set
     var endTime by Delegates.notNull<Long>()
@@ -51,6 +55,7 @@ class Game(rules: RuleSet) {
      */
     fun init() {
         this.rules = this.rules.immutableCopy()
+        this.compassUpdater = CompassUpdater(this)
         this.compassUpdater = CompassUpdater(this)
         this.worldController = GameWorldController(this)
         this.mainListener = HuntraceGameMainListener(this).also { it.register() }
