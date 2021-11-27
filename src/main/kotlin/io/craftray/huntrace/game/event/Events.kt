@@ -64,31 +64,7 @@ class HuntraceGameCompassUpdateEvent(
     val result: Result,
     val hunter: Player,
     val survivor: Player,
-    distance: Double? = null
 ) : HuntraceGameEvent(true) {
-
-    private val _distance = distance
-
-
-    init {
-        if (result != Result.SUCCESS_WITH_DISTANCE && distance != null) {
-            throw IllegalArgumentException("Distance is only available when result is SUCCESS_WITH_DISTANCE")
-        }
-        if (result == Result.SUCCESS_WITH_DISTANCE && distance == null) {
-            throw IllegalArgumentException("Distance is required when result is SUCCESS_WITH_DISTANCE")
-        }
-    }
-
-    val distance: Double
-        get() {
-            if (result != Result.SUCCESS_WITH_DISTANCE) {
-                throw IllegalStateException("Distance is only available for SUCCESS_WITH_DISTANCE compass updates")
-            }
-            return _distance!!
-        }
-
-
-
     override fun getHandlers(): HandlerList {
         return handlerList
     }
