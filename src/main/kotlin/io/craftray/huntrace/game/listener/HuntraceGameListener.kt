@@ -10,6 +10,8 @@ import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDeathEvent
 import org.bukkit.event.entity.PlayerDeathEvent
+import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
 class HuntraceGameListener(private val game: Game) : Listener {
@@ -71,5 +73,27 @@ class HuntraceGameListener(private val game: Game) : Listener {
         if (event.player == game.survivor) game.finish(GameResult.SURVIVOR_QUIT)
         if (event.player in game.hunters) game.removeHunter(event.player)
         if (game.hunters.isEmpty()) game.finish(GameResult.HUNTER_QUIT)
+    }
+
+    /**
+     * Prevent players from moving during preparing state
+     * @author Kylepoops
+     */
+    @EventHandler
+    fun onPlayerMove(event: PlayerMoveEvent) {
+        if (game.started && game.startTime + 10000 > System.currentTimeMillis()) {
+            event.isCancelled = true
+        }
+    }
+
+    /**
+     * Prevent players from interacting during preparing state
+     * @author Kylepoops
+     */
+    @EventHandler
+    fun onPlayerInteract(event: PlayerInteractEvent) {
+        if (game.started && game.startTime + 10000 > System.currentTimeMillis()) {
+            event.isCancelled = true
+        }
     }
 }

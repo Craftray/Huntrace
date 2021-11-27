@@ -19,9 +19,11 @@ class Game(rules: RuleSet) {
     private lateinit var listener: HuntraceGameListener
     private val players = PlayerSet()
     private val resultMatcher = GameResultMatcher(this)
-    private var initialized = false
-    private var started = false
 
+    var initialized = false
+        private set
+    var started = false
+        private set
     var startTime by Delegates.notNull<Long>()
         private set
     var endTime by Delegates.notNull<Long>()

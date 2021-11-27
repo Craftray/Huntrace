@@ -147,7 +147,7 @@ class CompassUpdater(val game: Game) {
                     val compass = item.itemMeta as org.bukkit.inventory.meta.CompassMeta
                     compass.lodestone = survivor.location.multiply(Random.nextDouble(2.0))
                     item.itemMeta = compass
-                    this.callEvent(hunter, survivor, Result.POOR_SIGNAL)
+                    this.callEvent(hunter, survivor, Result.DECEPTION)
                 }
             }}
         }
@@ -190,8 +190,8 @@ class CompassUpdater(val game: Game) {
             HuntraceGameCompassUpdateEvent(game, Result.SUCCESS, hunter, survivor).callEvent()
         } else if (result == Result.MISS) {
             HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter, survivor).callEvent()
-        } else if (result == Result.POOR_SIGNAL) {
-            HuntraceGameCompassUpdateEvent(game, Result.POOR_SIGNAL, hunter, survivor).callEvent()
+        } else if (result == Result.DECEPTION) {
+            HuntraceGameCompassUpdateEvent(game, Result.DECEPTION, hunter, survivor).callEvent()
         }
     }
 }
