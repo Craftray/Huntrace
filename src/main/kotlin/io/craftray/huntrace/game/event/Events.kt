@@ -80,3 +80,18 @@ class HuntraceGameCompassUpdateEvent(
         val handlerList = HandlerList()
     }
 }
+
+class HuntraceGameSelectTargetEvent(
+    game: Game,
+    val hunter: Player,
+    val target: Player
+) : HuntraceGameEvent(game) {
+    override fun getHandlers(): HandlerList {
+        return handlerList
+    }
+
+    companion object {
+        @JvmStatic
+        val handlerList = HandlerList()
+    }
+}

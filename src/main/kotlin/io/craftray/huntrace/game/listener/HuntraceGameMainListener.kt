@@ -2,13 +2,17 @@ package io.craftray.huntrace.game.listener
 
 import io.craftray.huntrace.game.Game
 import io.craftray.huntrace.game.GameResult
+import io.craftray.huntrace.game.event.HuntraceGameSelectTargetEvent
 import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
+import org.bukkit.event.block.Action
 import org.bukkit.event.entity.EntityDeathEvent
 import org.bukkit.event.entity.PlayerDeathEvent
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
 class HuntraceGameMainListener(private val game: Game) : HuntraceGameListener() {
+    private val targets = game.compassTarget
 
     /**
      * If the survivor died, finish the game with result of hunter win
@@ -53,5 +57,19 @@ class HuntraceGameMainListener(private val game: Game) : HuntraceGameListener() 
             }
             this.game.removeHunter(event.player)
         }
+    }
+
+    @EventHandler
+    fun onCompassUse(event: PlayerInteractEvent) {
+        if (event.player.world !in game.worlds || event.player !in game.hunters) {
+            return
+        }
+        if (event.action != Action.RIGHT_CLICK_AIR || event.action != Action.RIGHT_CLICK_BLOCK) {
+            return
+        }
+
+        val target = targets.targetOf(event.player)
+        val result = HuntraceGameSelectTargetEvent(game, event.player, target).also { it.callEvent() }
+        if (target != result.target) targets.setTarget(event.player, result.target)
     }
 }
