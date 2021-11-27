@@ -1,11 +1,14 @@
 package io.craftray.huntrace.game
 
+import io.craftray.huntrace.Main
+import io.craftray.huntrace.Utils.bukkitRunnableOf
 import io.craftray.huntrace.game.collection.PlayerSet
 import io.craftray.huntrace.game.collection.WorldSet
 import io.craftray.huntrace.game.event.HuntraceGameFinishEvent
 import io.craftray.huntrace.game.event.HuntraceGameHunterQuitEvent
 import io.craftray.huntrace.game.event.HuntraceGameStartEvent
-import io.craftray.huntrace.game.listener.HuntraceGameListener
+import io.craftray.huntrace.game.listener.HuntraceGameMainListener
+import io.craftray.huntrace.game.listener.HuntraceGamePrepareStateListener
 import io.craftray.huntrace.game.schedular.CompassUpdater
 import io.craftray.huntrace.rule.RuleSet
 import org.bukkit.entity.Player
@@ -16,13 +19,12 @@ class Game(rules: RuleSet) {
     val gameID = UUID.randomUUID()!!
     private lateinit var compassUpdater: CompassUpdater
     private lateinit var worldController: GameWorldController
-    private lateinit var listener: HuntraceGameListener
+    private lateinit var mainListener: HuntraceGameMainListener
+    private lateinit var prepareListener: HuntraceGamePrepareStateListener
     private val players = PlayerSet()
     private val resultMatcher = GameResultMatcher(this)
 
-    var initialized = false
-        private set
-    var started = false
+    var state = State.WAITING
         private set
     var startTime by Delegates.notNull<Long>()
         private set
@@ -49,21 +51,20 @@ class Game(rules: RuleSet) {
         this.rules = this.rules.immutableCopy()
         this.compassUpdater = CompassUpdater(this)
         this.worldController = GameWorldController(this)
-        this.listener = HuntraceGameListener(this).also { it.register() }
+        this.mainListener = HuntraceGameMainListener(this).also { it.register() }
         this.worldController.generateWorlds()
         this.worldController.linkWorlds()
-        this.initialized = true
+        this.state = State.INITIALIZED
     }
 
     /**
-     * Start a initialized game
+     * Start an initialized game
      * @author Kylepoops
      * @exception IllegalStateException if the game is not initialized or already started
      */
     @Throws(IllegalStateException::class)
     fun start() {
-        if (!this.initialized) throw IllegalStateException("Game is not initialized")
-        if (this.started) throw IllegalStateException("Game is already started")
+        if (this.state != State.INITIALIZED) throw IllegalStateException("Game is not initialized")
         this.players.lock()
         this.players.storeLocation()
         runningGame.add(this)
@@ -71,6 +72,16 @@ class Game(rules: RuleSet) {
         this.compassUpdater.start()
         this.startTime = System.currentTimeMillis()
         HuntraceGameStartEvent(this).callEvent()
+        this.state = State.PREPARING
+        this.prepare()
+    }
+
+    private fun prepare() {
+        this.prepareListener = HuntraceGamePrepareStateListener(this).also { it.register() }
+        bukkitRunnableOf {
+            this.prepareListener.unregister()
+            this.state = State.RUNNING
+        }.runTaskLater(Main.plugin, 200L)
     }
 
     /**
@@ -79,8 +90,8 @@ class Game(rules: RuleSet) {
      * @exception IllegalStateException if the game is not started
      */
     fun finish(result: GameResult) {
-        if (!this.started) throw IllegalStateException("Game is not started")
-        this.listener.unregister()
+        if (this.state != State.RUNNING) throw IllegalStateException("Game is not started")
+        this.mainListener.unregister()
         this.teleportFrom()
         this.resultMatcher.match(result)
         this.compassUpdater.stop()
@@ -89,6 +100,7 @@ class Game(rules: RuleSet) {
         this.endTime = System.currentTimeMillis()
         runningGame.remove(this)
         HuntraceGameFinishEvent(this, result).callEvent()
+        this.state = State.FINISHED
     }
 
     /**
@@ -107,7 +119,7 @@ class Game(rules: RuleSet) {
      */
     @Throws(IllegalStateException::class)
     fun quit(player: Player): Boolean {
-        if (!this.started) throw IllegalStateException("Game is not started")
+        if (this.state != State.RUNNING) throw IllegalStateException("Game is not started")
 
         if (this.survivor == player) {
             this.finish(GameResult.SURVIVOR_QUIT)
@@ -175,6 +187,14 @@ class Game(rules: RuleSet) {
 
     override fun hashCode(): Int {
         return gameID.hashCode()
+    }
+
+    enum class State {
+        WAITING,
+        INITIALIZED,
+        PREPARING,
+        RUNNING,
+        FINISHED
     }
 
     companion object {
