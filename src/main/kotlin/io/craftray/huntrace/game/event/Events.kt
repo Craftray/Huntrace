@@ -69,7 +69,6 @@ class HuntraceGameCompassUpdateEvent(
     }
 
     enum class Result {
-        SUCCESS_WITH_DISTANCE,
         SUCCESS,
         MISS,
         DECEPTION
