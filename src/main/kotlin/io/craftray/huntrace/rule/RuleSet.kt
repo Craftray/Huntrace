@@ -10,8 +10,18 @@ open class RuleSet(
         return "RuleSet(worldRule=$worldRule, compassRule=$compassRule)"
     }
 
+    /**
+     * Make a copy of this rule set
+     * @author Kylepoops
+     * @return the copy
+     */
     fun copy() = RuleSet(worldRule.copy(), compassRule.copy())
 
+    /**
+     * Make a immutable copy of this rule set
+     * @author Kylepoops
+     * @return the copy
+     */
     fun immutableCopy() = ImmutableRuleSet(worldRule.copy(), compassRule.copy())
 
     override fun equals(other: Any?): Boolean {

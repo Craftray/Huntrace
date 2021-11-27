@@ -59,6 +59,10 @@ class HuntraceGameMainListener(private val game: Game) : HuntraceGameListener() 
         }
     }
 
+    /**
+     * If a hunter right click compass, select the target for him
+     * @author Kylepoops
+     */
     @EventHandler
     fun onCompassUse(event: PlayerInteractEvent) {
         if (event.player.world !in game.worlds || event.player !in game.hunters) {

@@ -84,7 +84,13 @@ class Game(rules: RuleSet) {
         this.prepare()
     }
 
+    /**
+     * Prepare a game and turn it to running state after 10s
+     * @author Kylepoops
+     * @exception IllegalStateException if the game is not preparing
+     */
     private fun prepare() {
+        if (this.state != State.PREPARING) throw IllegalStateException("Game is not preparing")
         this.prepareListener = HuntraceGamePrepareStateListener(this).also { it.register() }
         bukkitRunnableOf {
             this.prepareListener.unregister()
@@ -150,6 +156,12 @@ class Game(rules: RuleSet) {
         return false
     }
 
+    /**
+     * Turn given player to spectator
+     * @author Kylepoops
+     * @exception IllegalStateException if the game is not started
+     * @exception IllegalStateException if player is the only hunter or survivor
+     */
     fun turnToSpectator(player: Player) {
         if (this.state != State.RUNNING) {
             throw IllegalStateException("Can turn player to a spectator only when the game is running")
@@ -203,7 +215,7 @@ class Game(rules: RuleSet) {
      * remove a spectator from the game
      * @author Kylepoops
      * @param player the hunter to remove
-     * @exception IllegalStateException if the game is started and the hunter is still online
+     * @exception IllegalStateException if the game is started and they is the only online spectator
      */
     @Throws(IllegalStateException::class)
     fun removeSpectator(player: Player) = this.players.removeSpectator(player)
@@ -212,7 +224,7 @@ class Game(rules: RuleSet) {
      * remove a hunter from the game
      * @author Kylepoops
      * @param player the hunter to remove
-     * @exception IllegalStateException if the game is started and the hunter is still online
+     * @exception IllegalStateException if the game is started and they is the only online hunter
      */
     @Throws(IllegalStateException::class)
     fun removeHunter(player: Player) = this.players.removeHunter(player)
@@ -221,7 +233,7 @@ class Game(rules: RuleSet) {
      * remove a survivor from the game
      * @author Kylepoops
      * @param player the hunter to remove
-     * @exception IllegalStateException if the game is started and the hunter is still online
+     * @exception IllegalStateException if the game is started and they is the only online survivor
      */
     @Throws(IllegalStateException::class)
     fun removeSurvivor(player: Player) = this.players.removeSurvivor(player)
@@ -245,6 +257,12 @@ class Game(rules: RuleSet) {
         this.spectators.forEach { it.teleport(worlds.overworld.spawnLocation) }
     }
 
+    /**
+     * Turn given player gamemode
+     * @author Kylepoops
+     * @exception IllegalArgumentException if the player is not in the game
+     */
+    @Throws(IllegalArgumentException::class)
     private fun turnGameModeTo(player: Player) = when(player) {
         in this.hunters -> player.gameMode = GameMode.SURVIVAL
         in this.survivors -> player.gameMode = GameMode.SURVIVAL
@@ -252,16 +270,28 @@ class Game(rules: RuleSet) {
         else -> throw IllegalArgumentException("Player is not in the game")
     }
 
+    /**
+     * Turn gamemode for all players in the game
+     * @author Kylepoops
+     */
     private fun turnGameModeTo() {
         this.hunters.forEach { this.turnGameModeTo(it) }
         this.survivors.forEach { this.turnGameModeTo(it) }
         this.spectators.forEach { this.turnGameModeTo(it) }
     }
 
+    /**
+     * Turn given player gamemode to original one (currently it can only turn to survival)
+     * @author Kylepoops
+     */
     private fun turnGameModeFrom(player: Player) {
         player.gameMode = GameMode.SURVIVAL
     }
 
+    /**
+     * Turn gamemode for all players in the game to original one (currently it can only turn to survival)
+     * @author Kylepoops
+     */
     private fun turnGameModeFrom() {
         this.hunters.forEach { this.turnGameModeFrom(it) }
         this.survivors.forEach { this.turnGameModeFrom(it) }

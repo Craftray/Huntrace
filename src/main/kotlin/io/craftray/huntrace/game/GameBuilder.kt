@@ -51,7 +51,6 @@ class GameBuilder {
     /**
      * Set the survivor of the game
      * @param survivor the survivor
-     * @exception IllegalStateException if the survivor has already been set
      */
     @Throws(IllegalStateException::class)
     fun withSurvivor(survivor: Player) = this.apply {
@@ -100,7 +99,7 @@ class GameBuilder {
 
     /**
      * Build a game with given values
-     * @exception IllegalStateException if the world rule, compass rule, or survivor has not been set
+     * @exception IllegalStateException if the builder is not fully initialized
      * @return the game
      */
     @Throws(IllegalStateException::class)

@@ -65,7 +65,7 @@ class PlayerSet {
     @Throws(IllegalStateException::class)
     fun removeSurvivor(player: Player) {
         if (lock && player.isOnline && survivors.size <= 1)
-            throw IllegalStateException("Cannot remove hunter when they is the only online one left after locked")
+            throw IllegalStateException("Cannot remove survivor when they is the only online one left after locked")
         this.survivors.remove(player)
         this.previousLocations.remove(player)
     }

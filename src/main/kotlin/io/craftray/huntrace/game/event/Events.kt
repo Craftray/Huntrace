@@ -63,6 +63,7 @@ class HuntraceGameCompassUpdateEvent(
     game: Game,
     val result: Result,
     val hunter: Player,
+    val target: Player = game.compassTarget.targetOf(hunter)
 ) : HuntraceGameEvent(game, true) {
     override fun getHandlers(): HandlerList {
         return handlerList
@@ -81,6 +82,10 @@ class HuntraceGameCompassUpdateEvent(
     }
 }
 
+/**
+ * Thrown after a player means to select a target
+ * @author Kylepoops
+ */
 class HuntraceGameSelectTargetEvent(
     game: Game,
     val hunter: Player,
