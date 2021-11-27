@@ -57,7 +57,7 @@ class CompassUpdater(val game: Game) {
             for (hunter in activeHunters.filter {it.world == survivor.world }) {
                 val distance = survivor.location.distance(hunter.location)
                 if (!this.isDistanceValid(distance)) {
-                    HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter, survivor).callEvent()
+                    HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent()
                     continue
                 }
                 for (item in hunter.inventory) {
@@ -65,7 +65,7 @@ class CompassUpdater(val game: Game) {
                         val compass = item.itemMeta as org.bukkit.inventory.meta.CompassMeta
                         compass.lodestone = survivor.location
                         item.itemMeta = compass
-                        HuntraceGameCompassUpdateEvent(game, Result.SUCCESS, hunter, survivor).callEvent()
+                        HuntraceGameCompassUpdateEvent(game, Result.SUCCESS, hunter).callEvent()
                     }
                 }
             }
@@ -74,7 +74,7 @@ class CompassUpdater(val game: Game) {
                 for (hunter in activeHunters.filter {it.world == worlds.nether }) {
                     val distance = survivor.location.distance(hunter.location.multiply(NETHER_OVERWORLD_MULTIPLE))
                     if (!this.isDistanceValid(distance)) {
-                        HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter, survivor).callEvent()
+                        HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent()
                         continue
                     }
                     for (item in hunter.inventory) {
@@ -82,7 +82,7 @@ class CompassUpdater(val game: Game) {
                             val compass = item.itemMeta as org.bukkit.inventory.meta.CompassMeta
                             compass.lodestone = survivor.location.multiply(NETHER_OVERWORLD_MULTIPLE)
                             item.itemMeta = compass
-                            HuntraceGameCompassUpdateEvent(game, Result.SUCCESS, hunter, survivor).callEvent()
+                            HuntraceGameCompassUpdateEvent(game, Result.SUCCESS, hunter).callEvent()
                         }
                     }
                 }
@@ -91,7 +91,7 @@ class CompassUpdater(val game: Game) {
                 for (hunter in activeHunters.filter {it.world == worlds.overworld }) {
                     val distance = survivor.location.distance(hunter.location.multiply(OVERWORLD_NETHER_MULTIPLE))
                     if (!this.isDistanceValid(distance)) {
-                        HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter, survivor).callEvent()
+                        HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent()
                         continue
                     }
                     for (item in hunter.inventory) {
@@ -99,7 +99,7 @@ class CompassUpdater(val game: Game) {
                             val compass = item.itemMeta as org.bukkit.inventory.meta.CompassMeta
                             compass.lodestone = survivor.location.multiply(OVERWORLD_NETHER_MULTIPLE)
                             item.itemMeta = compass
-                            HuntraceGameCompassUpdateEvent(game, Result.SUCCESS, hunter, survivor).callEvent()
+                            HuntraceGameCompassUpdateEvent(game, Result.SUCCESS, hunter).callEvent()
                         }
                     }
                 }
@@ -109,7 +109,7 @@ class CompassUpdater(val game: Game) {
                 for (item in hunter.inventory) {
                     if (item.type == Material.COMPASS) {
                         restoreCompass(item)
-                        HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter, survivor).callEvent()
+                        HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent()
                     }
                 }}
             }
@@ -147,7 +147,7 @@ class CompassUpdater(val game: Game) {
                     val compass = item.itemMeta as org.bukkit.inventory.meta.CompassMeta
                     compass.lodestone = survivor.location.multiply(Random.nextDouble(2.0))
                     item.itemMeta = compass
-                    HuntraceGameCompassUpdateEvent(game, Result.DECEPTION, hunter, survivor).callEvent()
+                    HuntraceGameCompassUpdateEvent(game, Result.DECEPTION, hunter).callEvent()
                 }
             }}
         }

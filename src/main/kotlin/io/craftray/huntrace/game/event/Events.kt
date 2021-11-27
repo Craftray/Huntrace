@@ -6,15 +6,15 @@ import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
-abstract class HuntraceGameEvent(async: Boolean) : Event(async) {
-    constructor() : this(false)
+abstract class HuntraceGameEvent(val game: Game, async: Boolean) : Event(async) {
+    constructor(game: Game) : this(game, false)
 }
 
 /**
  * Thrown after a game finishes
  * @author Kylepoops
  */
-class HuntraceGameFinishEvent(val game: Game, val result: GameResult) : HuntraceGameEvent(true) {
+class HuntraceGameFinishEvent(game: Game, val result: GameResult) : HuntraceGameEvent(game, true) {
     override fun getHandlers(): HandlerList {
         return handlerList
     }
@@ -29,7 +29,7 @@ class HuntraceGameFinishEvent(val game: Game, val result: GameResult) : Huntrace
  * Thrown after a game starts
  * @author Kylepoops
  */
-class HuntraceGameStartEvent(val game: Game) : HuntraceGameEvent() {
+class HuntraceGameStartEvent(game: Game) : HuntraceGameEvent(game) {
     override fun getHandlers(): HandlerList {
         return handlerList
     }
@@ -44,7 +44,7 @@ class HuntraceGameStartEvent(val game: Game) : HuntraceGameEvent() {
  * Thrown after a player joins a game
  * @author Kylepoops
  */
-class HuntraceGameHunterQuitEvent(val game: Game, val player: Player) : HuntraceGameEvent(true) {
+class HuntraceGameHunterQuitEvent(game: Game, val player: Player) : HuntraceGameEvent(game, true) {
     override fun getHandlers(): HandlerList {
         return handlerList
     }
@@ -60,11 +60,10 @@ class HuntraceGameHunterQuitEvent(val game: Game, val player: Player) : Huntrace
  * @author Kylepoops
  */
 class HuntraceGameCompassUpdateEvent(
-    val game: Game,
+    game: Game,
     val result: Result,
     val hunter: Player,
-    val survivor: Player,
-) : HuntraceGameEvent(true) {
+) : HuntraceGameEvent(game, true) {
     override fun getHandlers(): HandlerList {
         return handlerList
     }
