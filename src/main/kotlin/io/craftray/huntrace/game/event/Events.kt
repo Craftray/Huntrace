@@ -63,7 +63,7 @@ class HuntraceGameCompassUpdateEvent(
     game: Game,
     val result: Result,
     val hunter: Player,
-    val target: Player = game.compassTarget.targetOf(hunter)
+    val target: Player = game.hunterTargets.targetOf(hunter)
 ) : HuntraceGameEvent(game, true) {
     override fun getHandlers(): HandlerList {
         return handlerList

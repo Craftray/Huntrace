@@ -22,7 +22,7 @@ class CompassUpdater(val game: Game) {
     private lateinit var deceptionFindRunnable: BukkitRunnable
     private lateinit var deceptionRunnable: BukkitRunnable
     private val deceptionList = mutableListOf<Player>()
-    private val targets = game.compassTarget
+    private val targets = game.hunterTargets
     private val hunters = game.hunters
     private val worlds = game.worlds
     private var started = false

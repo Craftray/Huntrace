@@ -4,7 +4,7 @@ import org.bukkit.World
 
 // proxy for non-null type field
 @Suppress("PropertyName")
-class WorldSet {
+class WorldCollection {
     private var _overworld: World? = null
         get() = field ?: throw IllegalStateException("World \"overworld\" is not set")
         set(value) {
@@ -55,7 +55,7 @@ class WorldSet {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as WorldSet
+        other as WorldCollection
 
         if (_overworld != other._overworld) return false
         if (_nether != other._nether) return false
@@ -72,7 +72,7 @@ class WorldSet {
     }
 
     override fun toString(): String {
-        return "WorldSet(overworld=$_overworld, nether=$_nether, theEnd=$_theEnd)"
+        return "WorldCollection(overworld=$_overworld, nether=$_nether, theEnd=$_theEnd)"
     }
 
 

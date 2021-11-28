@@ -1,6 +1,6 @@
 package io.craftray.huntrace.game
 
-import io.craftray.huntrace.game.collection.WorldSet
+import io.craftray.huntrace.game.collection.WorldCollection
 import io.craftray.huntrace.game.multiverse.MultiverseWorldBuilder
 import io.craftray.huntrace.game.multiverse.MultiverseWorldManager
 import io.craftray.huntrace.game.multiverse.MultiverseWorldManager.delete
@@ -20,11 +20,11 @@ class GameWorldController(private val game: Game) {
      * @exception IllegalStateException if the game has already been generated
      */
     @Throws(IllegalStateException::class)
-    fun generateWorlds(): WorldSet {
+    fun generateWorlds(): WorldCollection {
         if (generated)  throw IllegalStateException("Worlds have already been generated")
 
         val rule = game.rules.worldRule
-        val worlds = WorldSet()
+        val worlds = WorldCollection()
 
         val overworld = MultiverseWorldBuilder("${game.gameID}").apply {
             environment = World.Environment.NORMAL

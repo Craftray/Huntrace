@@ -40,7 +40,7 @@ class GameBuilder {
 
     /**
      * Set both world rule and compass rule with a ruleset
-     * @param ruleSet the ruleset
+     * @param rules the ruleset
      * @exception IllegalStateException if either the world rule or compass rule has already been set
      */
     @Throws(IllegalStateException::class)

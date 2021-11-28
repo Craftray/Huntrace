@@ -4,7 +4,7 @@ import io.craftray.huntrace.Utils.literalDistanceOf
 import io.craftray.huntrace.game.Game
 import org.bukkit.entity.Player
 
-class CompassTarget(val game: Game) {
+class HunterTargetCollection(val game: Game) {
     private val targetMap = mutableMapOf<Player, Player>()
 
     /**

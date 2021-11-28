@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
 class HuntraceGameMainListener(private val game: Game) : HuntraceGameListener() {
-    private val targets = game.compassTarget
+    private val targets = game.hunterTargets
 
     /**
      * If the survivor died, finish the game with result of hunter win

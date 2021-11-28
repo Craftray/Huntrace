@@ -4,7 +4,7 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 import kotlin.jvm.Throws
 
-class PlayerSet {
+class PlayerDataCollection {
     val hunters = mutableSetOf<Player>()
     val survivors = mutableSetOf<Player>()
     val spectators = mutableSetOf<Player>()
@@ -19,7 +19,7 @@ class PlayerSet {
      */
     @Throws(IllegalStateException::class)
     fun lock() {
-        if (lock) throw IllegalStateException("PlayerSet is already locked")
+        if (lock) throw IllegalStateException("PlayerDataCollection is already locked")
         lock = true
     }
 
@@ -86,7 +86,7 @@ class PlayerSet {
      */
     @Throws(IllegalStateException::class)
     fun storeLocation() {
-        if (!lock) throw IllegalArgumentException("PlayerSet must be locked before storing locations")
+        if (!lock) throw IllegalArgumentException("PlayerDataCollection must be locked before storing locations")
         this.hunters.forEach { this.previousLocations[it] = it.location }
         this.survivors.forEach { this.previousLocations[it] = it.location }
         this.spectators.forEach { this.previousLocations[it] = it.location }
