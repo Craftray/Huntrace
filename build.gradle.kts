@@ -1,3 +1,5 @@
+import io.izzel.taboolib.gradle.TabooLibPlugin
+
 plugins {
     java
     id("io.izzel.taboolib") version "1.31"
@@ -5,13 +7,8 @@ plugins {
 }
 
 taboolib {
-    install("common")
-    install("platform-bukkit")
-    install("module-configuration")
-    install("module-chat")
-    install("module-lang")
-    install("module-ui")
     options("skip-kotlin")
+    options("skip-kotlin-relocate")
     options("skip-env")
     version = "6.0.4-7"
 
@@ -41,19 +38,52 @@ repositories {
 }
 
 dependencies {
-    compileOnly(kotlin("stdlib"))
-    compileOnly("io.papermc.paper:paper-api:1.17-R0.1-SNAPSHOT")
-    compileOnly("com.onarandombox.multiversecore:Multiverse-Core:4.3.1")
-    compileOnly("com.onarandombox.multiverseinventories:Multiverse-Inventories:4.2.2")
-    compileOnly("com.onarandombox.multiversenetherportals:Multiverse-NetherPortals:4.2.1")
-    compileOnly(fileTree("libs"))
+    subprojects.forEach { taboo(it) }
 }
 
-tasks.withType<JavaCompile> {
-    options.encoding = "UTF-8"
+allprojects {
+    tasks.withType<org.gradle.jvm.tasks.Jar> {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    }
 }
 
-configure<JavaPluginExtension> {
-    sourceCompatibility = JavaVersion.VERSION_16
-    targetCompatibility = JavaVersion.VERSION_16
+subprojects {
+    apply {
+        plugin<JavaPlugin>()
+        plugin<TabooLibPlugin>()
+        plugin("org.jetbrains.kotlin.jvm")
+    }
+
+    taboolib {
+        install("common")
+        install("platform-bukkit")
+        install("module-configuration")
+        options("skip-kotlin")
+        options("skip-kotlin-relocate")
+        options("skip-env")
+        exclude("taboolib")
+        version = "6.0.4-7"
+    }
+
+    repositories {
+        mavenCentral()
+        maven("https://papermc.io/repo/repository/maven-public/")
+        maven("https://repo.onarandombox.com/content/groups/public/")
+    }
+
+
+    dependencies {
+        compileOnly(kotlin("stdlib"))
+        compileOnly("io.papermc.paper:paper-api:1.17-R0.1-SNAPSHOT")
+        compileOnly(fileTree("libs"))
+    }
+
+    tasks.withType<JavaCompile> {
+        options.encoding = "UTF-8"
+    }
+
+    configure<JavaPluginExtension> {
+        sourceCompatibility = JavaVersion.VERSION_16
+        targetCompatibility = JavaVersion.VERSION_16
+    }
 }

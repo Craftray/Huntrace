@@ -1,0 +1,25 @@
+title: "&a猎杀游戏"
+sort:
+  - " A  B  C "
+items:
+  A:
+    id: PAPER
+    name: "&a游戏设置"
+    lore:
+      - ""
+    commmands:
+      - "io.craftray.huntrace.game: setting io.craftray.huntrace.game"
+  B:
+    id: PAPER
+    name: "&a玩家列表"
+    lore:
+      - ""
+    commmands:
+      - "io.craftray.huntrace.game: setting player"
+  C:
+    id: RED_STONE
+    name: "&a开始游戏!"
+    lore:
+      - "&c一场精彩的游戏即将开始"
+    commands:
+      - "io.craftray.huntrace.game: play"

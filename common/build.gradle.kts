@@ -1,0 +1,1 @@
+group = "io.craftray.huntrace"
