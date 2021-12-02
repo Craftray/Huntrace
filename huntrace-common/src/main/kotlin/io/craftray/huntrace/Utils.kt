@@ -6,7 +6,7 @@ import org.bukkit.scheduler.BukkitRunnable
 import kotlin.math.sqrt
 
 object Utils {
-    fun bukkitRunnableOf(block: () -> Unit) = object : BukkitRunnable() {
+    inline fun bukkitRunnableOf(crossinline block: () -> Unit) = object : BukkitRunnable() {
         override fun run() {
             block()
         }

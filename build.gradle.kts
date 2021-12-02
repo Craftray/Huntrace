@@ -24,8 +24,9 @@ taboolib {
             name("Multiverse-NetherPortals")
         }
 
+        bukkitApi("1.17")
+
         bukkitNodes = mapOf(
-            "api-version" to "1.17",
             "libraries" to listOf("org.jetbrains.kotlin:kotlin-stdlib:1.6.0")
         )
     }
@@ -43,7 +44,11 @@ dependencies {
 
 allprojects {
     tasks.withType<org.gradle.jvm.tasks.Jar> {
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        /* TabooLib currently cannot exclude itself from flat jar successfully.
+         * So we need to wait for it to be fixed.
+         * Additionally, plugin.yml file also seems to disappear accidentally.
+         */
+        duplicatesStrategy = DuplicatesStrategy.WARN
     }
 }
 
