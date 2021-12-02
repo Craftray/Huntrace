@@ -28,6 +28,7 @@ class Game(rules: RuleSet) {
 
     internal lateinit var hunterTargets: HunterTargetCollection
         private set
+        @JvmName("- -()()- -") get
 
     var state = State.WAITING
         private set
