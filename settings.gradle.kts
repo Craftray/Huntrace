@@ -1,2 +1,6 @@
 rootProject.name = "Huntrace"
-include("logic", "common", "interface", "main")
+
+include("huntrace-core")
+include("huntrace-common")
+include("huntrace-interface")
+include("huntrace-game")

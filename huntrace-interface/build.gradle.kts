@@ -7,5 +7,5 @@ taboolib {
 }
 
 dependencies {
-    compileOnly(project(":common"))
+    compileOnly(project(":huntrace-common"))
 }

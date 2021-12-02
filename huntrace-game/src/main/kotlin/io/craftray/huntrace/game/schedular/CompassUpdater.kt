@@ -70,7 +70,7 @@ class CompassUpdater(val game: Game) {
                     return@bukkitRunnableOf
                 }
                 val target = targets.targetOf(hunter)
-                if (hunter.world != target.world) {
+                if (!rule.crossWorldTrack && hunter.world != target.world) {
                     HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent()
                 }
                 if (hunter.world.environment != World.Environment.THE_END &&
@@ -117,10 +117,14 @@ class CompassUpdater(val game: Game) {
                     if (item.type == Material.COMPASS) {
                         val itemStack = ItemStack(Material.COMPASS)
                         item.itemMeta = itemStack.itemMeta
-                        deceptionList.add(hunter)
+                        this.deceptionList.add(hunter)
                         break
                     }
                 }
+
+                bukkitRunnableOf {
+                    this.deceptionList.remove(hunter)
+                }.runTaskLaterAsynchronously(Game.plugin, 300)
             }
         }
 
