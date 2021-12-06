@@ -136,7 +136,7 @@ class Game(rules: RuleSet) {
      */
     @Throws(IllegalStateException::class)
     fun quit(player: Player): Boolean {
-        if (this.state != State.RUNNING) throw IllegalStateException("Game is not started")
+        check(this.state == State.RUNNING) { "Game is not started" }
 
         if (player in this.survivors && this.survivors.size <= 1) {
             this.finish(GameResult.SURVIVOR_QUIT)
@@ -166,19 +166,19 @@ class Game(rules: RuleSet) {
      * @exception IllegalStateException if player is the only hunter or survivor
      */
     fun turnToSpectator(player: Player) {
-        if (this.state != State.RUNNING) {
-            throw IllegalStateException("Can turn player to a spectator only when the io.craftray.huntrace.game is running")
+        check(this.state == State.RUNNING) {
+            "Can turn player to a spectator only when the io.craftray.huntrace.game is running"
         }
 
         if (player in this.hunters) {
-            if (this.hunters.size == 1) {
-                throw IllegalStateException("Can't turn player to a spectator when there is only one hunter")
+            check(this.hunters.size != 1) {
+                "Can't turn player to a spectator when there is only one hunter"
             }
             this.removeHunter(player)
             this.addSpectator(player)
         } else if (player in this.survivors) {
-            if (this.survivors.size == 1) {
-                throw IllegalStateException("Can't turn player to a spectator when there is only one survivor")
+            check(this.survivors.size != 1) {
+                "Can't turn player to a spectator when there is only one survivor"
             }
             this.removeSurvivor(player)
             this.addSpectator(player)

@@ -15,7 +15,7 @@ abstract class HuntraceGameListener : Listener {
      * @exception IllegalStateException if this listener is already registered
      */
     fun register() {
-        if (registered) throw IllegalStateException("Listener is already registered")
+        check(!registered) { "Listener is already registered" }
         Bukkit.getPluginManager().registerEvents(this, Game.plugin)
         this.registered = true
     }
@@ -26,8 +26,8 @@ abstract class HuntraceGameListener : Listener {
      * @exception IllegalStateException if this listener is not registered or have been unregistered
      */
     fun unregister() {
-        if (!registered) throw IllegalStateException("Listener is not registered")
-        if (unregistered) throw IllegalStateException("Listener is already unregistered")
+        check(registered) { "Listener is not registered" }
+        check(!unregistered) { "Listener is already unregistered" }
         HandlerList.unregisterAll(this)
         this.unregistered = true
     }

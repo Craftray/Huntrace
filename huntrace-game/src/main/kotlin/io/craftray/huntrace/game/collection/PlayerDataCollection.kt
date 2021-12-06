@@ -19,7 +19,7 @@ class PlayerDataCollection {
      */
     @Throws(IllegalStateException::class)
     fun lock() {
-        if (lock) throw IllegalStateException("PlayerDataCollection is already locked")
+        check(!lock) { "PlayerDataCollection is already locked" }
         lock = true
     }
 
@@ -30,7 +30,7 @@ class PlayerDataCollection {
      */
     @Throws(IllegalStateException::class)
     fun addHunter(player: Player) {
-        if (lock) throw IllegalStateException("Game has been started")
+        check(!lock) { "Game has been started" }
         this.hunters.add(player)
     }
 
@@ -40,7 +40,7 @@ class PlayerDataCollection {
      * @exception IllegalStateException if the set is locked
      */
     fun addSurvivor(player: Player) {
-        if (lock) throw IllegalStateException("Game has been started")
+        check(!lock) { "Game has been started" }
         this.survivors.add(player)
     }
 
@@ -51,8 +51,9 @@ class PlayerDataCollection {
      */
     @Throws(IllegalStateException::class)
     fun removeHunter(player: Player) {
-        if (lock && player.isOnline && hunters.size <= 1)
-            throw IllegalStateException("Cannot remove hunter when they is the only online one left after locked")
+        check(!lock || !player.isOnline || hunters.size > 1) {
+            "Cannot remove hunter when they is the only online one left after locked"
+        }
         this.hunters.remove(player)
         this.previousLocations.remove(player)
     }
@@ -64,8 +65,9 @@ class PlayerDataCollection {
      */
     @Throws(IllegalStateException::class)
     fun removeSurvivor(player: Player) {
-        if (lock && player.isOnline && survivors.size <= 1)
-            throw IllegalStateException("Cannot remove survivor when they is the only online one left after locked")
+        check(!lock || !player.isOnline || survivors.size > 1) {
+            "Cannot remove survivor when they is the only online one left after locked"
+        }
         this.survivors.remove(player)
         this.previousLocations.remove(player)
     }
@@ -86,7 +88,7 @@ class PlayerDataCollection {
      */
     @Throws(IllegalStateException::class)
     fun storeLocation() {
-        if (!lock) throw IllegalArgumentException("PlayerDataCollection must be locked before storing locations")
+        check(lock) { "PlayerDataCollection must be locked before storing locations" }
         this.hunters.forEach { this.previousLocations[it] = it.location }
         this.survivors.forEach { this.previousLocations[it] = it.location }
         this.spectators.forEach { this.previousLocations[it] = it.location }
