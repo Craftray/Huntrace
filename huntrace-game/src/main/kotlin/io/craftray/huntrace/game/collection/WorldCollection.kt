@@ -6,27 +6,33 @@ import org.bukkit.World
 @Suppress("PropertyName")
 class WorldCollection {
     private var _overworld: World? = null
-        get() = field ?: throw IllegalStateException("World \"overworld\" is not set")
+        get() = checkNotNull(field) { "World \"overworld\" is not set" }
         set(value) {
-            if (field != null) throw IllegalStateException("World \"overworld\" already set")
-            if (value!!.environment == World.Environment.NORMAL) field = value
-            else throw IllegalArgumentException("Environment of world \"overworld\" must be \"NORMAL\" but it is ${value.environment}")
+            check(field == null) { "World \"overworld\" already set" }
+            require(value!!.environment == World.Environment.NORMAL) {
+                "Environment of world \"overworld\" must be \"NORMAL\" but it is ${value.environment}"
+            }
+            field = value
         }
 
     private var _nether: World? = null
-        get() = field ?: throw IllegalStateException("World \"nether\" is not set")
+        get() = checkNotNull(field) { "World \"nether\" is not set" }
         set(value) {
-            if (field != null) throw IllegalStateException("World \"nether\" already set")
-            if (value!!.environment == World.Environment.NETHER) field = value
-            else throw IllegalArgumentException("Environment of world \"nether\" must be \"NETHER\" but it is ${value.environment}")
+            check(field == null) { "World \"nether\" already set" }
+            require(value!!.environment == World.Environment.NETHER) {
+                "Environment of world \"nether\" must be \"NETHER\" but it is ${value.environment}"
+            }
+            field = value
         }
 
     private var _theEnd: World? = null
-        get() = field ?: throw IllegalStateException("World \"theEnd\" is not set")
+        get() = checkNotNull(field) { "World \"theEnd\" is not set" }
         set(value) {
-            if (field != null) throw IllegalStateException("World \"theEnd\" already set")
-            if (value!!.environment == World.Environment.THE_END) field = value
-            else throw IllegalArgumentException("Environment of world \"theEnd\" must be \"THE_END\" but it is ${value.environment}")
+            check(field == null) { "World \"theEnd\" already set" }
+            require(value!!.environment == World.Environment.THE_END) {
+                "Environment of world \"theEnd\" must be \"THE_END\" but it is ${value.environment}"
+            }
+            field = value
         }
 
     var overworld: World
@@ -47,9 +53,7 @@ class WorldCollection {
             _theEnd = value
         }
 
-    operator fun contains(world: World): Boolean {
-        return world == overworld || world == nether || world == theEnd
-    }
+    operator fun contains(world: World) = world == overworld || world == nether || world == theEnd
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -71,9 +75,7 @@ class WorldCollection {
         return result
     }
 
-    override fun toString(): String {
-        return "WorldCollection(overworld=$_overworld, nether=$_nether, theEnd=$_theEnd)"
-    }
+    override fun toString() = "WorldCollection(overworld=$_overworld, nether=$_nether, theEnd=$_theEnd)"
 
 
 }

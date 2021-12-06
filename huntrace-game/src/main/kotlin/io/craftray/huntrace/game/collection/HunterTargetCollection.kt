@@ -11,9 +11,7 @@ class HunterTargetCollection(val game: Game) {
      * Get the target of given hunter
      * @author Kylepoops
      */
-    fun targetOf(player: Player): Player {
-        return targetMap[player] ?: nearestSurvivorOf(player)
-    }
+    fun targetOf(player: Player) = targetMap[player] ?: nearestSurvivorOf(player)
 
     /**
      * Set the target of given hunter
@@ -30,11 +28,9 @@ class HunterTargetCollection(val game: Game) {
      * @exception IllegalStateException if no survivors are found
      */
     fun nearestSurvivorOf(hunter: Player): Player {
-        if (game.state != Game.State.RUNNING && game.state != Game.State.PREPARING) {
-            throw IllegalStateException("Game is not running")
-        }
+        check(game.state == Game.State.RUNNING || game.state == Game.State.PREPARING) { "Game is not running" }
         val hunterLoc = hunter.location
         val nearest = game.survivors.minByOrNull { hunterLoc.literalDistanceOf(it.location) }
-        return nearest ?: throw IllegalStateException("No survivor found")
+        return checkNotNull(nearest) { "No survivor found" }
     }
 }

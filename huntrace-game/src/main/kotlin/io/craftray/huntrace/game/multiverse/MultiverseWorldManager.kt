@@ -81,6 +81,7 @@ object MultiverseWorldManager {
      * @param nether the nether
      * @param theEnd the end
      */
+    @Suppress("UNUSED_PARAMETER")
     fun unlinkInventories(overworld: World, nether: World, theEnd: World) {
         MultiverseManager.MVInv.run {
             this.groupManager.getGroup(overworld.name)?.let {

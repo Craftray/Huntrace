@@ -31,7 +31,7 @@ class CompassUpdater(val game: Game) {
      * @author Kylepoops
      */
     fun start() {
-        if (started) throw IllegalStateException("CompassUpdater is already started")
+        check(!started) { "CompassUpdater is already started" }
         this.initTrack()
         if (this.rule.deception) { this.initDeception() }
         this.started = true
@@ -42,7 +42,7 @@ class CompassUpdater(val game: Game) {
      * @author Kylepoops
      */
     fun stop() {
-        if (!started) throw IllegalStateException("CompassUpdater is not started")
+        check(started) { "CompassUpdater is not started" }
         this.stopTrack()
         if (this.rule.deception) { this.stopDeception() }
     }
@@ -54,7 +54,7 @@ class CompassUpdater(val game: Game) {
      */
     fun stopTrackFor(player: Player) {
         val run = this.trackRunnableMap[player]
-        run ?: throw IllegalStateException("Player is not tracking")
+        checkNotNull(run) { "Player is not tracking" }
         run.cancel()
         this.trackRunnableMap.remove(player)
     }
@@ -163,7 +163,5 @@ class CompassUpdater(val game: Game) {
         this.deceptionRunnable.cancel()
     }
 
-    private fun isDistanceValid(distance: Double): Boolean {
-        return !(rule.distanceLimit.isLimited() && distance >= rule.distanceLimit.get())
-    }
+    private fun isDistanceValid(distance: Double) = !(rule.distanceLimit.isLimited() && distance >= rule.distanceLimit.get())
 }

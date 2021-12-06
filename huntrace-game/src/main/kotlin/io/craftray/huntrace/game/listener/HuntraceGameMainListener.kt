@@ -21,8 +21,11 @@ class HuntraceGameMainListener(private val game: Game) : HuntraceGameListener() 
     @EventHandler
     fun onPlayerDeath(event: PlayerDeathEvent) {
         if (event.entity !in this.game.survivors) return
-        if (this.game.survivors.size == 1) this.game.finish(GameResult.HUNTER_WIN)
-        else this.game.turnToSpectator(event.entity)
+        if (this.game.survivors.size == 1) {
+            this.game.finish(GameResult.HUNTER_WIN)
+        } else {
+            this.game.turnToSpectator(event.entity)
+        }
     }
 
     /**

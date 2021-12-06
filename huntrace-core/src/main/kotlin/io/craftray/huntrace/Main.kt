@@ -16,5 +16,4 @@ object Main : Plugin() {
     override fun onEnable() {
         Game.init(plugin)
     }
-
 }

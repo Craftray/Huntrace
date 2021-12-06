@@ -19,9 +19,7 @@ class GameBuilder {
      */
     @Throws(IllegalStateException::class)
     fun withRule(rule: WorldRule) = this.apply {
-        if (this::worldRule.isInitialized) {
-            throw IllegalStateException("World rule already set")
-        }
+        check(!this::worldRule.isInitialized) { "World rule already set" }
         this.worldRule = rule
     }
 
@@ -32,9 +30,7 @@ class GameBuilder {
      */
     @Throws(IllegalStateException::class)
     fun withRule(rule: CompassRule) = this.apply {
-        if (this::compassRule.isInitialized) {
-            throw IllegalStateException("Compass rule already set")
-        }
+        check(!this::compassRule.isInitialized) { "Compass rule already set" }
         this.compassRule = rule
     }
 
@@ -104,9 +100,9 @@ class GameBuilder {
      */
     @Throws(IllegalStateException::class)
     fun build(): Game {
-        if (this.survivors.isEmpty() || this.hunters.isEmpty() || !this::worldRule.isInitialized || this::compassRule.isInitialized) {
-            throw IllegalStateException("GameBuilder is not fully initialized")
-        }
+        val noneEmpty = this.survivors.isNotEmpty() && this.hunters.isNotEmpty()
+        val allInitialized = this::worldRule.isInitialized && this::compassRule.isInitialized
+        check(noneEmpty && allInitialized) { "GameBuilder is not fully initialized" }
         val rules = RuleSet(worldRule, compassRule)
         return Game(rules).apply {
             survivors.forEach { this.addSurvivor(it) }

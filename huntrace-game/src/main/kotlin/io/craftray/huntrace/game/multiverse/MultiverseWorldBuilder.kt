@@ -1,10 +1,10 @@
 package io.craftray.huntrace.game.multiverse
 
-import io.craftray.huntrace.game_object.Spawnpoint
+import io.craftray.huntrace.objects.Spawnpoint
 import org.bukkit.World
 import org.bukkit.WorldType
 
-@Suppress("LocalVariableName", "PrivatePropertyName")
+@Suppress("LocalVariableName", "PrivatePropertyName", "VariableNaming")
 class MultiverseWorldBuilder(private val name: String) {
     private val MVCore = MultiverseManager.MVCore
     var environment: World.Environment = World.Environment.NORMAL

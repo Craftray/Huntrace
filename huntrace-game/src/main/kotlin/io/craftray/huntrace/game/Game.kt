@@ -74,7 +74,7 @@ class Game(rules: RuleSet) {
      */
     @Throws(IllegalStateException::class)
     fun start() {
-        if (this.state != State.INITIALIZED) throw IllegalStateException("Game is not initialized")
+        check(this.state == State.INITIALIZED) { "Game is not initialized" }
         this.players.lock()
         this.players.storeLocation()
         runningGame.add(this)
@@ -93,7 +93,7 @@ class Game(rules: RuleSet) {
      * @exception IllegalStateException if the io.craftray.huntrace.game is not preparing
      */
     private fun prepare() {
-        if (this.state != State.PREPARING) throw IllegalStateException("Game is not preparing")
+        check(this.state == State.PREPARING) { "Game is not preparing" }
         this.prepareListener = HuntraceGamePrepareStateListener(this).also { it.register() }
         bukkitRunnableOf {
             this.prepareListener.unregister()
@@ -107,7 +107,7 @@ class Game(rules: RuleSet) {
      * @exception IllegalStateException if the io.craftray.huntrace.game is not started
      */
     fun finish(result: GameResult) {
-        if (this.state != State.RUNNING) throw IllegalStateException("Game is not started")
+        check(this.state == State.RUNNING) { "Game is not started" }
         this.mainListener.unregister()
         this.turnGameModeFrom()
         this.teleportFrom()
@@ -138,25 +138,25 @@ class Game(rules: RuleSet) {
     fun quit(player: Player): Boolean {
         check(this.state == State.RUNNING) { "Game is not started" }
 
-        if (player in this.survivors && this.survivors.size <= 1) {
+        return if (player in this.survivors && this.survivors.size <= 1) {
             this.finish(GameResult.SURVIVOR_QUIT)
-            return true
+            true
         } else if (player in this.hunters && this.hunters.size <= 1) {
             this.finish(GameResult.HUNTER_QUIT)
-            return true
+            true
         } else if (player in this.hunters && this.hunters.size > 1) {
             player.teleport(this.players.getPreviousLocation(player))
             this.removeHunter(player)
             HuntraceGameHunterQuitEvent(this, player).callEvent()
-            return true
+            true
         } else if (player in this.survivors && this.survivors.size > 1) {
             player.teleport(this.players.getPreviousLocation(player))
             this.removeSurvivor(player)
             HuntraceGameHunterQuitEvent(this, player).callEvent()
-            return true
+            true
+        } else {
+            false
         }
-
-        return false
     }
 
     /**
@@ -316,9 +316,7 @@ class Game(rules: RuleSet) {
         return true
     }
 
-    override fun hashCode(): Int {
-        return gameID.hashCode()
-    }
+    override fun hashCode() = gameID.hashCode()
 
     enum class State {
         WAITING,
@@ -359,8 +357,6 @@ class Game(rules: RuleSet) {
          * @exception IllegalArgumentException if the io.craftray.huntrace.game is not found
          */
         @Throws(IllegalArgumentException::class)
-        fun getGameByPlayer(player: Player): Game {
-            return findGameByPlayerOrNull(player) ?: throw IllegalArgumentException("This player is not in any io.craftray.huntrace.game")
-        }
+        fun getGameByPlayer(player: Player) = requireNotNull(findGameByPlayerOrNull(player)) { "This player is not in any game" }
     }
 }

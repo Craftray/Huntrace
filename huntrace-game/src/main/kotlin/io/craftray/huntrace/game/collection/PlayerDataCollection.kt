@@ -101,9 +101,7 @@ class PlayerDataCollection {
      * @param player the player to get the location of
      * @return the location
      */
-    fun getPreviousLocation(player: Player): Location {
-        return previousLocations[player] ?: throw IllegalStateException("Player ${player.name} is not in the io.craftray.huntrace.game")
-    }
+    fun getPreviousLocation(player: Player) = checkNotNull(previousLocations[player]) { "Player ${player.name} is not in the game" }
 
     /**
      * Whether the player are in this set
@@ -111,7 +109,5 @@ class PlayerDataCollection {
      * @param player the player to check
      * @return the result
      */
-    fun contains(player: Player): Boolean {
-        return this.hunters.contains(player) || this.survivors.contains(player)
-    }
+    operator fun contains(player: Player) = this.hunters.contains(player) || this.survivors.contains(player)
 }

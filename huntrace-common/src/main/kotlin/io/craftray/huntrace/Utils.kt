@@ -6,6 +6,9 @@ import org.bukkit.scheduler.BukkitRunnable
 import kotlin.math.sqrt
 
 object Utils {
+    const val OVERWORLD_TO_NETHER_MULTIPLIER = 0.125
+    const val NETHER_TO_OVERWORLD_MULTIPLIER = 8.0
+
     inline fun bukkitRunnableOf(crossinline block: () -> Unit) = object : BukkitRunnable() {
         override fun run() {
             block()
@@ -20,12 +23,12 @@ object Utils {
         val result = this.clone()
         if (env == World.Environment.NORMAL &&
             target.environment == World.Environment.NETHER) {
-            result.x *= 8
-            result.z *= 8
+            result.x *= NETHER_TO_OVERWORLD_MULTIPLIER
+            result.z *= NETHER_TO_OVERWORLD_MULTIPLIER
         } else if (env == World.Environment.NETHER &&
             target.environment == World.Environment.NORMAL) {
-            result.x *= 0.125
-            result.z *= 0.125
+            result.x *= OVERWORLD_TO_NETHER_MULTIPLIER
+            result.z *= OVERWORLD_TO_NETHER_MULTIPLIER
         } else if ((env == World.Environment.NORMAL ||
                     env == World.Environment.NETHER) &&
             target.environment == World.Environment.THE_END) {

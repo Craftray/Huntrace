@@ -15,9 +15,7 @@ abstract class HuntraceGameEvent(val game: Game, async: Boolean) : Event(async) 
  * @author Kylepoops
  */
 class HuntraceGameFinishEvent(game: Game, val result: GameResult) : HuntraceGameEvent(game, true) {
-    override fun getHandlers(): HandlerList {
-        return handlerList
-    }
+    override fun getHandlers() = handlerList
 
     companion object {
         @JvmStatic
@@ -30,9 +28,7 @@ class HuntraceGameFinishEvent(game: Game, val result: GameResult) : HuntraceGame
  * @author Kylepoops
  */
 class HuntraceGameStartEvent(game: Game) : HuntraceGameEvent(game) {
-    override fun getHandlers(): HandlerList {
-        return handlerList
-    }
+    override fun getHandlers() = handlerList
 
     companion object {
         @JvmStatic
@@ -45,9 +41,7 @@ class HuntraceGameStartEvent(game: Game) : HuntraceGameEvent(game) {
  * @author Kylepoops
  */
 class HuntraceGameHunterQuitEvent(game: Game, val player: Player) : HuntraceGameEvent(game, true) {
-    override fun getHandlers(): HandlerList {
-        return handlerList
-    }
+    override fun getHandlers() = handlerList
 
     companion object {
         @JvmStatic
@@ -65,9 +59,7 @@ class HuntraceGameCompassUpdateEvent(
     val hunter: Player,
     val target: Player = game.hunterTargets.targetOf(hunter)
 ) : HuntraceGameEvent(game, true) {
-    override fun getHandlers(): HandlerList {
-        return handlerList
-    }
+    override fun getHandlers() = handlerList
 
     enum class Result {
         SUCCESS,
@@ -91,9 +83,7 @@ class HuntraceGameSelectTargetEvent(
     val hunter: Player,
     val target: Player
 ) : HuntraceGameEvent(game) {
-    override fun getHandlers(): HandlerList {
-        return handlerList
-    }
+    override fun getHandlers() = handlerList
 
     companion object {
         @JvmStatic

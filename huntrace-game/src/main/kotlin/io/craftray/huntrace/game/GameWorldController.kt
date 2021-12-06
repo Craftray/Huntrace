@@ -21,7 +21,7 @@ class GameWorldController(private val game: Game) {
      */
     @Throws(IllegalStateException::class)
     fun generateWorlds(): WorldCollection {
-        if (generated)  throw IllegalStateException("Worlds have already been generated")
+        check(!generated) { "Worlds have already been generated" }
 
         val rule = game.rules.worldRule
         val worlds = WorldCollection()
@@ -64,8 +64,8 @@ class GameWorldController(private val game: Game) {
      */
     @Throws(IllegalStateException::class)
     fun deleteWorlds() = game.worlds.run {
-        if (!generated) throw IllegalStateException("Worlds have not been generated")
-        if (deleted) throw IllegalStateException("Worlds have already been deleted")
+        check(generated) { "Worlds have not been generated" }
+        check(!deleted) { "Worlds have already been deleted" }
         this.overworld.delete()
         this.nether.delete()
         this.theEnd.delete()
@@ -79,9 +79,9 @@ class GameWorldController(private val game: Game) {
      */
     @Throws(IllegalStateException::class)
     fun linkWorlds() = game.worlds.run {
-        if (!generated) throw IllegalStateException("Worlds have not been generated")
-        if (deleted) throw IllegalStateException("Worlds have already been deleted")
-        if (linked) throw IllegalStateException("Worlds have already been linked")
+        check(generated) { "Worlds have not been generated" }
+        check(!deleted) { "Worlds have already been deleted" }
+        check(!linked) { "Worlds have already been linked" }
         MultiverseWorldManager.linkWorlds(this.overworld, this.nether, this.theEnd)
         MultiverseWorldManager.linkInventories(this.overworld, this.nether, this.theEnd)
         linked = true
@@ -94,10 +94,10 @@ class GameWorldController(private val game: Game) {
      */
     @Throws(IllegalStateException::class)
     fun unlinkWorlds() = game.worlds.run {
-        if(!generated) throw IllegalStateException("Worlds have not been generated")
-        if(deleted) throw IllegalStateException("Worlds have already been deleted")
-        if (!linked) throw IllegalStateException("Worlds have not been linked")
-        if (unlink) throw IllegalStateException("Worlds have already been unlinked")
+        check(generated) { "Worlds have not been generated" }
+        check(!deleted) { "Worlds have already been deleted" }
+        check(linked) { "Worlds have not been linked" }
+        check(!unlink) { "Worlds have already been unlinked" }
         MultiverseWorldManager.unlinkWorlds(this.overworld, this.nether, this.theEnd)
         MultiverseWorldManager.unlinkInventories(this.overworld, this.nether, this.theEnd)
         unlink = false

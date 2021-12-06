@@ -1,7 +1,7 @@
 package io.craftray.huntrace.rule
 
-import io.craftray.huntrace.game_object.Distance
-import io.craftray.huntrace.game_object.Spawnpoint
+import io.craftray.huntrace.objects.Distance
+import io.craftray.huntrace.objects.Spawnpoint
 import org.bukkit.WorldType
 import java.io.Serializable
 
@@ -12,7 +12,12 @@ data class WorldRule(
     var spawnpoint: Spawnpoint = Spawnpoint.default(),
     var seed: String? = null,
     var structures: Boolean = true
-) : Rule, Serializable
+) : Rule, Serializable {
+    companion object {
+        const val serialVersionUID = 6409623993095011L
+    }
+
+}
 
 data class CompassRule(
     var updateInterval: Long = 20L,
@@ -20,4 +25,8 @@ data class CompassRule(
     var deception: Boolean = false,
     var crossWorldTrack: Boolean = false,
     var distanceLimit: Distance = Distance.unlimited()
-) : Rule, Serializable
+) : Rule, Serializable {
+    companion object {
+        const val serialVersionUID = 1886929089669138L
+    }
+}

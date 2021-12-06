@@ -6,9 +6,7 @@ open class RuleSet(
     open var worldRule: WorldRule,
     open var compassRule: CompassRule
 ) : Serializable {
-    override fun toString(): String {
-        return "RuleSet(worldRule=$worldRule, compassRule=$compassRule)"
-    }
+    override fun toString() = "RuleSet(worldRule=$worldRule, compassRule=$compassRule)"
 
     /**
      * Make a copy of this rule set
@@ -41,8 +39,13 @@ open class RuleSet(
         result = 31 * result + compassRule.hashCode()
         return result
     }
+
+    companion object {
+        const val serialVersionUID = 3248819797299803L
+    }
 }
 
+@Suppress("UseCheckOrError")
 class ImmutableRuleSet(
     worldRule: WorldRule,
     compassRule: CompassRule
@@ -79,5 +82,7 @@ class ImmutableRuleSet(
         return result
     }
 
-
+    companion object {
+        const val serialVersionUID = 8694221822079271L
+    }
 }

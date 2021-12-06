@@ -4,6 +4,7 @@ plugins {
     java
     id("io.izzel.taboolib") version "1.31"
     id("org.jetbrains.kotlin.jvm") version "1.6.0"
+    id("io.gitlab.arturbosch.detekt") version "1.19.0"
 }
 
 taboolib {
@@ -50,6 +51,22 @@ allprojects {
          */
         duplicatesStrategy = DuplicatesStrategy.WARN
     }
+}
+
+detekt {
+    parallel = true
+
+    config = files("detekt.yml")
+
+    buildUponDefaultConfig = true
+
+    val files = mutableListOf<String>().also {
+        for (project in subprojects) {
+            it.add(project.projectDir.name + "/src/main/kotlin")
+        }
+    }
+
+    source = files(files)
 }
 
 subprojects {
