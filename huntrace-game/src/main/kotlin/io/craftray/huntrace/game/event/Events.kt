@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package io.craftray.huntrace.game.event
 
 import io.craftray.huntrace.game.Game
@@ -66,7 +68,6 @@ class HuntraceGameCompassUpdateEvent(
         MISS,
         DECEPTION
     }
-
 
     companion object {
         @JvmStatic

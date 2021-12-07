@@ -14,7 +14,7 @@ class GameWorldController(private val game: Game) {
     private var deleted = false
 
     /**
-     * Generate the three dimensions of a io.craftray.huntrace.game
+     * Generate the three dimensions of a game
      * @author Kylepoops
      * @return the world set
      * @exception IllegalStateException if the io.craftray.huntrace.game has already been generated

@@ -16,7 +16,6 @@ data class WorldRule(
     companion object {
         const val serialVersionUID = 6409623993095011L
     }
-
 }
 
 data class CompassRule(

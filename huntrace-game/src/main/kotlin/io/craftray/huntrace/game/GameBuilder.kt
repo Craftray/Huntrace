@@ -109,5 +109,4 @@ class GameBuilder {
             hunters.forEach { this.addHunter(it) }
         }
     }
-
 }

@@ -269,7 +269,7 @@ class Game(rules: RuleSet) {
      * @exception IllegalArgumentException if the player is not in the io.craftray.huntrace.game
      */
     @Throws(IllegalArgumentException::class)
-    private fun turnGameModeTo(player: Player) = when(player) {
+    private fun turnGameModeTo(player: Player) = when (player) {
         in this.hunters -> player.gameMode = GameMode.SURVIVAL
         in this.survivors -> player.gameMode = GameMode.SURVIVAL
         in this.spectators -> player.gameMode = GameMode.SPECTATOR
@@ -304,7 +304,6 @@ class Game(rules: RuleSet) {
         this.spectators.forEach { this.turnGameModeFrom(it) }
     }
 
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -328,7 +327,7 @@ class Game(rules: RuleSet) {
 
     companion object {
         val runningGame = mutableSetOf<Game>()
-        
+
         internal lateinit var plugin: Plugin
 
         /**

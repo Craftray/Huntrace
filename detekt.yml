@@ -61,3 +61,11 @@ style:
 complexity:
   TooManyFunctions:
     active: false
+
+formatting:
+  FinalNewline:
+    active: false
+  MaximumLineLength:
+    active: false
+  NoWildcardImports:
+    active: false

@@ -15,29 +15,24 @@ object Utils {
         }
     }
 
-    //return a random boolean with specific chance
+    // return a random boolean with specific chance
     fun randomBoolean(chance: Float) = Math.random() < chance
 
     fun Location.transformWorld(target: World): Location {
         val env = this.world.environment
         val result = this.clone()
-        if (env == World.Environment.NORMAL &&
-            target.environment == World.Environment.NETHER) {
+        if (env == World.Environment.NORMAL && target.environment == World.Environment.NETHER) {
             result.x *= NETHER_TO_OVERWORLD_MULTIPLIER
             result.z *= NETHER_TO_OVERWORLD_MULTIPLIER
-        } else if (env == World.Environment.NETHER &&
-            target.environment == World.Environment.NORMAL) {
+        } else if (env == World.Environment.NETHER && target.environment == World.Environment.NORMAL) {
             result.x *= OVERWORLD_TO_NETHER_MULTIPLIER
             result.z *= OVERWORLD_TO_NETHER_MULTIPLIER
-        } else if ((env == World.Environment.NORMAL ||
-                    env == World.Environment.NETHER) &&
-            target.environment == World.Environment.THE_END) {
+        } else if ((env == World.Environment.NORMAL || env == World.Environment.NETHER) && target.environment == World.Environment.THE_END) {
             throw IllegalArgumentException("Cannot transform rnv THE_END and other dimensions")
         }
 
         return result.apply { world = target }
     }
-
 
     fun Location.literalDistanceOf(other: Location): Double {
         val otherLoc = other.clone().transformWorld(this.world)

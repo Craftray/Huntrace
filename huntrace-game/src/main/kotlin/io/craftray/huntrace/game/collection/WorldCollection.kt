@@ -76,6 +76,4 @@ class WorldCollection {
     }
 
     override fun toString() = "WorldCollection(overworld=$_overworld, nether=$_nether, theEnd=$_theEnd)"
-
-
 }

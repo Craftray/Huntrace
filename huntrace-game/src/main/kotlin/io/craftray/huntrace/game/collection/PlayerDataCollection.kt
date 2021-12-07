@@ -94,7 +94,6 @@ class PlayerDataCollection {
         this.spectators.forEach { this.previousLocations[it] = it.location }
     }
 
-
     /**
      * Get the previous location of a player
      * @author Kylepoops

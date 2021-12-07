@@ -1,5 +1,3 @@
 package io.craftray.huntrace.ui
 
-class Commands {
-
-}
+class Commands

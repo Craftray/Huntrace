@@ -18,9 +18,8 @@ object Command {
             permissionDefault = PermissionDefault.TRUE
         ) {
             execute<Player> { sender, context, argument ->
-                //CreateGame.open(sender)
+                // CreateGame.open(sender)
             }
         }
     }
-
 }

@@ -130,14 +130,15 @@ class CompassUpdater(val game: Game) {
 
         this.deceptionRunnable = bukkitRunnableOf {
             for (hunter in deceptionList) {
-            for (item in hunter.inventory) {
-                if (item.type == Material.COMPASS) {
-                    val compass = item.itemMeta as org.bukkit.inventory.meta.CompassMeta
-                    compass.lodestone = hunter.location.multiply(Random.nextDouble(2.0))
-                    item.itemMeta = compass
-                    HuntraceGameCompassUpdateEvent(game, Result.DECEPTION, hunter).callEvent()
+                for (item in hunter.inventory) {
+                    if (item.type == Material.COMPASS) {
+                        val compass = item.itemMeta as org.bukkit.inventory.meta.CompassMeta
+                        compass.lodestone = hunter.location.multiply(Random.nextDouble(2.0))
+                        item.itemMeta = compass
+                        HuntraceGameCompassUpdateEvent(game, Result.DECEPTION, hunter).callEvent()
+                    }
                 }
-            }}
+            }
         }
 
         this.deceptionFindRunnable.runTaskTimerAsynchronously(Game.plugin, 600, rule.updateInterval)

@@ -1,5 +1,6 @@
 package io.craftray.huntrace.interaction
 
+/*
 import io.craftray.huntrace.ui.Commands
 import io.craftray.huntrace.ui.UI
 import io.craftray.huntrace.ui.UIItem
@@ -10,6 +11,7 @@ import taboolib.module.chat.colored
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Basic
 import taboolib.platform.util.buildItem
+*/
 
 /**
  * @Author xbaimiao

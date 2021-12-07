@@ -11,5 +11,4 @@ interface UI {
     val title: String
 
     val items: List<UIItem>
-
 }

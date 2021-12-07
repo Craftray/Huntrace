@@ -24,5 +24,4 @@ class MultiverseWorldBuilder(private val name: String) {
         if (spawnpoint.isSet()) { MVWorld.spawnLocation = spawnpoint.get() }
         return MVWorld.cbWorld!!
     }
-
 }
