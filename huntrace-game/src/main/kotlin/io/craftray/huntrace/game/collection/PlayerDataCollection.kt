@@ -5,9 +5,9 @@ import org.bukkit.entity.Player
 import kotlin.jvm.Throws
 
 class PlayerDataCollection {
-    val hunters = mutableSetOf<Player>()
-    val survivors = mutableSetOf<Player>()
-    val spectators = mutableSetOf<Player>()
+    val hunters = InternalMutableSet<Player>()
+    val survivors = InternalMutableSet<Player>()
+    val spectators = InternalMutableSet<Player>()
 
     private var lock = false
     private val previousLocations = mutableMapOf<Player, Location>()

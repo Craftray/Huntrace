@@ -12,7 +12,9 @@ class HuntraceGamePrepareStateListener(private val game: Game) : HuntraceGameLis
      */
     @EventHandler
     fun onPlayerMove(event: PlayerMoveEvent) {
-        event.isCancelled = true
+        if (event.player.world in game.worlds) {
+            event.isCancelled = true
+        }
     }
 
     /**
@@ -21,6 +23,8 @@ class HuntraceGamePrepareStateListener(private val game: Game) : HuntraceGameLis
      */
     @EventHandler
     fun onPlayerInteract(event: PlayerInteractEvent) {
-        event.isCancelled = true
+        if (event.player.world in game.worlds) {
+            event.isCancelled = true
+        }
     }
 }

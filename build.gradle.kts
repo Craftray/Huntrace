@@ -61,13 +61,7 @@ detekt {
 
     buildUponDefaultConfig = true
 
-    val files = mutableListOf<String>().also {
-        for (project in subprojects) {
-            it.add(project.projectDir.name + "/src/main/kotlin")
-        }
-    }
-
-    source = files(files)
+    source = files(subprojects.map(Project::getName).map { "$it/src/main/kotlin" })
 }
 
 subprojects {
@@ -92,8 +86,8 @@ subprojects {
         mavenCentral()
         maven("https://papermc.io/repo/repository/maven-public/")
         maven("https://repo.onarandombox.com/content/groups/public/")
+        maven("https://repo.incendo.org/content/repositories/snapshots")
     }
-
 
     dependencies {
         compileOnly(kotlin("stdlib"))

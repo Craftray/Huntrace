@@ -2,6 +2,7 @@ package io.craftray.huntrace.game
 
 import io.craftray.huntrace.Utils.bukkitRunnableOf
 import io.craftray.huntrace.game.collection.HunterTargetCollection
+import io.craftray.huntrace.game.collection.InternalMutableSet
 import io.craftray.huntrace.game.collection.PlayerDataCollection
 import io.craftray.huntrace.game.collection.WorldCollection
 import io.craftray.huntrace.game.event.HuntraceGameFinishEvent
@@ -55,8 +56,10 @@ class Game(rules: RuleSet) {
      * Initialize a io.craftray.huntrace.game
      * Generate three dimension, setup CompassUpdater, GameWorldController and GameResultMatcher
      * @author Kylepoops
+     * @return the game for call chaining
      */
-    fun init() {
+    fun init(): Game {
+        check(this.state == State.WAITING) { "Game is already initialized" }
         this.rules = this.rules.immutableCopy()
         this.compassUpdater = CompassUpdater(this)
         this.compassUpdater = CompassUpdater(this)
@@ -65,15 +68,17 @@ class Game(rules: RuleSet) {
         this.worldController.generateWorlds()
         this.worldController.linkWorlds()
         this.state = State.INITIALIZED
+        return this
     }
 
     /**
      * Start an initialized io.craftray.huntrace.game
      * @author Kylepoops
      * @exception IllegalStateException if the io.craftray.huntrace.game is not initialized or already started
+     * @return the game for call chaining
      */
     @Throws(IllegalStateException::class)
-    fun start() {
+    fun start(): Game {
         check(this.state == State.INITIALIZED) { "Game is not initialized" }
         this.players.lock()
         this.players.storeLocation()
@@ -85,6 +90,7 @@ class Game(rules: RuleSet) {
         HuntraceGameStartEvent(this).callEvent()
         this.state = State.PREPARING
         this.prepare()
+        return this
     }
 
     /**
@@ -106,7 +112,8 @@ class Game(rules: RuleSet) {
      * @author Kylepoops
      * @exception IllegalStateException if the io.craftray.huntrace.game is not started
      */
-    fun finish(result: GameResult) {
+    @JvmName("-();finish")
+    internal fun finish(result: GameResult) {
         check(this.state == State.RUNNING) { "Game is not started" }
         this.mainListener.unregister()
         this.turnGameModeFrom()
@@ -123,7 +130,7 @@ class Game(rules: RuleSet) {
     /**
      * Abort the io.craftray.huntrace.game
      * @author Kylepoops
-     * @exception IllegalStateException if the io.craftray.huntrace.game is not started
+     * @exception IllegalStateException if the game is not started
      */
     @Throws(IllegalStateException::class)
     fun abort() = finish(GameResult.ABORT)
@@ -165,7 +172,8 @@ class Game(rules: RuleSet) {
      * @exception IllegalStateException if the io.craftray.huntrace.game is not started
      * @exception IllegalStateException if player is the only hunter or survivor
      */
-    fun turnToSpectator(player: Player) {
+    @JvmName("-();turnToSpectator")
+    internal fun turnToSpectator(player: Player) {
         check(this.state == State.RUNNING) {
             "Can turn player to a spectator only when the io.craftray.huntrace.game is running"
         }
@@ -227,12 +235,28 @@ class Game(rules: RuleSet) {
      * remove a hunter from the io.craftray.huntrace.game
      * @author Kylepoops
      * @param player the hunter to remove
-     * @exception IllegalStateException if the io.craftray.huntrace.game is started and they is the only online hunter
+     * @exception IllegalStateException if the game is started and they is the only online hunter
      */
     @Throws(IllegalStateException::class)
     fun removeHunter(player: Player) {
         this.compassUpdater.stopTrackFor(player)
         this.players.removeHunter(player)
+    }
+
+    /**
+     * Set the target of given hunter
+     * @author Kylepoops
+     * @param hunter the hunter to set the target of
+     * @param target the target to set
+     * @exception IllegalStateException if the player is not a hunter
+     * @exception IllegalStateException if the game is not started
+     * @exception IllegalArgumentException if the target is not a survivor
+     */
+    fun setTarget(hunter: Player, target: Player) {
+        check(state == State.RUNNING) { "Can set target only on a running game" }
+        check(hunter in hunters) { "player to set the target must be a hunter" }
+        require(target in survivors) { "target must be a survivor" }
+        this.hunterTargets.setTarget(hunter, target)
     }
 
     /**
@@ -326,7 +350,7 @@ class Game(rules: RuleSet) {
     }
 
     companion object {
-        val runningGame = mutableSetOf<Game>()
+        val runningGame = InternalMutableSet<Game>()
 
         internal lateinit var plugin: Plugin
 

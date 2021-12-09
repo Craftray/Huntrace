@@ -19,7 +19,7 @@ data class WorldRule(
 }
 
 data class CompassRule(
-    var updateInterval: Long = 20L,
+    var updateInterval: Long = 60L,
     var displayDistance: Boolean = false,
     var deception: Boolean = false,
     var crossWorldTrack: Boolean = false,

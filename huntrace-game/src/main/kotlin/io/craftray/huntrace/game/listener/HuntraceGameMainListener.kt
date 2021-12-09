@@ -2,12 +2,14 @@ package io.craftray.huntrace.game.listener
 
 import io.craftray.huntrace.game.Game
 import io.craftray.huntrace.game.GameResult
+import io.craftray.huntrace.game.event.HuntraceGameInventoryClickEvent
 import io.craftray.huntrace.game.event.HuntraceGameSelectTargetEvent
 import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.Action
 import org.bukkit.event.entity.EntityDeathEvent
 import org.bukkit.event.entity.PlayerDeathEvent
+import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
@@ -76,7 +78,13 @@ class HuntraceGameMainListener(private val game: Game) : HuntraceGameListener() 
         }
 
         val target = targets.targetOf(event.player)
-        val result = HuntraceGameSelectTargetEvent(game, event.player, target).also { it.callEvent() }
-        if (target != result.target) targets.setTarget(event.player, result.target)
+        HuntraceGameSelectTargetEvent(game, event.player, target).callEvent()
+    }
+
+    @EventHandler
+    fun onInventoryClick(event: InventoryClickEvent) {
+        if (event.whoClicked.world in game.worlds) {
+            HuntraceGameInventoryClickEvent(game, event)
+        }
     }
 }

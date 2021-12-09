@@ -3,8 +3,8 @@ package io.craftray.huntrace.rule
 import java.io.Serializable
 
 open class RuleSet(
-    open var worldRule: WorldRule,
-    open var compassRule: CompassRule
+    open var worldRule: WorldRule = WorldRule(),
+    open var compassRule: CompassRule = CompassRule()
 ) : Serializable {
     override fun toString() = "RuleSet(worldRule=$worldRule, compassRule=$compassRule)"
 
