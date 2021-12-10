@@ -10,6 +10,7 @@ import io.craftray.huntrace.interaction.invitation.InvitationType
 import io.craftray.huntrace.interaction.text.InviteMessageBuilder
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import org.bukkit.WorldType
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -44,6 +45,22 @@ object Command {
         } else {
             settingMap[sender]!!.worldRule.seed = input
             sender.sendMessage(Component.text("[Huntrace] You have set the seed of the game: $input").color(NamedTextColor.GREEN))
+        }
+    }
+
+    @CommandDescription("Set the world type of a game")
+    @CommandMethod("huntrace world type <type>")
+    fun worldTypeCommand(
+        sender: CommandSender,
+        @Argument("type") type: WorldType
+    ) {
+        if (sender !is Player) {
+            sender.sendMessage(Component.text("[Huntrace] Game can only be configured by player").color(NamedTextColor.RED))
+        } else if (!settingMap.containsKey(sender)) {
+            sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
+        } else {
+            settingMap[sender]!!.worldRule.type = type
+            sender.sendMessage(Component.text("[Huntrace] You have set the world type of the game: $type").color(NamedTextColor.GREEN))
         }
     }
 

@@ -1,5 +1,5 @@
 package io.craftray.huntrace.interaction.invitation
 
-object InvitationManager {
+internal object InvitationManager {
     val invitations = mutableSetOf<Invitation>()
 }
