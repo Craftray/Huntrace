@@ -49,7 +49,7 @@ object Command {
 
     @CommandDescription("Invite a hunter to the game")
     @CommandMethod("huntrace invite <type> <target>")
-    fun inviteHunterCommand(
+    fun inviteCommand(
         sender: CommandSender,
         @Argument("type") type: InvitationType,
         @Argument("target") target: Player
