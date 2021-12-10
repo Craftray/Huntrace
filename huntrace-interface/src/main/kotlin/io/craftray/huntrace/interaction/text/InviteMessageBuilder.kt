@@ -18,6 +18,8 @@ object InviteMessageBuilder {
                 ClickEvent.runCommand("/huntrace invite accept ${invitor.name}")
             )
         ).append(
+            Component.text("  ")
+        ).append(
             Component.text("[Deny]").color(NamedTextColor.RED).hoverEvent(
                 Component.text("Click to deny").color(NamedTextColor.RED)
             ).clickEvent(

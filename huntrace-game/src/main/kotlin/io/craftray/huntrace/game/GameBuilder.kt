@@ -105,8 +105,8 @@ class GameBuilder {
         check(noneEmpty && allInitialized) { "GameBuilder is not fully initialized" }
         val rules = RuleSet(worldRule, compassRule)
         return Game(rules).apply {
-            survivors.forEach { this.addSurvivor(it) }
-            hunters.forEach { this.addHunter(it) }
+            this@GameBuilder.survivors.forEach { this.addSurvivor(it) }
+            this@GameBuilder.hunters.forEach { this.addHunter(it) }
         }
     }
 }

@@ -12,6 +12,7 @@ import org.bukkit.World
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitRunnable
+import kotlin.concurrent.thread
 import kotlin.random.Random
 
 @Suppress("PrivatePropertyName")
@@ -32,6 +33,7 @@ class CompassUpdater(val game: Game) {
      */
     fun start() {
         check(!started) { "CompassUpdater is already started" }
+        this.initHunters()
         this.initTrack()
         if (this.rule.deception) { this.initDeception() }
         this.started = true
@@ -71,26 +73,26 @@ class CompassUpdater(val game: Game) {
                 }
                 val target = targets.targetOf(hunter)
                 if (!rule.crossWorldTrack && hunter.world != target.world) {
-                    HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent()
+                    thread(true) { HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent() }
                 }
                 if (hunter.world.environment != World.Environment.THE_END &&
                     target.world.environment == World.Environment.THE_END
                 ) {
                     restoreCompass(hunter.inventory.itemInMainHand)
-                    HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent()
+                    thread(true) { HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent() }
                     return@bukkitRunnableOf
                 }
                 val distance = hunter.location.literalDistanceOf(target.location)
                 if (!this.isDistanceValid(distance)) {
-                    HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent()
+                    thread(true) { HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent() }
                     return@bukkitRunnableOf
                 }
                 for (item in hunter.inventory) {
-                    if (item.type == Material.COMPASS) {
+                    if (item?.type == Material.COMPASS) {
                         val compass = item.itemMeta as org.bukkit.inventory.meta.CompassMeta
                         compass.lodestone = target.location.transformWorld(hunter.world)
                         item.itemMeta = compass
-                        HuntraceGameCompassUpdateEvent(game, Result.SUCCESS, hunter).callEvent()
+                        thread(true) { HuntraceGameCompassUpdateEvent(game, Result.SUCCESS, hunter).callEvent() }
                     }
                 }
             }
@@ -114,7 +116,7 @@ class CompassUpdater(val game: Game) {
                 }
 
                 for (item in hunter.inventory) {
-                    if (item.type == Material.COMPASS) {
+                    if (item?.type == Material.COMPASS) {
                         val itemStack = ItemStack(Material.COMPASS)
                         item.itemMeta = itemStack.itemMeta
                         this.deceptionList.add(hunter)
@@ -131,11 +133,11 @@ class CompassUpdater(val game: Game) {
         this.deceptionRunnable = bukkitRunnableOf {
             for (hunter in deceptionList) {
                 for (item in hunter.inventory) {
-                    if (item.type == Material.COMPASS) {
+                    if (item?.type == Material.COMPASS) {
                         val compass = item.itemMeta as org.bukkit.inventory.meta.CompassMeta
                         compass.lodestone = hunter.location.multiply(Random.nextDouble(2.0))
                         item.itemMeta = compass
-                        HuntraceGameCompassUpdateEvent(game, Result.DECEPTION, hunter).callEvent()
+                        thread(true) { HuntraceGameCompassUpdateEvent(game, Result.DECEPTION, hunter).callEvent() }
                     }
                 }
             }
@@ -145,6 +147,10 @@ class CompassUpdater(val game: Game) {
 
         this.deceptionRunnable.runTaskTimer(Game.plugin, 600, rule.updateInterval)
     }
+
+    private fun initHunter(hunter: Player) = hunter.inventory.addItem(ItemStack(Material.COMPASS))
+
+    private fun initHunters() = this.hunters.forEach(::initHunter)
 
     @Throws(IllegalArgumentException::class)
     private fun restoreCompass(item: ItemStack) {

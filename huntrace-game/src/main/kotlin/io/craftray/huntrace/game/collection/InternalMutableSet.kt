@@ -18,16 +18,16 @@ class InternalMutableSet<T> : Set<T> {
 
     override fun containsAll(elements: Collection<T>) = _set.containsAll(elements)
 
-    @JvmName("-();add")
+    @JvmName("-add")
     internal fun add(element: T) = _set.add(element)
 
-    @JvmName("-();addAll")
+    @JvmName("-addAll")
     internal fun addAll(elements: Collection<T>) = _set.addAll(elements)
 
-    @JvmName("-();remove")
+    @JvmName("-remove")
     internal fun remove(element: T) = _set.remove(element)
 
     @Suppress("ConvertArgumentToSet")
-    @JvmName("-();removeAll")
+    @JvmName("-removeAll")
     internal fun removeAll(elements: Collection<T>) = _set.removeAll(elements)
 }

@@ -1,4 +1,5 @@
 import io.izzel.taboolib.gradle.TabooLibPlugin
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     java
@@ -10,7 +11,7 @@ plugins {
 taboolib {
     options("skip-kotlin")
     options("skip-kotlin-relocate")
-    options("skip-env")
+    // options("skip-env")
     version = "6.0.4-7"
 
     description {
@@ -51,6 +52,12 @@ allprojects {
          * Additionally, plugin.yml file also seems to disappear accidentally.
          */
         duplicatesStrategy = DuplicatesStrategy.WARN
+    }
+
+    tasks.withType<KotlinCompile> {
+        kotlinOptions {
+            freeCompilerArgs = listOf("-Xlambdas=indy")
+        }
     }
 }
 

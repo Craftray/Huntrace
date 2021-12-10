@@ -13,10 +13,12 @@ import io.craftray.huntrace.game.listener.HuntraceGamePrepareStateListener
 import io.craftray.huntrace.game.multiverse.MultiverseManager
 import io.craftray.huntrace.game.schedular.CompassUpdater
 import io.craftray.huntrace.rule.RuleSet
+import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import java.util.*
+import kotlin.concurrent.thread
 import kotlin.properties.Delegates
 
 class Game(rules: RuleSet) {
@@ -29,7 +31,7 @@ class Game(rules: RuleSet) {
 
     internal lateinit var hunterTargets: HunterTargetCollection
         private set
-        @JvmName("- -()()- -") get
+        @JvmName("-getHunterTargets") get
 
     var state = State.WAITING
         private set
@@ -59,15 +61,17 @@ class Game(rules: RuleSet) {
      * @return the game for call chaining
      */
     fun init(): Game {
+        val start = System.currentTimeMillis()
         check(this.state == State.WAITING) { "Game is already initialized" }
         this.rules = this.rules.immutableCopy()
-        this.compassUpdater = CompassUpdater(this)
-        this.compassUpdater = CompassUpdater(this)
+        this.hunterTargets = HunterTargetCollection(this)
         this.worldController = GameWorldController(this)
-        this.mainListener = HuntraceGameMainListener(this).also { it.register() }
-        this.worldController.generateWorlds()
+        this.worlds = this.worldController.generateWorlds()
         this.worldController.linkWorlds()
+        this.compassUpdater = CompassUpdater(this)
+        this.mainListener = HuntraceGameMainListener(this).also { it.register() }
         this.state = State.INITIALIZED
+        Bukkit.getLogger().info("Initialized game ${this.gameID} in ${System.currentTimeMillis() - start}ms")
         return this
     }
 
@@ -79,6 +83,7 @@ class Game(rules: RuleSet) {
      */
     @Throws(IllegalStateException::class)
     fun start(): Game {
+        val start = System.currentTimeMillis()
         check(this.state == State.INITIALIZED) { "Game is not initialized" }
         this.players.lock()
         this.players.storeLocation()
@@ -87,9 +92,10 @@ class Game(rules: RuleSet) {
         this.turnGameModeTo()
         this.compassUpdater.start()
         this.startTime = System.currentTimeMillis()
-        HuntraceGameStartEvent(this).callEvent()
+        thread(true) { HuntraceGameStartEvent(this).callEvent() }
         this.state = State.PREPARING
         this.prepare()
+        Bukkit.getLogger().info("Started game ${this.gameID} in ${System.currentTimeMillis() - start}ms")
         return this
     }
 
@@ -112,8 +118,9 @@ class Game(rules: RuleSet) {
      * @author Kylepoops
      * @exception IllegalStateException if the io.craftray.huntrace.game is not started
      */
-    @JvmName("-();finish")
+    @JvmName("-finish")
     internal fun finish(result: GameResult) {
+        val start = System.currentTimeMillis()
         check(this.state == State.RUNNING) { "Game is not started" }
         this.mainListener.unregister()
         this.turnGameModeFrom()
@@ -123,7 +130,8 @@ class Game(rules: RuleSet) {
         this.worldController.deleteWorlds()
         this.endTime = System.currentTimeMillis()
         runningGame.remove(this)
-        HuntraceGameFinishEvent(this, result).callEvent()
+        thread(true) { HuntraceGameFinishEvent(this, result).callEvent() }
+        Bukkit.getLogger().info("Finished game ${this.gameID} in ${System.currentTimeMillis() - start}ms")
         this.state = State.FINISHED
     }
 
@@ -154,12 +162,12 @@ class Game(rules: RuleSet) {
         } else if (player in this.hunters && this.hunters.size > 1) {
             player.teleport(this.players.getPreviousLocation(player))
             this.removeHunter(player)
-            HuntraceGameHunterQuitEvent(this, player).callEvent()
+            thread(true) { HuntraceGameHunterQuitEvent(this, player).callEvent() }
             true
         } else if (player in this.survivors && this.survivors.size > 1) {
             player.teleport(this.players.getPreviousLocation(player))
             this.removeSurvivor(player)
-            HuntraceGameHunterQuitEvent(this, player).callEvent()
+            thread(true) { HuntraceGameHunterQuitEvent(this, player).callEvent() }
             true
         } else {
             false
@@ -172,7 +180,7 @@ class Game(rules: RuleSet) {
      * @exception IllegalStateException if the io.craftray.huntrace.game is not started
      * @exception IllegalStateException if player is the only hunter or survivor
      */
-    @JvmName("-();turnToSpectator")
+    @JvmName("-turnToSpectator")
     internal fun turnToSpectator(player: Player) {
         check(this.state == State.RUNNING) {
             "Can turn player to a spectator only when the io.craftray.huntrace.game is running"

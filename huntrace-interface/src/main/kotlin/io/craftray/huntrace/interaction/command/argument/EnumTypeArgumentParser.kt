@@ -8,7 +8,6 @@ import cloud.commandframework.exceptions.InvalidSyntaxException
 import cloud.commandframework.exceptions.parsing.NoInputProvidedException
 import io.leangen.geantyref.TypeToken
 import java.util.*
-import kotlin.jvm.Throws
 
 class EnumTypeArgumentParser<C, T : Enum<*>>(private val type: Class<T>) : ArgumentParser<C, T> {
     override fun parse(
@@ -16,7 +15,7 @@ class EnumTypeArgumentParser<C, T : Enum<*>>(private val type: Class<T>) : Argum
         queue: Queue<String>
     ): ArgumentParseResult<T> {
         val input = queue.peek() ?: return ArgumentParseResult.failure(
-            NoInputProvidedException(InvitationTypeArgumentParser::class.java, context)
+            NoInputProvidedException(EnumTypeArgumentParser::class.java, context)
         )
         return try {
             @Suppress("TYPE_MISMATCH_WARNING")
@@ -34,7 +33,6 @@ class EnumTypeArgumentParser<C, T : Enum<*>>(private val type: Class<T>) : Argum
     }
 
     companion object {
-        @Throws(IllegalStateException::class)
         fun <T : Enum<*>> register(type: Class<T>) {
             StandardParserRegistry<String>().registerParserSupplier(TypeToken.get(String::class.java)) { EnumTypeArgumentParser(type) }
         }

@@ -3,7 +3,9 @@ package io.craftray.huntrace.interaction.command
 import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
+import io.craftray.huntrace.Utils.bukkitRunnableOf
 import io.craftray.huntrace.interaction.GameSetting
+import io.craftray.huntrace.interaction.InteractionBase
 import io.craftray.huntrace.interaction.invitation.Invitation
 import io.craftray.huntrace.interaction.invitation.InvitationManager
 import io.craftray.huntrace.interaction.invitation.InvitationType
@@ -17,7 +19,7 @@ import org.bukkit.entity.Player
 object Command {
     private val settingMap = HashMap<Player, GameSetting>()
 
-    @CommandDescription("Main InGameTargetSellector of Huntrace")
+    @CommandDescription("Main InGameTargetSelector of Huntrace")
     @CommandMethod("huntrace new")
     fun mainCommand(sender: CommandSender) {
         if (sender !is Player) {
@@ -77,75 +79,76 @@ object Command {
             sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
         } else {
             InvitationManager.invitations.add(Invitation(sender, target, type))
-            target.sendMessage(InviteMessageBuilder.of(target))
-            sender.sendMessage(Component.text("[Huntrace] You have invited $target as $type to the game").color(NamedTextColor.GREEN))
+            target.sendMessage(InviteMessageBuilder.of(sender))
+            sender.sendMessage(Component.text("[Huntrace] You have invited ${target.name} as $type to the game").color(NamedTextColor.GREEN))
         }
     }
 
     @CommandDescription("Accept a invitation")
-    @CommandMethod("huntrace invite accept <type> <creator>")
+    @CommandMethod("huntrace invite accept <creator>")
     fun acceptCommand(
         sender: CommandSender,
-        @Argument("type") type: InvitationType,
         @Argument("creator") creator: Player
     ) = when {
         sender !is Player -> sender.sendMessage(Component.text("[Huntrace] invitation can only be accepted by player"))
 
-        !settingMap.containsKey(creator) -> sender.sendMessage(Component.text("[Huntrace] $creator doesn't have a game"))
+        !settingMap.containsKey(creator) -> sender.sendMessage(Component.text("[Huntrace] ${creator.name} doesn't have a game"))
 
-        !InvitationManager.invitations.contains(Invitation(creator, sender, type)) ->
-            sender.sendMessage(Component.text("[Huntrace] You don't have any invitation from $creator").color(NamedTextColor.RED))
+        !InvitationManager.contains(creator, sender) ->
+            sender.sendMessage(Component.text("[Huntrace] You don't have any invitation from ${creator.name}").color(NamedTextColor.RED))
 
         else -> {
-            InvitationManager.invitations.remove(Invitation(creator, sender, type))
+            val type = InvitationManager.get(creator, sender)?.type!!
+            InvitationManager.remove(creator, sender)
             settingMap[creator]!!.addPlayer(sender, type)
             sender.sendMessage(
-                Component.text("[Huntrace] You have accepted the invitation from $creator").color(NamedTextColor.GREEN)
+                Component.text("[Huntrace] You have accepted the invitation from ${creator.name}").color(NamedTextColor.GREEN)
             )
             creator.sendMessage(
-                Component.text("[Huntrace] $sender has accepted your invitation").color(NamedTextColor.GREEN)
+                Component.text("[Huntrace] ${sender.name} has accepted your invitation").color(NamedTextColor.GREEN)
             )
         }
     }
 
     @CommandDescription("Deny a invitation")
-    @CommandMethod("huntrace invite deny <type> <creator>")
+    @CommandMethod("huntrace invite deny <creator>")
     fun denyCommand(
         sender: CommandSender,
-        @Argument("type") type: InvitationType,
         @Argument("creator") creator: Player
     ) = when {
         sender !is Player -> sender.sendMessage(Component.text("[Huntrace] invitation can only be denied by player"))
 
-        !settingMap.containsKey(creator) -> sender.sendMessage(Component.text("[Huntrace] $creator doesn't have a game"))
+        !settingMap.containsKey(creator) -> sender.sendMessage(Component.text("[Huntrace] ${creator.name} doesn't have a game"))
 
-        !InvitationManager.invitations.contains(Invitation(creator, sender, type)) ->
-            sender.sendMessage(Component.text("[Huntrace] You don't have any invitation from $creator").color(NamedTextColor.RED))
+        !InvitationManager.contains(creator, sender) ->
+            sender.sendMessage(Component.text("[Huntrace] You don't have any invitation from ${creator.name}").color(NamedTextColor.RED))
 
         else -> {
-            InvitationManager.invitations.remove(Invitation(creator, sender, type))
+            InvitationManager.remove(creator, sender)
             sender.sendMessage(
-                Component.text("[Huntrace] You have denied the invitation from $creator").color(NamedTextColor.RED)
+                Component.text("[Huntrace] You have denied the invitation from ${creator.name}").color(NamedTextColor.RED)
             )
             creator.sendMessage(
-                Component.text("[Huntrace] $sender has denied your invitation").color(NamedTextColor.RED)
+                Component.text("[Huntrace] ${sender.name} has denied your invitation").color(NamedTextColor.RED)
             )
         }
     }
 
     @CommandDescription("Start the Game")
     @CommandMethod("huntrace start")
-    fun startCommand(sender: CommandSender) {
-        if (sender !is Player) {
-            sender.sendMessage(Component.text("[Huntrace] Game can only be started by player"))
-        }
-        if (!settingMap.containsKey(sender)) {
+    fun startCommand(sender: CommandSender) = when {
+        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] Game can only be started by player"))
+
+        !settingMap.containsKey(sender) ->
             sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
-        }
-        if (settingMap[sender]?.isReady() == false) {
+
+        settingMap[sender]?.isReady() == false ->
             sender.sendMessage(Component.text("[Huntrace] You don't have enough players").color(NamedTextColor.RED))
-        } else {
-            settingMap[sender]!!.build().init().start()
+
+        else -> {
+            bukkitRunnableOf {
+                settingMap[sender]!!.build().init().start()
+            }.runTask(InteractionBase.plugin)
             sender.sendMessage(Component.text("[Huntrace] Game has started").color(NamedTextColor.GREEN))
         }
     }

@@ -12,6 +12,7 @@ import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import kotlin.concurrent.thread
 
 class HuntraceGameMainListener(private val game: Game) : HuntraceGameListener() {
     private val targets = game.hunterTargets
@@ -73,12 +74,12 @@ class HuntraceGameMainListener(private val game: Game) : HuntraceGameListener() 
         if (event.player.world !in game.worlds || event.player !in game.hunters) {
             return
         }
-        if (event.action != Action.RIGHT_CLICK_AIR || event.action != Action.RIGHT_CLICK_BLOCK) {
+        if (event.action != Action.RIGHT_CLICK_AIR && event.action != Action.RIGHT_CLICK_BLOCK) {
             return
         }
 
         val target = targets.targetOf(event.player)
-        HuntraceGameSelectTargetEvent(game, event.player, target).callEvent()
+        thread(true) { HuntraceGameSelectTargetEvent(game, event.player, target).callEvent() }
     }
 
     @EventHandler
