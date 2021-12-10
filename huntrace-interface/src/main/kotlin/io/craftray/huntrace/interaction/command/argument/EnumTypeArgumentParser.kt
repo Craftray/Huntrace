@@ -25,7 +25,7 @@ class EnumTypeArgumentParser<C, T : Enum<*>>(private val type: Class<T>) : Argum
         } catch (ex: IllegalArgumentException) {
             ArgumentParseResult.failure(
                 InvalidSyntaxException(
-                    type.enumConstants.joinToString(", ") { it.name.lowercase() },
+                    type.enumConstants.joinToString(", "),
                     context.sender as Any,
                     context.currentArgument?.let { listOf(it) } ?: listOf()
                 ).also { it.initCause(ex) }

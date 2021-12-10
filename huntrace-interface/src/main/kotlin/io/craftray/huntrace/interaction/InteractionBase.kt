@@ -11,7 +11,7 @@ import org.bukkit.WorldType
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.Plugin
 
-internal object InteractionBase {
+object InteractionBase {
     fun init(plugin: Plugin) {
         val manager = PaperCommandManager(
             plugin,
