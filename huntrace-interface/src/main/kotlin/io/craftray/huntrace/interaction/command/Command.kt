@@ -13,7 +13,7 @@ import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class Command {
+object Command {
     private val settingMap = HashMap<Player, GameSetting>()
 
     @CommandDescription("Main InGameTargetSellector of Huntrace")
@@ -113,6 +113,23 @@ class Command {
             creator.sendMessage(
                 Component.text("[Huntrace] $sender has denied your invitation").color(NamedTextColor.RED)
             )
+        }
+    }
+
+    @CommandDescription("Start the Game")
+    @CommandMethod("huntrace start")
+    fun startCommand(sender: CommandSender) {
+        if (sender !is Player) {
+            sender.sendMessage(Component.text("[Huntrace] Game can only be started by player"))
+        }
+        if (!settingMap.containsKey(sender)) {
+            sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
+        }
+        if (settingMap[sender]?.isReady() == false) {
+            sender.sendMessage(Component.text("[Huntrace] You don't have enough players").color(NamedTextColor.RED))
+        } else {
+            settingMap[sender]!!.build().init().start()
+            sender.sendMessage(Component.text("[Huntrace] Game has started").color(NamedTextColor.GREEN))
         }
     }
 }

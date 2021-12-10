@@ -1,5 +1,6 @@
 package io.craftray.huntrace.interaction
 
+import io.craftray.huntrace.game.GameBuilder
 import io.craftray.huntrace.interaction.invitation.InvitationType
 import io.craftray.huntrace.rule.CompassRule
 import io.craftray.huntrace.rule.WorldRule
@@ -17,4 +18,13 @@ internal data class GameSetting(
             InvitationType.SURVIVOR -> survivors.add(player)
         }
     }
+
+    fun isReady() = hunters.isNotEmpty() && survivors.isNotEmpty()
+
+    fun build() = GameBuilder()
+        .withRule(compassRule)
+        .withRule(worldRule)
+        .withHunters(hunters)
+        .withSurvivors(survivors)
+        .build()
 }
