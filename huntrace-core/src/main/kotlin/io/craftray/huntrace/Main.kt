@@ -18,4 +18,8 @@ object Main : Plugin() {
         Game.init(plugin)
         InteractionBase.init(plugin)
     }
+
+    override fun onDisable() {
+        Game.runningGame.forEach(Game::abort)
+    }
 }

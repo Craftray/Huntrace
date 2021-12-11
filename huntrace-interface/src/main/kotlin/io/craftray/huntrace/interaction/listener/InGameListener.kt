@@ -8,12 +8,13 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import taboolib.common.platform.event.SubscribeEvent
 
+@Suppress("unused")
 object InGameListener {
     @SubscribeEvent
     fun onGameStart(event: HuntraceGameStartEvent) {
         event.game.allPlayers.forEach {
             it.sendMessage(
-                Component.text("[Huntrace] Game will be started in 10 seconds").color(NamedTextColor.DARK_AQUA)
+                Component.text("[Huntrace] Game will be started in 10 seconds, ").color(NamedTextColor.DARK_AQUA)
                     .append(Component.text("Ready...").color(NamedTextColor.DARK_GRAY))
             )
         }
@@ -21,14 +22,16 @@ object InGameListener {
 
     @SubscribeEvent
     fun onGameFinish(event: HuntraceGameFinishEvent) {
-        val message = Component.text("[Huntrace] Game Finished")
-        when (event.result) {
-            GameResult.HUNTER_WIN -> message.append(Component.text("Hunter Win!").color(NamedTextColor.DARK_RED))
-            GameResult.SURVIVOR_WIN -> message.append(Component.text("Survivor Win!").color(NamedTextColor.DARK_GREEN))
-            GameResult.SURVIVOR_QUIT -> message.append(Component.text("Survivor Quit!").color(NamedTextColor.DARK_GREEN))
-            GameResult.HUNTER_QUIT -> message.append(Component.text("Hunter Quit!").color(NamedTextColor.DARK_RED))
-            GameResult.ABORT -> message.append(Component.text("Abort!").color(NamedTextColor.DARK_RED))
-        }
+        val message = Component.text("[Huntrace] Game Finished: ")
+        message.append(
+            when (event.result) {
+                GameResult.HUNTER_WIN -> Component.text("Hunter Win!").color(NamedTextColor.DARK_RED)
+                GameResult.SURVIVOR_WIN -> Component.text("Survivor Win!").color(NamedTextColor.DARK_GREEN)
+                GameResult.SURVIVOR_QUIT -> Component.text("Survivor Quit!").color(NamedTextColor.DARK_GREEN)
+                GameResult.HUNTER_QUIT -> Component.text("Hunter Quit!").color(NamedTextColor.DARK_RED)
+                GameResult.ABORT -> Component.text("Abort!").color(NamedTextColor.DARK_RED)
+            }
+        )
 
         event.game.allPlayers.forEach {
             it.sendMessage(message)

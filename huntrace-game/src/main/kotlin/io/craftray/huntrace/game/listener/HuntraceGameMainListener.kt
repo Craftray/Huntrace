@@ -4,6 +4,7 @@ import io.craftray.huntrace.game.Game
 import io.craftray.huntrace.game.GameResult
 import io.craftray.huntrace.game.event.HuntraceGameInventoryClickEvent
 import io.craftray.huntrace.game.event.HuntraceGameSelectTargetEvent
+import org.bukkit.Material
 import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.Action
@@ -69,12 +70,16 @@ class HuntraceGameMainListener(private val game: Game) : HuntraceGameListener() 
      * If a hunter right click compass, select the target for him
      * @author Kylepoops
      */
+    @Suppress("ReturnCount")
     @EventHandler
     fun onCompassUse(event: PlayerInteractEvent) {
         if (event.player.world !in game.worlds || event.player !in game.hunters) {
             return
         }
         if (event.action != Action.RIGHT_CLICK_AIR && event.action != Action.RIGHT_CLICK_BLOCK) {
+            return
+        }
+        if (event.item?.type != Material.COMPASS) {
             return
         }
 
@@ -85,7 +90,7 @@ class HuntraceGameMainListener(private val game: Game) : HuntraceGameListener() 
     @EventHandler
     fun onInventoryClick(event: InventoryClickEvent) {
         if (event.whoClicked.world in game.worlds) {
-            HuntraceGameInventoryClickEvent(game, event)
+            HuntraceGameInventoryClickEvent(game, event).callEvent()
         }
     }
 }
