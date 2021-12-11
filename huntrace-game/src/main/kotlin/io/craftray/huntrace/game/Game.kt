@@ -6,7 +6,7 @@ import io.craftray.huntrace.game.collection.InternalMutableSet
 import io.craftray.huntrace.game.collection.PlayerDataCollection
 import io.craftray.huntrace.game.collection.WorldCollection
 import io.craftray.huntrace.game.event.HuntraceGameFinishEvent
-import io.craftray.huntrace.game.event.HuntraceGameHunterQuitEvent
+import io.craftray.huntrace.game.event.HuntraceGamePlayerQuitEvent
 import io.craftray.huntrace.game.event.HuntraceGameStartEvent
 import io.craftray.huntrace.game.listener.HuntraceGameMainListener
 import io.craftray.huntrace.game.listener.HuntraceGamePrepareStateListener
@@ -54,6 +54,9 @@ class Game(rules: RuleSet) {
     val spectators
         get() = this.players.spectators
 
+    val allPlayers
+        get() = this.survivors + this.hunters + this.spectators
+
     /**
      * Initialize a io.craftray.huntrace.game
      * Generate three dimension, setup CompassUpdater, GameWorldController and GameResultMatcher
@@ -62,10 +65,12 @@ class Game(rules: RuleSet) {
      */
     fun init(): Game {
         val start = System.currentTimeMillis()
+        // lots of checking
         check(this.state == State.WAITING) { "Game is already initialized" }
         this.rules = this.rules.immutableCopy()
         this.hunterTargets = HunterTargetCollection(this)
         this.worldController = GameWorldController(this)
+        // we don't want other class to modify the world collection
         this.worlds = this.worldController.generateWorlds()
         this.worldController.linkWorlds()
         this.compassUpdater = CompassUpdater(this)
@@ -85,7 +90,10 @@ class Game(rules: RuleSet) {
     fun start(): Game {
         val start = System.currentTimeMillis()
         check(this.state == State.INITIALIZED) { "Game is not initialized" }
+        // lock the player collection to prevent modification after the game is started to prevent issues
+        // except for spectators
         this.players.lock()
+        // store the player's location, and we'll teleport them back after the game is finished
         this.players.storeLocation()
         runningGame.add(this)
         this.teleportTo()
@@ -106,7 +114,10 @@ class Game(rules: RuleSet) {
      */
     private fun prepare() {
         check(this.state == State.PREPARING) { "Game is not preparing" }
+        // an external listener running only during the preparing state
+        // it should cancel any interaction for a certain time
         this.prepareListener = HuntraceGamePrepareStateListener(this).also { it.register() }
+        // should be rewritten with a better way
         bukkitRunnableOf {
             this.prepareListener.unregister()
             this.state = State.RUNNING
@@ -153,6 +164,7 @@ class Game(rules: RuleSet) {
     fun quit(player: Player): Boolean {
         check(this.state == State.RUNNING) { "Game is not started" }
 
+        // prevent any team from being empty
         return if (player in this.survivors && this.survivors.size <= 1) {
             this.finish(GameResult.SURVIVOR_QUIT)
             true
@@ -162,12 +174,16 @@ class Game(rules: RuleSet) {
         } else if (player in this.hunters && this.hunters.size > 1) {
             player.teleport(this.players.getPreviousLocation(player))
             this.removeHunter(player)
-            thread(true) { HuntraceGameHunterQuitEvent(this, player).callEvent() }
+            thread(true) { HuntraceGamePlayerQuitEvent(this, player).callEvent() }
             true
         } else if (player in this.survivors && this.survivors.size > 1) {
             player.teleport(this.players.getPreviousLocation(player))
             this.removeSurvivor(player)
-            thread(true) { HuntraceGameHunterQuitEvent(this, player).callEvent() }
+            thread(true) { HuntraceGamePlayerQuitEvent(this, player).callEvent() }
+            true
+        } else if (player in this.spectators) {
+            this.removeSpectator(player)
+            thread(true) { HuntraceGamePlayerQuitEvent(this, player).callEvent() }
             true
         } else {
             false
@@ -188,13 +204,13 @@ class Game(rules: RuleSet) {
 
         if (player in this.hunters) {
             check(this.hunters.size != 1) {
-                "Can't turn player to a spectator when there is only one hunter"
+                "Can't turn player to a spectator when there is only one hunter" // and that's time to finish the game
             }
             this.removeHunter(player)
             this.addSpectator(player)
         } else if (player in this.survivors) {
             check(this.survivors.size != 1) {
-                "Can't turn player to a spectator when there is only one survivor"
+                "Can't turn player to a spectator when there is only one survivor" // ^
             }
             this.removeSurvivor(player)
             this.addSpectator(player)
@@ -247,6 +263,7 @@ class Game(rules: RuleSet) {
      */
     @Throws(IllegalStateException::class)
     fun removeHunter(player: Player) {
+        // otherwise, the compass will continue to track
         this.compassUpdater.stopTrackFor(player)
         this.players.removeHunter(player)
     }

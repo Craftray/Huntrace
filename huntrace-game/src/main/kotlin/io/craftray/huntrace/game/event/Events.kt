@@ -15,6 +15,8 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 
+// currently, using events for game state management
+// maybe should rewrite with our own implementation
 abstract class HuntraceGameEvent(val game: Game, async: Boolean) : Event(async) {
     constructor(game: Game) : this(game, false)
 }
@@ -46,10 +48,10 @@ class HuntraceGameStartEvent(game: Game) : HuntraceGameEvent(game, true) {
 }
 
 /**
- * Thrown after a player joins a game
+ * Thrown after a player quits a game
  * @author Kylepoops
  */
-class HuntraceGameHunterQuitEvent(game: Game, val player: Player) : HuntraceGameEvent(game, true) {
+class HuntraceGamePlayerQuitEvent(game: Game, val player: Player) : HuntraceGameEvent(game, true) {
     override fun getHandlers() = handlerList
 
     companion object {

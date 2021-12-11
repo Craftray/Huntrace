@@ -21,13 +21,13 @@ class EnumTypeArgumentParser<C, T : Enum<*>>(private val type: Class<T>) : Argum
             @Suppress("TYPE_MISMATCH_WARNING")
             val type = java.lang.Enum.valueOf(type, input.uppercase()) as T
             ArgumentParseResult.success(type)
-        } catch (ex: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             ArgumentParseResult.failure(
                 InvalidSyntaxException(
                     type.enumConstants.joinToString(", "),
                     context.sender as Any,
                     context.currentArgument?.let { listOf(it) } ?: listOf()
-                ).also { it.initCause(ex) }
+                ) // .also { it.initCause(ex) }
             )
         }
     }

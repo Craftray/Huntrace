@@ -24,10 +24,12 @@ object MultiverseWorldManager {
      * @param theEnd the end
      */
     fun linkWorlds(overworld: World, nether: World, theEnd: World) {
+        // respawn location
         overworld.toMVWorld().setRespawnToWorld(overworld.name)
         nether.toMVWorld().setRespawnToWorld(overworld.name)
         theEnd.toMVWorld().setRespawnToWorld(overworld.name)
 
+        // link each of them
         MultiverseManager.MVNP.run {
             this.addWorldLink(overworld.name, nether.name, PortalType.NETHER)
             this.addWorldLink(nether.name, overworld.name, PortalType.NETHER)
@@ -81,6 +83,7 @@ object MultiverseWorldManager {
      * @param nether the nether
      * @param theEnd the end
      */
+    // should I leave the args here..?
     @Suppress("UNUSED_PARAMETER")
     fun unlinkInventories(overworld: World, nether: World, theEnd: World) {
         MultiverseManager.MVInv.run {

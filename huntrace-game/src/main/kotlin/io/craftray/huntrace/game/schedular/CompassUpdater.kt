@@ -66,6 +66,7 @@ class CompassUpdater(val game: Game) {
      * @author Kylepoops
      */
     private fun initTrack() {
+        // create a runnable for every hunter
         for (hunter in this.hunters) {
             val run = bukkitRunnableOf {
                 if (hunter in deceptionList || hunter.world !in worlds) {
@@ -99,6 +100,7 @@ class CompassUpdater(val game: Game) {
             this.trackRunnableMap[hunter] = run
         }
 
+        // then start them
         trackRunnableMap.forEach {
             it.value.runTaskTimer(Game.plugin, 600, rule.updateInterval)
         }
@@ -148,6 +150,7 @@ class CompassUpdater(val game: Game) {
         this.deceptionRunnable.runTaskTimer(Game.plugin, 600, rule.updateInterval)
     }
 
+    // literally give each of them a compass
     private fun initHunter(hunter: Player) = hunter.inventory.addItem(ItemStack(Material.COMPASS))
 
     private fun initHunters() = this.hunters.forEach(::initHunter)

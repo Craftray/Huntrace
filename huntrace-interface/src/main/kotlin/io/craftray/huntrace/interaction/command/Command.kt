@@ -4,14 +4,17 @@ import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
 import io.craftray.huntrace.Utils.bukkitRunnableOf
+import io.craftray.huntrace.game.Game
 import io.craftray.huntrace.interaction.GameSetting
 import io.craftray.huntrace.interaction.InteractionBase
 import io.craftray.huntrace.interaction.invitation.Invitation
 import io.craftray.huntrace.interaction.invitation.InvitationManager
 import io.craftray.huntrace.interaction.invitation.InvitationType
 import io.craftray.huntrace.interaction.text.InviteMessageBuilder
+import io.craftray.huntrace.objects.Spawnpoint
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import org.bukkit.Bukkit
 import org.bukkit.WorldType
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -38,7 +41,7 @@ object Command {
     @CommandMethod("huntrace world seed <input>")
     fun seedCommand(
         sender: CommandSender,
-        @Argument("input") input: String
+        @Argument("input", description = "the seed") input: String
     ) {
         if (sender !is Player) {
             sender.sendMessage(Component.text("[Huntrace] Game can only be configured by player").color(NamedTextColor.RED))
@@ -47,6 +50,58 @@ object Command {
         } else {
             settingMap[sender]!!.worldRule.seed = input
             sender.sendMessage(Component.text("[Huntrace] You have set the seed of the game: $input").color(NamedTextColor.GREEN))
+        }
+    }
+
+    @CommandDescription("Set the spawnpoint of the world")
+    @CommandMethod("huntrace world spawnpoint <x> <y> <z>")
+    fun spawnpointCommand(
+        sender: CommandSender,
+        @Argument("x") x: Double,
+        @Argument("y", description = "specific y") y: Double,
+        @Argument("z") z: Double
+    ) = when {
+        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] Game can only be configured by player").color(NamedTextColor.RED))
+
+        !settingMap.containsKey(sender) -> sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
+
+        else -> {
+            Bukkit.getLogger().info(y.toString())
+            settingMap[sender]!!.worldRule.spawnpoint = Spawnpoint.at(x, y, z)
+            sender.sendMessage(Component.text("[Huntrace] You have set the spawnpoint of the game").color(NamedTextColor.GREEN))
+        }
+    }
+
+    @CommandDescription("Set the spawnpoint of the world to the highest location at the specific x and z")
+    @CommandMethod("huntrace world spawnpoint <x> highest <z>")
+    fun spawnpoint2DCommand(
+        sender: CommandSender,
+        @Argument("x") x: Double,
+        @Argument("z") z: Double
+    ) = when {
+        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] Game can only be configured by player").color(NamedTextColor.RED))
+
+        !settingMap.containsKey(sender) -> sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
+
+        else -> {
+            settingMap[sender]!!.worldRule.spawnpoint = Spawnpoint.at(x = x, z = z)
+            sender.sendMessage(Component.text("[Huntrace] You have set the spawnpoint of the game").color(NamedTextColor.GREEN))
+        }
+    }
+
+    @CommandDescription("Set whether the structure will be generate")
+    @CommandMethod("huntrace world structures <boolean>")
+    fun structuresCommand(
+        sender: CommandSender,
+        @Argument("boolean") input: Boolean
+    ) = when {
+        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] Game can only be configured by player").color(NamedTextColor.RED))
+
+        !settingMap.containsKey(sender) -> sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
+
+        else -> {
+            settingMap[sender]!!.worldRule.structures = input
+            sender.sendMessage(Component.text("[Huntrace] You have set the structure of the game: $input").color(NamedTextColor.GREEN))
         }
     }
 
@@ -131,6 +186,20 @@ object Command {
             creator.sendMessage(
                 Component.text("[Huntrace] ${sender.name} has denied your invitation").color(NamedTextColor.RED)
             )
+        }
+    }
+
+    @CommandDescription("Quit the game")
+    @CommandMethod("huntrace quit")
+    fun quitCommand(sender: CommandSender) = when {
+        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] game can only be quit by player").color(NamedTextColor.RED))
+
+        Game.findGameByPlayerOrNull(sender)?.state != Game.State.RUNNING ->
+            sender.sendMessage(Component.text("[Huntrace] You are not in a running game").color(NamedTextColor.RED))
+
+        else -> {
+            Game.getGameByPlayer(sender).quit(sender)
+            sender.sendMessage(Component.text("[Huntrace] You have quit the game").color(NamedTextColor.GREEN))
         }
     }
 

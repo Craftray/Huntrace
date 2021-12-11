@@ -4,6 +4,7 @@ import io.craftray.huntrace.objects.Spawnpoint
 import org.bukkit.World
 import org.bukkit.WorldType
 
+// wrapped the MultiverseCore#createWorld method to prevent null arguments
 @Suppress("LocalVariableName", "PrivatePropertyName", "VariableNaming")
 class MultiverseWorldBuilder(private val name: String) {
     private val MVCore = MultiverseManager.MVCore
@@ -21,7 +22,7 @@ class MultiverseWorldBuilder(private val name: String) {
     fun build(): World {
         MVCore.mvWorldManager.addWorld(name, environment, seed, type, generateStructures, null)
         val MVWorld = MVCore.mvWorldManager.getMVWorld(name)
-        if (spawnpoint.isSet()) { MVWorld.spawnLocation = spawnpoint.get() }
-        return MVWorld.cbWorld!!
+        if (spawnpoint.isSet()) { MVWorld.spawnLocation = spawnpoint.getByWorld(MVWorld.cbWorld) }
+        return MVWorld.cbWorld
     }
 }

@@ -25,14 +25,13 @@ internal data class GameSetting(
     fun isReady() = hunters.isNotEmpty() && survivors.isNotEmpty()
 
     fun build(): Game {
-        if (!this::game.isInitialized) {
-            this.game = GameBuilder()
-                .withRule(compassRule)
-                .withRule(worldRule)
-                .withHunters(hunters)
-                .withSurvivors(survivors)
-                .build()
-        }
-        return game
+        check(isReady()) { "GameSetting is not ready" }
+        check(!this::game.isInitialized) { "Game has already been built" }
+        return GameBuilder()
+            .withRule(compassRule)
+            .withRule(worldRule)
+            .withHunters(hunters)
+            .withSurvivors(survivors)
+            .build()
     }
 }

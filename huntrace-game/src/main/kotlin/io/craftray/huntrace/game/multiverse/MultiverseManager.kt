@@ -20,6 +20,7 @@ object MultiverseManager {
         val inv = Bukkit.getServer().pluginManager.getPlugin("Multiverse-Inventories") as? MultiverseInventories?
         val np = Bukkit.getServer().pluginManager.getPlugin("Multiverse-NetherPortals") as? MultiverseNetherPortals?
 
+        // check if multiverses are obtained properly
         if (core != null && inv != null && np != null) {
             MVCore = core
             MVInv = inv
