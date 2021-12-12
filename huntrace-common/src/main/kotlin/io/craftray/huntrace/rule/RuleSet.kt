@@ -52,13 +52,13 @@ class ImmutableRuleSet(
 ) : RuleSet(worldRule, compassRule) {
     override var worldRule: WorldRule
         get() = super.worldRule
-        set(value) {
+        set(@Suppress("UNUSED_PARAMETER") value) {
             throw IllegalStateException("Cannot change immutable rule set")
         }
 
     override var compassRule: CompassRule
         get() = super.compassRule
-        set(value) {
+        set(@Suppress("UNUSED_PARAMETER") value) {
             throw IllegalStateException("Cannot change immutable rule set")
         }
 

@@ -1,6 +1,6 @@
 name: Huntrace
 main: io.craftray.huntrace.taboolib.platform.BukkitPlugin
-version: 1.0.0-SNAPSHOT
+version: 0.0.1-SNAPSHOT
 
 authors:
   - '小白'

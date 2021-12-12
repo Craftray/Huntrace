@@ -8,6 +8,8 @@ plugins {
     id("io.gitlab.arturbosch.detekt") version "1.19.0"
 }
 
+version = "0.0.1-SNAPSHOT"
+
 taboolib {
     options("skip-kotlin")
     options("skip-kotlin-relocate")
