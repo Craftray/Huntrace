@@ -3,6 +3,7 @@ package io.craftray.huntrace.interaction.command
 import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandDescription
 import cloud.commandframework.annotations.CommandMethod
+import cloud.commandframework.annotations.specifier.Range
 import io.craftray.huntrace.Utils.bukkitRunnableOf
 import io.craftray.huntrace.game.Game
 import io.craftray.huntrace.interaction.GameSetting
@@ -11,6 +12,7 @@ import io.craftray.huntrace.interaction.invitation.Invitation
 import io.craftray.huntrace.interaction.invitation.InvitationManager
 import io.craftray.huntrace.interaction.invitation.InvitationType
 import io.craftray.huntrace.interaction.text.InviteMessageBuilder
+import io.craftray.huntrace.objects.Distance
 import io.craftray.huntrace.objects.Spawnpoint
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -86,6 +88,22 @@ object Command {
         else -> {
             settingMap[sender]!!.worldRule.spawnpoint = Spawnpoint.at(x = x, z = z)
             sender.sendMessage(Component.text("[Huntrace] You have set the spawnpoint of the game").color(NamedTextColor.GREEN))
+        }
+    }
+
+    @CommandDescription("Set the maximum distance of tracking")
+    @CommandMethod("huntrace compass distance <distance>")
+    fun distanceCommand(
+        sender: CommandSender,
+        @Argument("distance", description = "the distance") @Range(min = "1", max = "10000000") distance: Long
+    ) = when {
+        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] Game can only be configured by player").color(NamedTextColor.RED))
+
+        !settingMap.containsKey(sender) -> sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
+
+        else -> {
+            settingMap[sender]!!.compassRule.distanceLimit = Distance.limited(distance)
+            sender.sendMessage(Component.text("[Huntrace] You have set the distance of the compass: $distance").color(NamedTextColor.GREEN))
         }
     }
 

@@ -57,6 +57,7 @@ allprojects {
     tasks.withType<KotlinCompile> {
         kotlinOptions {
             freeCompilerArgs = listOf("-Xlambdas=indy")
+            jvmTarget = "16"
         }
     }
 }
