@@ -55,5 +55,5 @@ object Main : Plugin() {
     }
 
     private fun isJava16AndAbove() =
-        kotlin.runCatching { Runtime.version() compareTo Runtime.Version.parse("16") > 0 }.getOrDefault(false)
+        kotlin.runCatching { Runtime.version() compareTo Runtime.Version.parse("16") >= 0 }.getOrDefault(false)
 }

@@ -1,7 +1,12 @@
 package io.craftray.huntrace
 
+import net.kyori.adventure.text.Component
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.World
+import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.scheduler.BukkitRunnable
 import kotlin.math.sqrt
 
@@ -15,6 +20,15 @@ object Utils {
                 block()
             }
         }
+    }
+
+    fun skullOf(player: Player): ItemStack {
+        val head = ItemStack(Material.PLAYER_HEAD)
+        val meta = (head.itemMeta as SkullMeta).apply {
+            owningPlayer = player
+            displayName(Component.text(player.name))
+        }
+        return head.apply { itemMeta = meta }
     }
 
     // return a random boolean with specific chance

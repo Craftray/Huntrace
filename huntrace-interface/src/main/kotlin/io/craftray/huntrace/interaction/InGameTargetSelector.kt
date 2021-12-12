@@ -1,5 +1,6 @@
 package io.craftray.huntrace.interaction
 
+import io.craftray.huntrace.Utils
 import io.craftray.huntrace.Utils.bukkitRunnableOf
 import io.craftray.huntrace.game.event.HuntraceGameInventoryClickEvent
 import io.craftray.huntrace.game.event.HuntraceGameSelectTargetEvent
@@ -9,7 +10,6 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
-import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import taboolib.common.platform.event.SubscribeEvent
 
@@ -45,22 +45,13 @@ object InGameTargetSelector {
         override fun getInventory() = Bukkit.createInventory(this, 0, Component.empty())
     }
 
-    class GUI(val title: String) {
+    class GUI(private val title: String) {
         lateinit var survivors: Collection<Player>
 
+        @Suppress("SpreadOperator")
         fun build(): Inventory {
-            return Bukkit.createInventory(Holder(), 54, Component.text(title)).also { inv ->
-                survivors.map { player ->
-                    return@map ItemStack(Material.PLAYER_HEAD).apply {
-                        itemMeta = itemMeta.also { meta ->
-                            meta as SkullMeta
-                            meta.owningPlayer = player
-                        }
-                    }
-                }.forEach {
-                    inv.addItem(it)
-                }
-            }
+            val inv = Bukkit.createInventory(Holder(), 54, Component.text(title))
+            return inv.apply { addItem(*survivors.map(Utils::skullOf).toTypedArray()) }
         }
     }
 
