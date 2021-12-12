@@ -1,18 +1,20 @@
 package io.craftray.huntrace
 
 import net.kyori.adventure.text.Component
-import org.bukkit.Location
-import org.bukkit.Material
-import org.bukkit.World
+import org.bukkit.*
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.scheduler.BukkitRunnable
 import kotlin.math.sqrt
 
+@Suppress("unused")
 object Utils {
     const val OVERWORLD_TO_NETHER_MULTIPLIER = 0.125
     const val NETHER_TO_OVERWORLD_MULTIPLIER = 8.0
+
+    val ItemStack.owningPlayer: Player?
+        get() = (itemMeta as? SkullMeta)?.owningPlayer?.toPlayer()
 
     inline fun bukkitRunnableOf(crossinline block: () -> Unit): BukkitRunnable {
         return object : BukkitRunnable() {
@@ -30,6 +32,8 @@ object Utils {
         }
         return head.apply { itemMeta = meta }
     }
+
+    fun OfflinePlayer.toPlayer() = this.name?.let { Bukkit.getPlayerExact(it) }
 
     // return a random boolean with specific chance
     fun randomBoolean(chance: Float) = Math.random() < chance

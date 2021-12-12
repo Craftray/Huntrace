@@ -283,6 +283,7 @@ object Command {
         else -> {
             bukkitRunnableOf {
                 settingMap[sender]!!.build().init().start()
+                settingMap.remove(sender)
             }.runTask(InteractionBase.plugin)
             sender.sendMessage(Component.text("[Huntrace] Game has started").color(NamedTextColor.GREEN))
         }

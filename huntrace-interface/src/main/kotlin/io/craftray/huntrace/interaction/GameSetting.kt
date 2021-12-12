@@ -22,8 +22,18 @@ internal data class GameSetting(
         }
     }
 
+    /**
+     * Check whether the setting is fully initialized
+     * @return true if the setting is fully initialized
+     */
     fun isReady() = hunters.isNotEmpty() && survivors.isNotEmpty()
 
+    /**
+     * Build the game by this setting
+     * @return the built game
+     * @exception IllegalStateException if the setting is not fully initialized
+     * @exception IllegalStateException if the game is already built
+     */
     fun build(): Game {
         check(isReady()) { "GameSetting is not ready" }
         check(!this::game.isInitialized) { "Game has already been built" }

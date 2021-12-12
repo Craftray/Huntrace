@@ -2,6 +2,7 @@ package io.craftray.huntrace.interaction
 
 import io.craftray.huntrace.Utils
 import io.craftray.huntrace.Utils.bukkitRunnableOf
+import io.craftray.huntrace.Utils.owningPlayer
 import io.craftray.huntrace.game.event.HuntraceGameInventoryClickEvent
 import io.craftray.huntrace.game.event.HuntraceGameSelectTargetEvent
 import net.kyori.adventure.text.Component
@@ -10,7 +11,6 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
-import org.bukkit.inventory.meta.SkullMeta
 import taboolib.common.platform.event.SubscribeEvent
 
 @Suppress("unused")
@@ -30,13 +30,9 @@ object InGameTargetSelector {
         val inventory = event.inventory
         if (inventory.holder is Holder) {
             event.isCancelled = true
-            val player = event.player
             val item = event.currentItem
             if (item.type == Material.PLAYER_HEAD) {
-                val meta = item.itemMeta as? SkullMeta ?: return
-                meta.owningPlayer?.name?.let { Bukkit.getPlayer(it) }?.let {
-                    event.game.setTarget(player, it)
-                }
+                item.owningPlayer?.let { event.game.setTarget(event.player, it) }
             }
         }
     }

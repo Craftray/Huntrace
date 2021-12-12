@@ -27,6 +27,9 @@ object Main : Plugin() {
         Game.runningGame.forEach(Game::abort)
     }
 
+    /**
+     * Warn if the plugin is running on spigot, outdated java or outdated Minecraft versions
+     */
     private fun warnCompatibility() {
         if (!isJava16AndAbove()) {
             Bukkit.getLogger().warning("---------------OUTDATED JAVA VERSION DETECTED---------------")
@@ -54,6 +57,10 @@ object Main : Plugin() {
         }
     }
 
+    /**
+     * Checks if the current Java version is at least Java 16
+     * @return true if the current Java version is at least Java 16
+     */
     private fun isJava16AndAbove() =
         kotlin.runCatching { Runtime.version() compareTo Runtime.Version.parse("16") >= 0 }.getOrDefault(false)
 }
