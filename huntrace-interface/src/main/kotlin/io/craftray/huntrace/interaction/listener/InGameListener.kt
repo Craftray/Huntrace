@@ -22,8 +22,7 @@ object InGameListener {
 
     @SubscribeEvent
     fun onGameFinish(event: HuntraceGameFinishEvent) {
-        val message = Component.text("[Huntrace] Game Finished: ")
-        message.append(
+        val message = Component.text("[Huntrace] Game Finished: ").append(
             when (event.result) {
                 GameResult.HUNTER_WIN -> Component.text("Hunter Win!").color(NamedTextColor.DARK_RED)
                 GameResult.SURVIVOR_WIN -> Component.text("Survivor Win!").color(NamedTextColor.DARK_GREEN)
@@ -41,7 +40,7 @@ object InGameListener {
     @SubscribeEvent
     fun onCompassUpdate(event: HuntraceGameCompassUpdateEvent) {
         event.hunter.sendActionBar(
-            Component.text("[Huntrace] You are now tracking").color(NamedTextColor.DARK_AQUA)
+            Component.text("[Huntrace] You are now tracking: ").color(NamedTextColor.DARK_AQUA)
                 .append(Component.text(event.target.name).color(NamedTextColor.DARK_GRAY))
         )
     }

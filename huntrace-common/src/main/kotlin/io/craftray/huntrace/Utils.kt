@@ -8,7 +8,7 @@ import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.scheduler.BukkitRunnable
 import kotlin.math.sqrt
 
-@Suppress("unused")
+@Suppress("unused", "MemberVisibilityCanBePrivate")
 object Utils {
     const val OVERWORLD_TO_NETHER_MULTIPLIER = 0.125
     const val NETHER_TO_OVERWORLD_MULTIPLIER = 8.0

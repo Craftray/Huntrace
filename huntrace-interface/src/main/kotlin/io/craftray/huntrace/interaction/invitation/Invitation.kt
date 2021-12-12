@@ -28,5 +28,10 @@ enum class InvitationType {
     /**
      * Invite as a hunter
      */
-    HUNTER
+    HUNTER;
+
+    override fun toString() = when (this) {
+        SURVIVOR -> "Survivor"
+        HUNTER -> "Hunter"
+    }
 }

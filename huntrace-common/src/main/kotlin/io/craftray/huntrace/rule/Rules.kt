@@ -4,13 +4,15 @@ import io.craftray.huntrace.objects.Distance
 import io.craftray.huntrace.objects.Spawnpoint
 import org.bukkit.WorldType
 import java.io.Serializable
+import kotlin.random.Random
 
 sealed interface Rule
 
 data class WorldRule(
     var type: WorldType = WorldType.NORMAL,
     var spawnpoint: Spawnpoint = Spawnpoint.default(),
-    var seed: String? = null,
+    // seems like Multiverse will generate exactly the same world if we didn't specify the seed
+    var seed: String? = Random.Default.nextLong().toString(),
     var structures: Boolean = true
 ) : Rule, Serializable {
     companion object {

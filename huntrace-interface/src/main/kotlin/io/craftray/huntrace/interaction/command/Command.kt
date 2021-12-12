@@ -193,12 +193,17 @@ object Command {
         sender: CommandSender,
         @Argument("type") type: InvitationType,
         @Argument("target") target: Player
-    ) {
-        if (sender !is Player) {
-            sender.sendMessage(Component.text("[Huntrace] game can only be configured by player").color(NamedTextColor.RED))
-        } else if (!settingMap.containsKey(sender)) {
-            sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
-        } else {
+    ) = when {
+        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] game can only be configured by player").color(NamedTextColor.RED))
+
+        !settingMap.containsKey(sender) -> sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
+
+        target == sender -> {
+            settingMap[sender]!!.addPlayer(sender, type)
+            sender.sendMessage(Component.text("[Huntrace] You have invited yourself to the game as a $type").color(NamedTextColor.GREEN))
+        }
+
+        else -> {
             InvitationManager.invitations.add(Invitation(sender, target, type))
             target.sendMessage(InviteMessageBuilder.of(sender))
             sender.sendMessage(Component.text("[Huntrace] You have invited ${target.name} as $type to the game").color(NamedTextColor.GREEN))

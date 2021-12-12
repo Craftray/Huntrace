@@ -4,6 +4,7 @@ import io.craftray.huntrace.game.Game
 import io.craftray.huntrace.interaction.InteractionBase
 import io.papermc.lib.PaperLib
 import org.bukkit.Bukkit
+import org.bukkit.event.HandlerList
 import taboolib.common.platform.Plugin
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.SecuredFile
@@ -23,8 +24,17 @@ object Main : Plugin() {
         InteractionBase.init(plugin)
     }
 
+    @Suppress("TooGenericExceptionThrown")
     override fun onDisable() {
+        // abort all running game
         Game.runningGame.forEach(Game::abort)
+        // There's shouldn't be any tasks left, so check it again and throw an exception for each of them
+        Bukkit.getScheduler().pendingTasks.filter { it.owner == plugin }.forEach {
+            throw RuntimeException("Task still running: " + it.taskId)
+        }
+        // Double check
+        Bukkit.getScheduler().cancelTasks(plugin)
+        HandlerList.unregisterAll(plugin)
     }
 
     /**
