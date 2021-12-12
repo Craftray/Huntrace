@@ -4,6 +4,7 @@ import io.craftray.huntrace.game.collection.WorldCollection
 import io.craftray.huntrace.game.multiverse.MultiverseWorldBuilder
 import io.craftray.huntrace.game.multiverse.MultiverseWorldManager
 import io.craftray.huntrace.game.multiverse.MultiverseWorldManager.delete
+import org.bukkit.Bukkit
 import org.bukkit.World
 
 class GameWorldController(private val game: Game) {
@@ -66,6 +67,9 @@ class GameWorldController(private val game: Game) {
     fun deleteWorlds() = game.worlds.run {
         check(generated) { "Worlds have not been generated" }
         check(!deleted) { "Worlds have already been deleted" }
+        Bukkit.unloadWorld(this.overworld, false)
+        Bukkit.unloadWorld(this.nether, false)
+        Bukkit.unloadWorld(this.theEnd, false)
         this.overworld.delete()
         this.nether.delete()
         this.theEnd.delete()

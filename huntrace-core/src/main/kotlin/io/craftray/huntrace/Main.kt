@@ -26,8 +26,8 @@ object Main : Plugin() {
 
     @Suppress("TooGenericExceptionThrown")
     override fun onDisable() {
-        // abort all running game
-        Game.runningGame.forEach(Game::abort)
+        // abort all running game and run all remain tasks in FreeTimeTaskScheduler
+        Game.free()
         // There's shouldn't be any tasks left, so check it again and throw an exception for each of them
         Bukkit.getScheduler().pendingTasks.filter { it.owner == plugin }.forEach {
             throw RuntimeException("Task still running: " + it.taskId)

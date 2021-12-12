@@ -1,4 +1,4 @@
-package io.craftray.huntrace.game.schedular
+package io.craftray.huntrace.game.scheduler
 
 import io.craftray.huntrace.Utils
 import io.craftray.huntrace.Utils.bukkitRunnableOf

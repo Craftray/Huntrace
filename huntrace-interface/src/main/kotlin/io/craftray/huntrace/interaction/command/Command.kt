@@ -198,6 +198,12 @@ object Command {
 
         !settingMap.containsKey(sender) -> sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
 
+        target in settingMap[sender]!!.hunters ->
+            sender.sendMessage(Component.text("[Huntrace] $target is already in the game as a Hunter").color(NamedTextColor.RED))
+
+        target in settingMap[sender]!!.survivors ->
+            sender.sendMessage(Component.text("[Huntrace] $target is already in the game as a Survivor").color(NamedTextColor.RED))
+
         target == sender -> {
             settingMap[sender]!!.addPlayer(sender, type)
             sender.sendMessage(Component.text("[Huntrace] You have invited yourself to the game as a $type").color(NamedTextColor.GREEN))

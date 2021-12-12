@@ -20,7 +20,7 @@ class MultiverseWorldBuilder(private val name: String) {
      * @return the built world
      */
     fun build(): World {
-        MVCore.mvWorldManager.addWorld(name, environment, seed, type, generateStructures, null)
+        MVCore.mvWorldManager.addWorld(name, environment, seed, type, generateStructures, null, false)
         val MVWorld = MVCore.mvWorldManager.getMVWorld(name)
         if (spawnpoint.isSet()) { MVWorld.spawnLocation = spawnpoint.getByWorld(MVWorld.cbWorld) }
         return MVWorld.cbWorld

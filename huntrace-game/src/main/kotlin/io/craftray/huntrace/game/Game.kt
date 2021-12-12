@@ -11,7 +11,8 @@ import io.craftray.huntrace.game.event.HuntraceGameStartEvent
 import io.craftray.huntrace.game.listener.HuntraceGameMainListener
 import io.craftray.huntrace.game.listener.HuntraceGamePrepareStateListener
 import io.craftray.huntrace.game.multiverse.MultiverseManager
-import io.craftray.huntrace.game.schedular.CompassUpdater
+import io.craftray.huntrace.game.scheduler.CompassUpdater
+import io.craftray.huntrace.game.scheduler.FreeTimeTaskScheduler
 import io.craftray.huntrace.rule.RuleSet
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
@@ -294,17 +295,13 @@ class Game(rules: RuleSet) {
     fun removeSurvivor(player: Player) = this.players.removeSurvivor(player)
 
     /**
-     * Teleport the player to their previous location
-     */
-    internal fun teleportFrom(player: Player) = player.teleport(players.getPreviousLocation(player))
-    /**
      * teleport all players to the location before the io.craftray.huntrace.game start
      * @author Kylepoops
      */
     private fun teleportFrom() {
-        this.survivors.forEach(::teleportFrom)
-        this.hunters.forEach(::teleportFrom)
-        this.spectators.forEach(::teleportFrom)
+        this.survivors.forEach { it.teleport(players.getPreviousLocation(it)) }
+        this.hunters.forEach { it.teleport(players.getPreviousLocation(it)) }
+        this.spectators.forEach { it.teleport(players.getPreviousLocation(it)) }
     }
 
     /**
@@ -391,7 +388,13 @@ class Game(rules: RuleSet) {
          */
         fun init(plugin: Plugin) {
             this.plugin = plugin
+            FreeTimeTaskScheduler.init()
             MultiverseManager.initMultiverse()
+        }
+
+        fun free() {
+            runningGame.forEach(Game::abort)
+            FreeTimeTaskScheduler.forceRun()
         }
 
         /**

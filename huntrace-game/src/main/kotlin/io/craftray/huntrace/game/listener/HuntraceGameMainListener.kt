@@ -25,13 +25,14 @@ class HuntraceGameMainListener(private val game: Game) : HuntraceGameListener() 
     @EventHandler
     fun onPlayerDeath(event: PlayerDeathEvent) {
         when (event.entity) {
-            in this.game.hunters -> event.itemsToKeep.addAll(event.entity.inventory.filter { it.type == Material.COMPASS })
+            in this.game.hunters -> event.itemsToKeep.addAll(event.entity.inventory.filter { it?.type == Material.COMPASS })
 
             in this.game.survivors -> {
                 if (this.game.survivors.size == 1) {
-                    // if the player was killed by command, they will still alive until the game is finished
+                    // if the player was killed and hasn't respawned, they will still alive until the game is finished
                     // which will result in issues
-                    this.game.teleportFrom(event.entity)
+                    event.isCancelled = true
+                    event.entity.health = 1.0
                     this.game.finish(GameResult.HUNTER_WIN)
                 } else {
                     this.game.turnToSpectator(event.entity)

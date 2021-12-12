@@ -16,6 +16,13 @@ object Utils {
     val ItemStack.owningPlayer: Player?
         get() = (itemMeta as? SkullMeta)?.owningPlayer?.toPlayer()
 
+    inline fun <T> MutableCollection<T>.forEachPoll(action: (T) -> Unit) {
+        for (element in this) {
+            action(element)
+            this.remove(element)
+        }
+    }
+
     inline fun bukkitRunnableOf(crossinline block: () -> Unit): BukkitRunnable {
         return object : BukkitRunnable() {
             override fun run() {

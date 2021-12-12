@@ -1,6 +1,7 @@
 package io.craftray.huntrace.game.multiverse
 
 import com.onarandombox.multiverseinventories.share.Sharables
+import io.craftray.huntrace.io.deepDeleteAsync
 import org.bukkit.PortalType
 import org.bukkit.World
 
@@ -15,7 +16,7 @@ object MultiverseWorldManager {
      * Delete the world
      * @author Kylepoops
      */
-    fun World.delete() = MultiverseManager.MVCore.mvWorldManager.deleteWorld(this.name)
+    fun World.delete() = worldFolder.deepDeleteAsync()
 
     /**
      * Link the three dimensions' gateway

@@ -15,7 +15,16 @@ internal data class GameSetting(
 ) {
     private lateinit var game: Game
 
+    /**
+     * Add a player to the setting by type
+     * @param player The player to add
+     * @param type The type that the player will be added to
+     * @exception IllegalStateException If the player is already in the setting
+     */
     fun addPlayer(player: Player, type: InvitationType) {
+        if (player in hunters || player in survivors) {
+            error("Player ${player.name} is already in the game")
+        }
         when (type) {
             InvitationType.HUNTER -> hunters.add(player)
             InvitationType.SURVIVOR -> survivors.add(player)
