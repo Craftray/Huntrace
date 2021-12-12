@@ -58,7 +58,7 @@ class Game(rules: RuleSet) {
         get() = this.survivors + this.hunters + this.spectators
 
     /**
-     * Initialize a io.craftray.huntrace.game
+     * Initialize a game
      * Generate three dimension, setup CompassUpdater, GameWorldController and GameResultMatcher
      * @author Kylepoops
      * @return the game for call chaining
@@ -108,7 +108,7 @@ class Game(rules: RuleSet) {
     }
 
     /**
-     * Prepare a io.craftray.huntrace.game and turn it to running state after 10s
+     * Prepare a game and turn it to running state after 10s
      * @author Kylepoops
      * @exception IllegalStateException if the io.craftray.huntrace.game is not preparing
      */
@@ -125,7 +125,7 @@ class Game(rules: RuleSet) {
     }
 
     /**
-     * Finish a io.craftray.huntrace.game
+     * Finish a game
      * @author Kylepoops
      * @exception IllegalStateException if the io.craftray.huntrace.game is not started
      */
@@ -294,12 +294,17 @@ class Game(rules: RuleSet) {
     fun removeSurvivor(player: Player) = this.players.removeSurvivor(player)
 
     /**
+     * Teleport the player to their previous location
+     */
+    internal fun teleportFrom(player: Player) = player.teleport(players.getPreviousLocation(player))
+    /**
      * teleport all players to the location before the io.craftray.huntrace.game start
      * @author Kylepoops
      */
     private fun teleportFrom() {
-        this.survivors.forEach { it.teleport(players.getPreviousLocation(it)) }
-        this.hunters.forEach { it.teleport(players.getPreviousLocation(it)) }
+        this.survivors.forEach(::teleportFrom)
+        this.hunters.forEach(::teleportFrom)
+        this.spectators.forEach(::teleportFrom)
     }
 
     /**

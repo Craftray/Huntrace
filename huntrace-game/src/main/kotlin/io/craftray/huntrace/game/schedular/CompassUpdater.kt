@@ -7,6 +7,7 @@ import io.craftray.huntrace.Utils.transformWorld
 import io.craftray.huntrace.game.Game
 import io.craftray.huntrace.game.event.HuntraceGameCompassUpdateEvent
 import io.craftray.huntrace.game.event.HuntraceGameCompassUpdateEvent.Result
+import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.entity.Player
@@ -91,8 +92,11 @@ class CompassUpdater(val game: Game) {
                 for (item in hunter.inventory) {
                     if (item?.type == Material.COMPASS) {
                         val compass = item.itemMeta as org.bukkit.inventory.meta.CompassMeta
-                        compass.lodestone = target.location.transformWorld(hunter.world)
-                        item.itemMeta = compass
+                        item.itemMeta = compass.apply {
+                            isLodestoneTracked = false
+                            lodestone = target.location.transformWorld(hunter.world)
+                            displayName(Component.text("Tracker of ${target.name}"))
+                        }
                         thread(true) { HuntraceGameCompassUpdateEvent(game, Result.SUCCESS, hunter).callEvent() }
                     }
                 }

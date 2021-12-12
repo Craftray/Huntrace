@@ -24,11 +24,19 @@ class HuntraceGameMainListener(private val game: Game) : HuntraceGameListener() 
      */
     @EventHandler
     fun onPlayerDeath(event: PlayerDeathEvent) {
-        if (event.entity !in this.game.survivors) return
-        if (this.game.survivors.size == 1) {
-            this.game.finish(GameResult.HUNTER_WIN)
-        } else {
-            this.game.turnToSpectator(event.entity)
+        when (event.entity) {
+            in this.game.hunters -> event.itemsToKeep.addAll(event.entity.inventory.filter { it.type == Material.COMPASS })
+
+            in this.game.survivors -> {
+                if (this.game.survivors.size == 1) {
+                    // if the player was killed by command, they will still alive until the game is finished
+                    // which will result in issues
+                    this.game.teleportFrom(event.entity)
+                    this.game.finish(GameResult.HUNTER_WIN)
+                } else {
+                    this.game.turnToSpectator(event.entity)
+                }
+            }
         }
     }
 
@@ -42,6 +50,15 @@ class HuntraceGameMainListener(private val game: Game) : HuntraceGameListener() 
             this.game.finish(GameResult.SURVIVOR_WIN)
         }
     }
+
+//    @EventHandler
+//    fun onPlayerRespawn(event: PlayerRespawnEvent) {
+//        if (event.player.world in game.worlds && event.player in game.hunters) {
+//            bukkitRunnableOf {
+//                event.player.inventory.addItem(ItemStack(Material.COMPASS))
+//            }.runTaskLater(Game.plugin, 60)
+//        }
+//    }
 
     /**
      * If the survivor quit, finish the io.craftray.huntrace.game with result of survivor quit.
