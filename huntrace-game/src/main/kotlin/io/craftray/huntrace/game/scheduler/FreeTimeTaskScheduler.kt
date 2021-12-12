@@ -9,6 +9,7 @@ import taboolib.common.platform.event.SubscribeEvent
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.concurrent.thread
 
+@Suppress("unused")
 object FreeTimeTaskScheduler {
     private val tasks = ConcurrentLinkedQueue<Runnable>()
     private var initialized = false
@@ -39,7 +40,7 @@ object FreeTimeTaskScheduler {
 
     fun schedule(task: Runnable) = tasks.add(task)
 
-    fun forceRun() {
+    fun forceRunAndStop() {
         thread.interrupt()
         tasks.forEach(Runnable::run)
         tasks.clear()

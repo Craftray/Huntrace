@@ -394,7 +394,7 @@ class Game(rules: RuleSet) {
 
         fun free() {
             runningGame.forEach(Game::abort)
-            FreeTimeTaskScheduler.forceRun()
+            FreeTimeTaskScheduler.forceRunAndStop()
         }
 
         /**
