@@ -5,7 +5,7 @@ import io.craftray.huntrace.objects.Spawnpoint
 import org.bukkit.WorldType
 import java.io.Serializable
 
-interface Rule
+sealed interface Rule
 
 data class WorldRule(
     var type: WorldType = WorldType.NORMAL,

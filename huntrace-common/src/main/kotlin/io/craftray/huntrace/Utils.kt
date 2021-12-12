@@ -9,9 +9,11 @@ object Utils {
     const val OVERWORLD_TO_NETHER_MULTIPLIER = 0.125
     const val NETHER_TO_OVERWORLD_MULTIPLIER = 8.0
 
-    inline fun bukkitRunnableOf(crossinline block: () -> Unit) = object : BukkitRunnable() {
-        override fun run() {
-            block()
+    inline fun bukkitRunnableOf(crossinline block: () -> Unit): BukkitRunnable {
+        return object : BukkitRunnable() {
+            override fun run() {
+                block()
+            }
         }
     }
 

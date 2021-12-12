@@ -10,6 +10,7 @@ import io.craftray.huntrace.interaction.invitation.InvitationType
 import org.bukkit.WorldType
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.Plugin
+import java.util.function.Function
 
 /**
  * Base class of interaction
@@ -27,8 +28,8 @@ object InteractionBase {
         val manager = PaperCommandManager(
             plugin,
             CommandExecutionCoordinator.simpleCoordinator(),
-            { it }, // Command sender mapping, we can just use the original one
-            { it } // mapping back
+            Function.identity(), // Command sender mapping, we can just use the original one
+            Function.identity() // mapping back
         )
         EnumTypeArgumentParser.register(InvitationType::class.java)
         // register WorldType too

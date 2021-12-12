@@ -107,6 +107,54 @@ object Command {
         }
     }
 
+    @CommandDescription("Set whether the cross world tracking is enabled")
+    @CommandMethod("huntrace compass crossworldtrack <boolean>")
+    fun crossWorldTrackCommand(
+        sender: CommandSender,
+        @Argument("boolean", description = "whether the cross world tracking is enabled") value: Boolean
+    ) = when {
+        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] Game can only be configured by player").color(NamedTextColor.RED))
+
+        !settingMap.containsKey(sender) -> sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
+
+        else -> {
+            settingMap[sender]!!.compassRule.crossWorldTrack = value
+            sender.sendMessage(Component.text("[Huntrace] You have set the cross world tracking of the compass: $value").color(NamedTextColor.GREEN))
+        }
+    }
+
+    @CommandDescription("Set whether the deception of tracking is enabled")
+    @CommandMethod("huntrace compass deception <boolean>")
+    fun deceptionCommand(
+        sender: CommandSender,
+        @Argument("boolean", description = "whether the deception of tracking is enabled") value: Boolean
+    ) = when {
+        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] Game can only be configured by player").color(NamedTextColor.RED))
+
+        !settingMap.containsKey(sender) -> sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
+
+        else -> {
+            settingMap[sender]!!.compassRule.deception = value
+            sender.sendMessage(Component.text("[Huntrace] You have set the deception of the compass: $value").color(NamedTextColor.GREEN))
+        }
+    }
+
+    @CommandDescription("Set the update interval of compasses")
+    @CommandMethod("huntrace compass interval <interval>")
+    fun updateIntervalCommand(
+        sender: CommandSender,
+        @Argument("interval", description = "the update interval") @Range(min = "20", max = "1000") interval: Long
+    ) = when {
+        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] Game can only be configured by player").color(NamedTextColor.RED))
+
+        !settingMap.containsKey(sender) -> sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
+
+        else -> {
+            settingMap[sender]!!.compassRule.updateInterval = interval
+            sender.sendMessage(Component.text("[Huntrace] You have set the update interval of the compass: $interval").color(NamedTextColor.GREEN))
+        }
+    }
+
     @CommandDescription("Set whether the structure will be generate")
     @CommandMethod("huntrace world structures <boolean>")
     fun structuresCommand(

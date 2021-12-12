@@ -65,5 +65,5 @@ object InGameTargetSelector {
     }
 
     @Suppress("SameParameterValue")
-    private fun buildMenu(title: String, init: GUI.() -> Unit) = GUI(title).apply(init).build()
+    private inline fun buildMenu(title: String, init: GUI.() -> Unit) = GUI(title).apply(init).build()
 }
