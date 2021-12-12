@@ -11,27 +11,27 @@ plugins {
 taboolib {
     options("skip-kotlin")
     options("skip-kotlin-relocate")
-    // options("skip-env")
+    options("skip-plugin-file")
     version = "6.0.4-7"
 
-    description {
-        contributors {
-            name("小白").description("Huntrace")
-            name("Kylepoops")
-        }
-
-        dependencies {
-            name("Multiverse-Core")
-            name("Multiverse-Inventories")
-            name("Multiverse-NetherPortals")
-        }
-
-        bukkitApi("1.17")
-
-        bukkitNodes = mapOf(
-            "libraries" to listOf("org.jetbrains.kotlin:kotlin-stdlib:1.6.0")
-        )
-    }
+//    description {
+//        contributors {
+//            name("小白").description("Huntrace")
+//            name("Kylepoops")
+//        }
+//
+//        dependencies {
+//            name("Multiverse-Core")
+//            name("Multiverse-Inventories")
+//            name("Multiverse-NetherPortals")
+//        }
+//
+//        bukkitApi("1.17")
+//
+//        bukkitNodes = mapOf(
+//            "libraries" to listOf("org.jetbrains.kotlin:kotlin-stdlib:1.6.0")
+//        )
+//    }
 }
 
 repositories {
@@ -51,7 +51,7 @@ allprojects {
          * So we need to wait for it to be fixed.
          * Additionally, plugin.yml file also seems to disappear accidentally.
          */
-        duplicatesStrategy = DuplicatesStrategy.WARN
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 
     tasks.withType<KotlinCompile> {
@@ -86,6 +86,7 @@ subprojects {
         options("skip-kotlin")
         options("skip-kotlin-relocate")
         options("skip-env")
+        options("skip-plugin-file")
         exclude("taboolib")
         version = "6.0.4-7"
     }

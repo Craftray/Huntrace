@@ -1,0 +1,17 @@
+name: Huntrace
+main: io.craftray.huntrace.taboolib.platform.BukkitPlugin
+version: 1.0.0-SNAPSHOT
+
+authors:
+  - '小白'
+  - 'Kylepoops'
+
+depend:
+  - Multiverse-Core
+  - Multiverse-Inventories
+  - Multiverse-NetherPortals
+
+api-version: 1.17
+
+libraries:
+  - 'org.jetbrains.kotlin:kotlin-stdlib:1.6.0'
