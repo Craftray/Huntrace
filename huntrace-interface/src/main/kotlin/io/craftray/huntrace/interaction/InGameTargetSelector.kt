@@ -12,15 +12,13 @@ import org.bukkit.inventory.InventoryHolder
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import taboolib.common.platform.event.SubscribeEvent
-import taboolib.module.ui.Menu
-import taboolib.module.ui.buildMenu
 
 @Suppress("unused")
 object InGameTargetSelector {
     @SubscribeEvent
     fun onSelect(event: HuntraceGameSelectTargetEvent) {
         val survivors = event.game.survivors
-        val menu = buildMenu<GUI>("Select Target") {
+        val menu = buildMenu("Select Target") {
             this.survivors = survivors
         }
         // InventoryOpenEvent can only be triggered synchronously
@@ -47,11 +45,11 @@ object InGameTargetSelector {
         override fun getInventory() = Bukkit.createInventory(this, 0, Component.empty())
     }
 
-    class GUI(title: String) : Menu(title) {
+    class GUI(val title: String) {
         lateinit var survivors: Collection<Player>
 
-        override fun build(): Inventory {
-            return Bukkit.createInventory(Holder(), 54, Component.text("Select target")).also { inv ->
+        fun build(): Inventory {
+            return Bukkit.createInventory(Holder(), 54, Component.text(title)).also { inv ->
                 survivors.map { player ->
                     return@map ItemStack(Material.PLAYER_HEAD).apply {
                         itemMeta = itemMeta.also { meta ->
@@ -65,4 +63,7 @@ object InGameTargetSelector {
             }
         }
     }
+
+    @Suppress("SameParameterValue")
+    private fun buildMenu(title: String, init: GUI.() -> Unit) = GUI(title).apply(init).build()
 }
