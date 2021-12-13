@@ -7,9 +7,10 @@ import java.util.concurrent.Future
 val executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())!!
 
 /**
- * Delete the directory and all its contents asynchronously
+ * Delete the directory and all its contents asynchronously.<br/>
+ * if you need to wait for the deletion to complete, pass in a set here and use Set#forEach(Future<*>::get).
  * @param await whether to wait for the deletion to complete
- * @param futures if you need to wait for the deletion to complete, pass in a set here and use Set#forEach(Future<*>::get)
+ * @param futures the future set to store future in
  */
 fun File.deepDeleteAsync(await: Boolean = false, futures: MutableSet<Future<*>> = mutableSetOf()) {
     // first submit the task and get the future
