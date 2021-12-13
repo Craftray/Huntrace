@@ -4,6 +4,7 @@ package io.craftray.huntrace.game.collection
  * A set that is backed by another mutable set but can be modified only in this module
  * @author Kylepoops
  */
+@Suppress("unused")
 class InternalMutableSet<T> : Set<T> {
     private val _set = mutableSetOf<T>()
 

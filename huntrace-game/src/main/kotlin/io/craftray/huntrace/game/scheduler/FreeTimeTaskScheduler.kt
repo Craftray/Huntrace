@@ -1,23 +1,24 @@
 package io.craftray.huntrace.game.scheduler
 
-import io.craftray.huntrace.Utils.bukkitRunnableOf
-import io.craftray.huntrace.game.Game
+import io.craftray.huntrace.absctract.HuntraceLifeCircle
+import io.craftray.huntrace.util.runnable.BukkitRunnableWrapper
 import org.bukkit.Bukkit
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.plugin.Plugin
 import taboolib.common.platform.event.SubscribeEvent
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.concurrent.thread
 
 @Suppress("unused")
-object FreeTimeTaskScheduler {
+object FreeTimeTaskScheduler : HuntraceLifeCircle {
     private val tasks = ConcurrentLinkedQueue<Runnable>()
     private var initialized = false
     private var start = false
     private lateinit var thread: Thread
 
     @SubscribeEvent
-    fun onPlayerQuit(@Suppress("UnusedPrivateMember") event: PlayerQuitEvent) {
+    fun onPlayerQuit(event: PlayerQuitEvent) {
         if (Bukkit.getOnlinePlayers().filterNot { it == event.player }.isEmpty()) {
             start = true
         }
@@ -28,21 +29,24 @@ object FreeTimeTaskScheduler {
         start = false
     }
 
-    fun init() {
-        check(!initialized) { "FreeTimeTaskScheduler is already initialized" }
-        thread = thread(true) {
-            while (!Thread.interrupted()) {
-                if (start && tasks.isNotEmpty()) bukkitRunnableOf { tasks.poll().run() }.runTask(Game.plugin)
-            }
-        }
-        initialized = true
-    }
-
     fun schedule(task: Runnable) = tasks.add(task)
 
-    fun forceRunAndStop() {
+    private fun forceRunAndStop() {
         thread.interrupt()
         tasks.forEach(Runnable::run)
         tasks.clear()
     }
+
+    override fun onLoad(plugin: Plugin) {
+        check(!initialized) { "FreeTimeTaskScheduler is already initialized" }
+        thread = thread(true) {
+            while (!Thread.interrupted()) {
+                if (start && tasks.isNotEmpty()) BukkitRunnableWrapper.submit { tasks.poll().run() }
+            }
+        }
+        initialized = true
+        super.onLoad(plugin)
+    }
+
+    override fun onDestroy() = forceRunAndStop()
 }

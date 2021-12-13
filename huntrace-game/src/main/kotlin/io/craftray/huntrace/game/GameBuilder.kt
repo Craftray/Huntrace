@@ -1,11 +1,12 @@
 package io.craftray.huntrace.game
 
-import io.craftray.huntrace.rule.CompassRule
-import io.craftray.huntrace.rule.RuleSet
-import io.craftray.huntrace.rule.WorldRule
+import io.craftray.huntrace.util.rule.CompassRule
+import io.craftray.huntrace.util.rule.RuleSet
+import io.craftray.huntrace.util.rule.WorldRule
 import org.bukkit.entity.Player
 import kotlin.jvm.Throws
 
+@Suppress("unused")
 class GameBuilder {
     private lateinit var worldRule: WorldRule
     private lateinit var compassRule: CompassRule
@@ -94,7 +95,7 @@ class GameBuilder {
     }
 
     /**
-     * Build a io.craftray.huntrace.game with given values
+     * Build a game with given values
      * @exception IllegalStateException if the builder is not fully initialized
      * @return the io.craftray.huntrace.game
      */

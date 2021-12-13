@@ -1,6 +1,6 @@
 package io.craftray.huntrace.game.multiverse
 
-import io.craftray.huntrace.objects.Spawnpoint
+import io.craftray.huntrace.util.objects.Spawnpoint
 import org.bukkit.World
 import org.bukkit.WorldType
 

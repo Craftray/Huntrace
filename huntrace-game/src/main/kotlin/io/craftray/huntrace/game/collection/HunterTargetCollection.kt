@@ -1,7 +1,7 @@
 package io.craftray.huntrace.game.collection
 
-import io.craftray.huntrace.Utils.literalDistanceOf
 import io.craftray.huntrace.game.Game
+import io.craftray.huntrace.util.BasicUtils.literal2DDistanceOf
 import org.bukkit.entity.Player
 
 class HunterTargetCollection(val game: Game) {
@@ -27,10 +27,11 @@ class HunterTargetCollection(val game: Game) {
      * @exception IllegalStateException if hunter is not in io.craftray.huntrace.game
      * @exception IllegalStateException if no survivors are found
      */
+    @Suppress("MemberVisibilityCanBePrivate")
     fun nearestSurvivorOf(hunter: Player): Player {
         check(game.state == Game.State.RUNNING || game.state == Game.State.PREPARING) { "Game is not running" }
         val hunterLoc = hunter.location
-        val nearest = game.survivors.minByOrNull { hunterLoc.literalDistanceOf(it.location) }
+        val nearest = game.survivors.minByOrNull { hunterLoc.literal2DDistanceOf(it.location) }
         return checkNotNull(nearest) { "No survivor found" }
     }
 }

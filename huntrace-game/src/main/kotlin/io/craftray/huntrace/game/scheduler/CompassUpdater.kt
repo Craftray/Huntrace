@@ -1,27 +1,29 @@
 package io.craftray.huntrace.game.scheduler
 
-import io.craftray.huntrace.Utils
-import io.craftray.huntrace.Utils.bukkitRunnableOf
-import io.craftray.huntrace.Utils.literalDistanceOf
-import io.craftray.huntrace.Utils.transformWorld
+import io.craftray.huntrace.absctract.HuntraceLifeCircle
 import io.craftray.huntrace.game.Game
 import io.craftray.huntrace.game.event.HuntraceGameCompassUpdateEvent
 import io.craftray.huntrace.game.event.HuntraceGameCompassUpdateEvent.Result
+import io.craftray.huntrace.util.BasicUtils
+import io.craftray.huntrace.util.BasicUtils.literal2DDistanceOf
+import io.craftray.huntrace.util.BasicUtils.transformWorld
+import io.craftray.huntrace.util.runnable.BukkitRunnableWrapper
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.scheduler.BukkitRunnable
+import org.bukkit.plugin.Plugin
+import org.bukkit.scheduler.BukkitTask
 import kotlin.concurrent.thread
 import kotlin.random.Random
 
 @Suppress("PrivatePropertyName")
-class CompassUpdater(val game: Game) {
+class CompassUpdater(val game: Game) : HuntraceLifeCircle {
     private val rule = game.rules.compassRule
-    private val trackRunnableMap = mutableMapOf<Player, BukkitRunnable>()
-    private lateinit var deceptionFindRunnable: BukkitRunnable
-    private lateinit var deceptionRunnable: BukkitRunnable
+    private val trackTaskMap = mutableMapOf<Player, BukkitTask>()
+    private lateinit var deceptionFindRunnable: BukkitTask
+    private lateinit var deceptionRunnable: BukkitTask
     private val deceptionList = mutableListOf<Player>()
     private val targets = game.hunterTargets
     private val hunters = game.hunters
@@ -32,19 +34,21 @@ class CompassUpdater(val game: Game) {
      * Start the updater
      * @author Kylepoops
      */
-    fun start() {
+    override fun onLoad(plugin: Plugin) {
         check(!started) { "CompassUpdater is already started" }
         this.initHunters()
         this.initTrack()
         if (this.rule.deception) { this.initDeception() }
         this.started = true
+        // we don't need to call super.onLoad(plugin) here
+        // cause this instance is component of Game
     }
 
     /**
      * Stop the updater
      * @author Kylepoops
      */
-    fun stop() {
+    override fun onDestroy() {
         check(started) { "CompassUpdater is not started" }
         this.stopTrack()
         if (this.rule.deception) { this.stopDeception() }
@@ -56,10 +60,10 @@ class CompassUpdater(val game: Game) {
      * @param player The player to stop tracking
      */
     fun stopTrackFor(player: Player) {
-        val run = this.trackRunnableMap[player]
+        val run = this.trackTaskMap[player]
         checkNotNull(run) { "Player is not tracking" }
         run.cancel()
-        this.trackRunnableMap.remove(player)
+        this.trackTaskMap.remove(player)
     }
 
     /**
@@ -69,9 +73,9 @@ class CompassUpdater(val game: Game) {
     private fun initTrack() {
         // create a runnable for every hunter
         for (hunter in this.hunters) {
-            val run = bukkitRunnableOf {
+            val run = BukkitRunnableWrapper.submitTimer(600L, rule.updateInterval) {
                 if (hunter in deceptionList || hunter.world !in worlds) {
-                    return@bukkitRunnableOf
+                    return@submitTimer
                 }
                 val target = targets.targetOf(hunter)
                 if (!rule.crossWorldTrack && hunter.world != target.world) {
@@ -82,12 +86,12 @@ class CompassUpdater(val game: Game) {
                 ) {
                     restoreCompass(hunter.inventory.itemInMainHand)
                     thread(true) { HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent() }
-                    return@bukkitRunnableOf
+                    return@submitTimer
                 }
-                val distance = hunter.location.literalDistanceOf(target.location)
+                val distance = hunter.location.literal2DDistanceOf(target.location)
                 if (!this.isDistanceValid(distance)) {
                     thread(true) { HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent() }
-                    return@bukkitRunnableOf
+                    return@submitTimer
                 }
                 for (item in hunter.inventory) {
                     if (item?.type == Material.COMPASS) {
@@ -101,12 +105,8 @@ class CompassUpdater(val game: Game) {
                     }
                 }
             }
-            this.trackRunnableMap[hunter] = run
-        }
 
-        // then start them
-        trackRunnableMap.forEach {
-            it.value.runTaskTimer(Game.plugin, 600, rule.updateInterval)
+            this.trackTaskMap[hunter] = run
         }
     }
 
@@ -115,9 +115,9 @@ class CompassUpdater(val game: Game) {
      * @author Kylepoops
      */
     private fun initDeception() {
-        this.deceptionFindRunnable = bukkitRunnableOf {
+        this.deceptionFindRunnable = BukkitRunnableWrapper.submitTimerAsync(600L, rule.updateInterval) {
             for (hunter in hunters) {
-                if (!Utils.randomBoolean(0.10F)) {
+                if (!BasicUtils.randomBoolean(0.10F)) {
                     break
                 }
 
@@ -130,13 +130,13 @@ class CompassUpdater(val game: Game) {
                     }
                 }
 
-                bukkitRunnableOf {
+                BukkitRunnableWrapper.submitDelayedAsync(300L) {
                     this.deceptionList.remove(hunter)
-                }.runTaskLaterAsynchronously(Game.plugin, 300)
+                }
             }
         }
 
-        this.deceptionRunnable = bukkitRunnableOf {
+        this.deceptionRunnable = BukkitRunnableWrapper.submitTimerAsync(600, rule.updateInterval) {
             for (hunter in deceptionList) {
                 for (item in hunter.inventory) {
                     if (item?.type == Material.COMPASS) {
@@ -148,10 +148,6 @@ class CompassUpdater(val game: Game) {
                 }
             }
         }
-
-        this.deceptionFindRunnable.runTaskTimerAsynchronously(Game.plugin, 600, rule.updateInterval)
-
-        this.deceptionRunnable.runTaskTimer(Game.plugin, 600, rule.updateInterval)
     }
 
     // literally give each of them a compass
@@ -168,7 +164,7 @@ class CompassUpdater(val game: Game) {
         }
     }
 
-    private fun stopTrack() = this.trackRunnableMap.forEach {
+    private fun stopTrack() = this.trackTaskMap.forEach {
         it.value.cancel()
     }
 

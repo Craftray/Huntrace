@@ -3,9 +3,11 @@ package io.craftray.huntrace.game.multiverse
 import com.onarandombox.MultiverseCore.MultiverseCore
 import com.onarandombox.MultiverseNetherPortals.MultiverseNetherPortals
 import com.onarandombox.multiverseinventories.MultiverseInventories
+import io.craftray.huntrace.absctract.HuntraceLifeCircle
 import org.bukkit.Bukkit
+import org.bukkit.plugin.Plugin
 
-object MultiverseManager {
+object MultiverseManager : HuntraceLifeCircle {
     lateinit var MVCore: MultiverseCore
     lateinit var MVInv: MultiverseInventories
     lateinit var MVNP: MultiverseNetherPortals
@@ -29,4 +31,11 @@ object MultiverseManager {
             throw IllegalArgumentException("Cannot initialize Multiverse")
         }
     }
+
+    override fun onLoad(plugin: Plugin) {
+        initMultiverse()
+        super.onLoad(plugin)
+    }
+
+    override fun onDestroy() = Unit
 }

@@ -1,6 +1,6 @@
 package io.craftray.huntrace.game
 
-import io.craftray.huntrace.Utils.bukkitRunnableOf
+import io.craftray.huntrace.absctract.HuntraceLifeCircle
 import io.craftray.huntrace.game.collection.HunterTargetCollection
 import io.craftray.huntrace.game.collection.InternalMutableSet
 import io.craftray.huntrace.game.collection.PlayerDataCollection
@@ -13,7 +13,8 @@ import io.craftray.huntrace.game.listener.HuntraceGamePrepareStateListener
 import io.craftray.huntrace.game.multiverse.MultiverseManager
 import io.craftray.huntrace.game.scheduler.CompassUpdater
 import io.craftray.huntrace.game.scheduler.FreeTimeTaskScheduler
-import io.craftray.huntrace.rule.RuleSet
+import io.craftray.huntrace.util.rule.RuleSet
+import io.craftray.huntrace.util.runnable.BukkitRunnableWrapper
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.entity.Player
@@ -37,8 +38,10 @@ class Game(rules: RuleSet) {
     var state = State.WAITING
         private set
 
+    @Suppress("MemberVisibilityCanBePrivate")
     var startTime by Delegates.notNull<Long>()
         private set
+    @Suppress("MemberVisibilityCanBePrivate")
     var endTime by Delegates.notNull<Long>()
         private set
     lateinit var worlds: WorldCollection
@@ -50,6 +53,7 @@ class Game(rules: RuleSet) {
 
     val hunters by this.players::hunters
 
+    @Suppress("MemberVisibilityCanBePrivate")
     val spectators by this.players::spectators
 
     val allPlayers
@@ -96,7 +100,7 @@ class Game(rules: RuleSet) {
         runningGame.add(this)
         this.teleportTo()
         this.turnGameModeTo()
-        this.compassUpdater.start()
+        this.compassUpdater.onLoad(plugin)
         this.startTime = System.currentTimeMillis()
         thread(true) { HuntraceGameStartEvent(this).callEvent() }
         this.state = State.PREPARING
@@ -116,10 +120,10 @@ class Game(rules: RuleSet) {
         // it should cancel any interaction for a certain time
         this.prepareListener = HuntraceGamePrepareStateListener(this).also { it.register() }
         // should be rewritten with a better way
-        bukkitRunnableOf {
+        BukkitRunnableWrapper.submitDelayed(200L) {
             this.prepareListener.unregister()
             this.state = State.RUNNING
-        }.runTaskLater(plugin, 200L)
+        }
     }
 
     /**
@@ -130,11 +134,11 @@ class Game(rules: RuleSet) {
     @JvmName("-finish")
     internal fun finish(result: GameResult) {
         val start = System.currentTimeMillis()
-        check(this.state == State.RUNNING) { "Game is not started" }
+        check(state.isStarted) { "Game is not started" }
         this.mainListener.unregister()
         this.turnGameModeFrom()
         this.teleportFrom()
-        this.compassUpdater.stop()
+        this.compassUpdater.onDestroy()
         this.worldController.unlinkWorlds()
         this.worldController.deleteWorlds()
         this.endTime = System.currentTimeMillis()
@@ -160,7 +164,7 @@ class Game(rules: RuleSet) {
      */
     @Throws(IllegalStateException::class)
     fun quit(player: Player): Boolean {
-        check(this.state == State.RUNNING) { "Game is not started" }
+        check(state.isStarted) { "Game is not started" }
 
         // prevent any team from being empty
         return if (player in this.survivors && this.survivors.size <= 1) {
@@ -196,7 +200,7 @@ class Game(rules: RuleSet) {
      */
     @JvmName("-turnToSpectator")
     internal fun turnToSpectator(player: Player) {
-        check(this.state == State.RUNNING) {
+        check(state.isStarted) {
             "Can turn player to a spectator only when the io.craftray.huntrace.game is running"
         }
 
@@ -248,7 +252,7 @@ class Game(rules: RuleSet) {
      * remove a spectator from the io.craftray.huntrace.game
      * @author Kylepoops
      * @param player the hunter to remove
-     * @exception IllegalStateException if the io.craftray.huntrace.game is started and they is the only online spectator
+     * @exception IllegalStateException if the game is started, and they are the only online spectator
      */
     @Throws(IllegalStateException::class)
     fun removeSpectator(player: Player) = this.players.removeSpectator(player)
@@ -257,7 +261,7 @@ class Game(rules: RuleSet) {
      * remove a hunter from the io.craftray.huntrace.game
      * @author Kylepoops
      * @param player the hunter to remove
-     * @exception IllegalStateException if the game is started and they is the only online hunter
+     * @exception IllegalStateException if the game is started, and they are the only online hunter
      */
     @Throws(IllegalStateException::class)
     fun removeHunter(player: Player) {
@@ -276,7 +280,7 @@ class Game(rules: RuleSet) {
      * @exception IllegalArgumentException if the target is not a survivor
      */
     fun setTarget(hunter: Player, target: Player) {
-        check(state == State.RUNNING) { "Can set target only on a running game" }
+        check(state.isStarted) { "Can set target only on a running game" }
         check(hunter in hunters) { "player to set the target must be a hunter" }
         require(target in survivors) { "target must be a survivor" }
         this.hunterTargets.setTarget(hunter, target)
@@ -286,7 +290,7 @@ class Game(rules: RuleSet) {
      * remove a survivor from the io.craftray.huntrace.game
      * @author Kylepoops
      * @param player the hunter to remove
-     * @exception IllegalStateException if the io.craftray.huntrace.game is started and they is the only online survivor
+     * @exception IllegalStateException if the io.craftray.huntrace.game is started, and they are the only online survivor
      */
     @Throws(IllegalStateException::class)
     fun removeSurvivor(player: Player) = this.players.removeSurvivor(player)
@@ -370,10 +374,13 @@ class Game(rules: RuleSet) {
         INITIALIZED,
         PREPARING,
         RUNNING,
-        FINISHED
+        FINISHED;
+
+        val isStarted: Boolean
+            get() = this == RUNNING || this == PREPARING
     }
 
-    companion object {
+    companion object : HuntraceLifeCircle {
         val runningGame = InternalMutableSet<Game>()
 
         internal lateinit var plugin: Plugin
@@ -383,15 +390,15 @@ class Game(rules: RuleSet) {
          * @author Kylepoops
          * @param plugin the plugin instance
          */
-        fun init(plugin: Plugin) {
+        override fun onLoad(plugin: Plugin) {
             this.plugin = plugin
-            FreeTimeTaskScheduler.init()
-            MultiverseManager.initMultiverse()
+            FreeTimeTaskScheduler.onLoad(plugin)
+            MultiverseManager.onLoad(plugin)
+            super.onLoad(plugin)
         }
 
-        fun free() {
+        override fun onDestroy() {
             runningGame.forEach(Game::abort)
-            FreeTimeTaskScheduler.forceRunAndStop()
         }
 
         /**

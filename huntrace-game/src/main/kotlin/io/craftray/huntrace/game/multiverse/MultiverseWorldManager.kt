@@ -1,7 +1,7 @@
 package io.craftray.huntrace.game.multiverse
 
 import com.onarandombox.multiverseinventories.share.Sharables
-import io.craftray.huntrace.io.deepDeleteAsync
+import io.craftray.huntrace.util.io.deepDeleteAsync
 import org.bukkit.PortalType
 import org.bukkit.World
 

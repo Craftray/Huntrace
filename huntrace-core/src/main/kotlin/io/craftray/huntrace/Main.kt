@@ -1,7 +1,11 @@
 package io.craftray.huntrace
 
+import io.craftray.huntrace.absctract.HuntraceLifeCircle
+import io.craftray.huntrace.absctract.loaded
 import io.craftray.huntrace.game.Game
 import io.craftray.huntrace.interaction.InteractionBase
+import io.craftray.huntrace.util.runnable.BukkitRunnableWrapper
+import io.craftray.huntrace.util.runnable.MainExecutor
 import io.papermc.lib.PaperLib
 import org.bukkit.Bukkit
 import org.bukkit.event.HandlerList
@@ -20,19 +24,15 @@ object Main : Plugin() {
 
     override fun onEnable() {
         this.warnCompatibility()
-        Game.init(plugin)
-        InteractionBase.init(plugin)
+        Game.onLoad(plugin)
+        InteractionBase.onLoad(plugin)
+        BukkitRunnableWrapper.onLoad(plugin)
+        MainExecutor.onLoad(plugin)
     }
 
-    @Suppress("TooGenericExceptionThrown")
     override fun onDisable() {
         // abort all running game and run all remain tasks in FreeTimeTaskScheduler
-        Game.free()
-        ExecutorHolder.awaitTerminationAll()
-        // There's shouldn't be any tasks left, so check it again and throw an exception for each of them
-        Bukkit.getScheduler().pendingTasks.filter { it.owner == plugin }.forEach {
-            throw RuntimeException("Task still running: " + it.taskId)
-        }
+        loaded.forEach(HuntraceLifeCircle::onDestroy)
         // Double check
         Bukkit.getScheduler().cancelTasks(plugin)
         HandlerList.unregisterAll(plugin)
