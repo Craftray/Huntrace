@@ -4,7 +4,7 @@ import java.io.File
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 
-val executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())!!
+private val executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())!!
 
 /**
  * Delete the directory and all its contents asynchronously.<br/>
