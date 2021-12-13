@@ -13,6 +13,9 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
 import taboolib.common.platform.event.SubscribeEvent
 
+/**
+ * The class for handling target selecting of hunters.
+ */
 @Suppress("unused")
 object InGameTargetSelector {
     @SubscribeEvent

@@ -2,6 +2,9 @@ package io.craftray.huntrace.interaction.invitation
 
 import org.bukkit.entity.Player
 
+/**
+ * A delegate of MutableSet<Invitation> for handling invitations.
+ */
 internal object InvitationManager {
     val invitations = mutableSetOf<Invitation>()
 

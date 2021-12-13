@@ -1,7 +1,14 @@
+@file:Suppress("unused")
+
 package io.craftray.huntrace.util.rule
 
 import java.io.Serializable
 
+/**
+ * Mutable rule set for configuring a game.
+ * @param worldRule the world rule
+ * @param compassRule the compass rule
+ */
 open class RuleSet(
     open var worldRule: WorldRule = WorldRule(),
     open var compassRule: CompassRule = CompassRule()
@@ -16,7 +23,7 @@ open class RuleSet(
     fun copy() = RuleSet(worldRule.copy(), compassRule.copy())
 
     /**
-     * Make a immutable copy of this rule set
+     * Make an immutable copy of this rule set to prevent accidental changes
      * @author Kylepoops
      * @return the copy
      */
@@ -45,7 +52,11 @@ open class RuleSet(
     }
 }
 
-@Suppress("UseCheckOrError")
+/**
+ * Immutable rule set for preventing changes during the game is running
+ * @param worldRule the world rule
+ * @param compassRule the compass rule
+ */
 class ImmutableRuleSet(
     worldRule: WorldRule,
     compassRule: CompassRule
@@ -53,13 +64,13 @@ class ImmutableRuleSet(
     override var worldRule: WorldRule
         get() = super.worldRule
         set(@Suppress("UNUSED_PARAMETER") value) {
-            throw IllegalStateException("Cannot change immutable rule set")
+            error("Cannot change immutable rule set")
         }
 
     override var compassRule: CompassRule
         get() = super.compassRule
         set(@Suppress("UNUSED_PARAMETER") value) {
-            throw IllegalStateException("Cannot change immutable rule set")
+            error("Cannot change immutable rule set")
         }
 
     override fun equals(other: Any?): Boolean {

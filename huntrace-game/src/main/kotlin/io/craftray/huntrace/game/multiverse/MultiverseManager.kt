@@ -17,7 +17,7 @@ object MultiverseManager : HuntraceLifeCircle {
      * @author: Kylepoops
      */
     @Throws(IllegalArgumentException::class)
-    fun initMultiverse() {
+    private fun initMultiverse() {
         val core = Bukkit.getServer().pluginManager.getPlugin("Multiverse-Core") as? MultiverseCore?
         val inv = Bukkit.getServer().pluginManager.getPlugin("Multiverse-Inventories") as? MultiverseInventories?
         val np = Bukkit.getServer().pluginManager.getPlugin("Multiverse-NetherPortals") as? MultiverseNetherPortals?
@@ -32,6 +32,9 @@ object MultiverseManager : HuntraceLifeCircle {
         }
     }
 
+    /**
+     * Initialize Multiverse Core, Multiverse Inventories, and Multiverse Nether Portals.
+     */
     override fun onLoad(plugin: Plugin) {
         initMultiverse()
         super.onLoad(plugin)

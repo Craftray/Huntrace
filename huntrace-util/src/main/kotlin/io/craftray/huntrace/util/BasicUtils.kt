@@ -7,6 +7,9 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import kotlin.math.sqrt
 
+/**
+ * Basic utility functions across all modules
+ */
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 object BasicUtils {
     const val OVERWORLD_TO_NETHER_MULTIPLIER = 0.125

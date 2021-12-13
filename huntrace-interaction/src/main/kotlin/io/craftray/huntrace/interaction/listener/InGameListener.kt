@@ -9,6 +9,9 @@ import net.kyori.adventure.text.format.NamedTextColor
 import taboolib.common.platform.event.SubscribeEvent
 
 @Suppress("unused")
+/**
+ * The main listener for interacting with players in the whole server
+ */
 object InGameListener {
     @SubscribeEvent
     fun onGameStart(event: HuntraceGameStartEvent) {

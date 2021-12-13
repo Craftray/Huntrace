@@ -34,8 +34,12 @@ class WorldCollection {
 
     override fun toString() = "WorldCollection(overworld=$overworld, nether=$nether, theEnd=$theEnd)"
 
+    /**
+     * Delegate to check environment of the world on setting
+     * @param env Environment to check
+     */
     private inner class TypedWorldDelegate(val env: World.Environment) {
-        lateinit var world: World
+        private lateinit var world: World
 
         operator fun getValue(thisRef: WorldCollection, property: KProperty<*>): World {
             check(::world.isInitialized) { "World \"${property.name}\" is not set" }

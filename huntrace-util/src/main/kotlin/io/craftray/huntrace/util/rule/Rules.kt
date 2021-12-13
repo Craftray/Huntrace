@@ -8,6 +8,13 @@ import kotlin.random.Random
 
 sealed interface Rule
 
+/**
+ * The world rule
+ * @param type The type of world
+ * @param spawnpoint The spawnpoint of the world
+ * @param seed The seed of the world
+ * @param structures whether the world will generate structures
+ */
 data class WorldRule(
     var type: WorldType = WorldType.NORMAL,
     var spawnpoint: Spawnpoint = Spawnpoint.default(),
@@ -20,6 +27,13 @@ data class WorldRule(
     }
 }
 
+/**
+ * The compass rule
+ * @param updateInterval The interval in ticks between compass updates
+ * @param deception whether the compass will be deceived randomly
+ * @param crossWorldTrack whether the compass will track across worlds
+ * @param distanceLimit The distance limit of the compass
+ */
 data class CompassRule(
     var updateInterval: Long = 60L,
     // var displayDistance: Boolean = false,

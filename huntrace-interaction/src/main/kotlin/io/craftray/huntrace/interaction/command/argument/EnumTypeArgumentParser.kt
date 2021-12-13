@@ -9,6 +9,10 @@ import cloud.commandframework.exceptions.parsing.NoInputProvidedException
 import io.leangen.geantyref.TypeToken
 import java.util.*
 
+/**
+ * Argument parser for enum types.<br\>
+ * Seems like cloud already implemented a parser for it, so maybe it should be removed
+ */
 class EnumTypeArgumentParser<C, T : Enum<*>>(private val type: Class<T>) : ArgumentParser<C, T> {
     override fun parse(
         context: CommandContext<C>,

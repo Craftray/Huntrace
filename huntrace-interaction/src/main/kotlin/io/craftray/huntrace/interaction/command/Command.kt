@@ -20,6 +20,9 @@ import org.bukkit.WorldType
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
+/**
+ * The command handler of the whole game.
+ */
 object Command {
     private val settingMap = HashMap<Player, GameSetting>()
 

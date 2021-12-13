@@ -4,6 +4,9 @@ import io.craftray.huntrace.absctract.HuntraceLifeCircle
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 
+/**
+ * A wrapper of BukkitRunnable to submit tasks easily
+ */
 object BukkitRunnableWrapper : HuntraceLifeCircle {
     private lateinit var plugin: Plugin
 

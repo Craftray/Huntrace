@@ -10,6 +10,11 @@ import taboolib.common.platform.event.SubscribeEvent
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.concurrent.thread
 
+/**
+ * Scheduler prepared for some hard works to prevent lag as much as possible.<br\>
+ * It will check player count whenever a player is joining or leaving the server.<br\>
+ * If the server has not server, it will start to prepare the tasks.
+ */
 @Suppress("unused")
 object FreeTimeTaskScheduler : HuntraceLifeCircle {
     private val tasks = ConcurrentLinkedQueue<Runnable>()

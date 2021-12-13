@@ -7,6 +7,9 @@ import io.craftray.huntrace.util.rule.CompassRule
 import io.craftray.huntrace.util.rule.WorldRule
 import org.bukkit.entity.Player
 
+/**
+ * Wrapped the GameBuilder again.
+ */
 internal data class GameSetting(
     var hunters: MutableSet<Player> = mutableSetOf(),
     var survivors: MutableSet<Player> = mutableSetOf(),
