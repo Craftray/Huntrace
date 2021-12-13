@@ -32,7 +32,7 @@ object FreeTimeTaskScheduler {
         check(!initialized) { "FreeTimeTaskScheduler is already initialized" }
         thread = thread(true) {
             while (!Thread.interrupted()) {
-                if (start) bukkitRunnableOf { tasks.poll().run() }.runTask(Game.plugin)
+                if (start && tasks.isNotEmpty()) bukkitRunnableOf { tasks.poll().run() }.runTask(Game.plugin)
             }
         }
         initialized = true
