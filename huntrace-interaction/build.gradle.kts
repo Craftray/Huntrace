@@ -1,4 +1,4 @@
-group = "io.craftray.huntrace"
+group = "io.craftray.huntrace.interaction"
 
 dependencies {
     compileOnly(project(":huntrace-util"))

@@ -1,4 +1,4 @@
-group = "io.craftray.huntrace"
+group = "io.craftray.huntrace.game"
 
 dependencies {
     compileOnly("com.onarandombox.multiversecore:Multiverse-Core:4.3.1")
