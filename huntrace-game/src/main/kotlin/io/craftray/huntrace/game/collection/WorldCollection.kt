@@ -49,6 +49,7 @@ class WorldCollection {
             check(value.environment == env) {
                 "Environment of world \"${property.name}\" must be \"$env\" but it is ${value.environment}"
             }
+            world = value
         }
     }
 }
