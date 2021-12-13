@@ -1,9 +1,10 @@
 package io.craftray.huntrace
 
 import io.craftray.huntrace.absctract.HuntraceLifeCircle
-import io.craftray.huntrace.absctract.loaded
+import io.craftray.huntrace.absctract.LoadedSet
 import io.craftray.huntrace.game.Game
 import io.craftray.huntrace.interaction.InteractionBase
+import io.craftray.huntrace.util.BasicUtils.pollEach
 import io.craftray.huntrace.util.runnable.BukkitRunnableWrapper
 import io.craftray.huntrace.util.runnable.MainExecutor
 import io.papermc.lib.PaperLib
@@ -32,7 +33,7 @@ object Main : Plugin() {
 
     override fun onDisable() {
         // abort all running game and run all remain tasks in FreeTimeTaskScheduler
-        loaded.forEach(HuntraceLifeCircle::onDestroy)
+        LoadedSet.pollEach(HuntraceLifeCircle::onDestroy)
         // Double check
         Bukkit.getScheduler().cancelTasks(plugin)
         HandlerList.unregisterAll(plugin)

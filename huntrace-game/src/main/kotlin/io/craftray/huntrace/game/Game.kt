@@ -100,7 +100,7 @@ class Game(rules: RuleSet) {
         runningGame.add(this)
         this.teleportTo()
         this.turnGameModeTo()
-        this.compassUpdater.onLoad(plugin)
+        this.compassUpdater.init()
         this.startTime = System.currentTimeMillis()
         thread(true) { HuntraceGameStartEvent(this).callEvent() }
         this.state = State.PREPARING
@@ -138,7 +138,7 @@ class Game(rules: RuleSet) {
         this.mainListener.unregister()
         this.turnGameModeFrom()
         this.teleportFrom()
-        this.compassUpdater.onDestroy()
+        this.compassUpdater.stop()
         this.worldController.unlinkWorlds()
         this.worldController.deleteWorlds()
         this.endTime = System.currentTimeMillis()

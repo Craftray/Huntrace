@@ -5,30 +5,28 @@ package io.craftray.huntrace.game.collection
  * @author Kylepoops
  */
 @Suppress("unused")
-class InternalMutableSet<T> : Set<T> {
-    private val _set = mutableSetOf<T>()
+class InternalMutableSet<T> private constructor(private val delegate: MutableSet<T>) : Set<T> by delegate {
 
-    override val size: Int
-        get() = _set.size
-
-    override operator fun contains(element: T) = element in _set
-
-    override fun isEmpty() = _set.isEmpty()
-
-    override fun iterator() = _set.toSet().iterator()
-
-    override fun containsAll(elements: Collection<T>) = _set.containsAll(elements)
+    constructor() : this(mutableSetOf())
 
     @JvmName("-add")
-    internal fun add(element: T) = _set.add(element)
+    internal fun add(element: T) {
+        delegate.add(element)
+    }
 
     @JvmName("-addAll")
-    internal fun addAll(elements: Collection<T>) = _set.addAll(elements)
+    internal fun addAll(elements: Collection<T>) {
+        delegate.addAll(elements)
+    }
 
     @JvmName("-remove")
-    internal fun remove(element: T) = _set.remove(element)
+    internal fun remove(element: T) {
+        delegate.remove(element)
+    }
 
     @Suppress("ConvertArgumentToSet")
     @JvmName("-removeAll")
-    internal fun removeAll(elements: Collection<T>) = _set.removeAll(elements)
+    internal fun removeAll(elements: Collection<T>) {
+        delegate.removeAll(elements)
+    }
 }

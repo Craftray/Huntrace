@@ -1,6 +1,5 @@
 package io.craftray.huntrace.game.scheduler
 
-import io.craftray.huntrace.absctract.HuntraceLifeCircle
 import io.craftray.huntrace.game.Game
 import io.craftray.huntrace.game.event.HuntraceGameCompassUpdateEvent
 import io.craftray.huntrace.game.event.HuntraceGameCompassUpdateEvent.Result
@@ -13,13 +12,12 @@ import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitTask
 import kotlin.concurrent.thread
 import kotlin.random.Random
 
 @Suppress("PrivatePropertyName")
-class CompassUpdater(val game: Game) : HuntraceLifeCircle {
+class CompassUpdater(val game: Game) {
     private val rule = game.rules.compassRule
     private val trackTaskMap = mutableMapOf<Player, BukkitTask>()
     private lateinit var deceptionFindRunnable: BukkitTask
@@ -34,21 +32,19 @@ class CompassUpdater(val game: Game) : HuntraceLifeCircle {
      * Start the updater
      * @author Kylepoops
      */
-    override fun onLoad(plugin: Plugin) {
+    fun init() {
         check(!started) { "CompassUpdater is already started" }
         this.initHunters()
         this.initTrack()
         if (this.rule.deception) { this.initDeception() }
         this.started = true
-        // we don't need to call super.onLoad(plugin) here
-        // cause this instance is component of Game
     }
 
     /**
      * Stop the updater
      * @author Kylepoops
      */
-    override fun onDestroy() {
+    fun stop() {
         check(started) { "CompassUpdater is not started" }
         this.stopTrack()
         if (this.rule.deception) { this.stopDeception() }

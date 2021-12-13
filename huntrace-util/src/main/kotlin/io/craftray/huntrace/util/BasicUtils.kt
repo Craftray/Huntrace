@@ -15,10 +15,11 @@ object BasicUtils {
     val ItemStack.owningPlayer: Player?
         get() = (itemMeta as? SkullMeta)?.owningPlayer?.toPlayer()
 
-    inline fun <T> MutableCollection<T>.forEachPoll(action: (T) -> Unit) {
-        for (element in this) {
+    inline fun <T> MutableCollection<T>.pollEach(action: (T) -> Unit) {
+        val iterator = iterator()
+        for (element in iterator) {
             action(element)
-            this.remove(element)
+            iterator.remove()
         }
     }
 
