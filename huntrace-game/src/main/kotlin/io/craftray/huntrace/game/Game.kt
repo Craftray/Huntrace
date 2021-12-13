@@ -46,14 +46,11 @@ class Game(rules: RuleSet) {
     var rules = rules
         private set
 
-    val survivors
-        get() = this.players.survivors
+    val survivors by this.players::survivors
 
-    val hunters
-        get() = this.players.hunters
+    val hunters by this.players::hunters
 
-    val spectators
-        get() = this.players.spectators
+    val spectators by this.players::spectators
 
     val allPlayers
         get() = this.survivors + this.hunters + this.spectators

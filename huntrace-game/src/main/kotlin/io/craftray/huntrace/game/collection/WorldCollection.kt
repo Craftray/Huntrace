@@ -1,57 +1,16 @@
 package io.craftray.huntrace.game.collection
 
 import org.bukkit.World
+import kotlin.reflect.KProperty
 
 // proxy for non-null type field
 @Suppress("PropertyName")
 class WorldCollection {
-    private var _overworld: World? = null
-        get() = checkNotNull(field) { "World \"overworld\" is not set" }
-        set(value) {
-            check(field == null) { "World \"overworld\" already set" }
-            require(value!!.environment == World.Environment.NORMAL) {
-                "Environment of world \"overworld\" must be \"NORMAL\" but it is ${value.environment}"
-            }
-            field = value
-        }
+    var overworld: World by TypedWorldDelegate(World.Environment.NORMAL)
 
-    private var _nether: World? = null
-        get() = checkNotNull(field) { "World \"nether\" is not set" }
-        set(value) {
-            check(field == null) { "World \"nether\" already set" }
-            require(value!!.environment == World.Environment.NETHER) {
-                "Environment of world \"nether\" must be \"NETHER\" but it is ${value.environment}"
-            }
-            field = value
-        }
+    var nether: World by TypedWorldDelegate(World.Environment.NETHER)
 
-    private var _theEnd: World? = null
-        get() = checkNotNull(field) { "World \"theEnd\" is not set" }
-        set(value) {
-            check(field == null) { "World \"theEnd\" already set" }
-            require(value!!.environment == World.Environment.THE_END) {
-                "Environment of world \"theEnd\" must be \"THE_END\" but it is ${value.environment}"
-            }
-            field = value
-        }
-
-    var overworld: World
-        get() = _overworld!!
-        set(value) {
-            _overworld = value
-        }
-
-    var nether: World
-        get() = _nether!!
-        set(value) {
-            _nether = value
-        }
-
-    var theEnd: World
-        get() = _theEnd!!
-        set(value) {
-            _theEnd = value
-        }
+    var theEnd: World by TypedWorldDelegate(World.Environment.THE_END)
 
     operator fun contains(world: World) = world == overworld || world == nether || world == theEnd
 
@@ -61,19 +20,35 @@ class WorldCollection {
 
         other as WorldCollection
 
-        if (_overworld != other._overworld) return false
-        if (_nether != other._nether) return false
-        if (_theEnd != other._theEnd) return false
+        if (overworld != other.overworld) return false
+        if (nether != other.nether) return false
+        if (theEnd != other.theEnd) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = _overworld?.hashCode() ?: 0
-        result = 31 * result + (_nether?.hashCode() ?: 0)
-        result = 31 * result + (_theEnd?.hashCode() ?: 0)
+        var result = overworld.hashCode()
+        result = 31 * result + nether.hashCode()
+        result = 31 * result + theEnd.hashCode()
         return result
     }
 
-    override fun toString() = "WorldCollection(overworld=$_overworld, nether=$_nether, theEnd=$_theEnd)"
+    override fun toString() = "WorldCollection(overworld=$overworld, nether=$nether, theEnd=$theEnd)"
+
+    private inner class TypedWorldDelegate(val env: World.Environment) {
+        lateinit var world: World
+
+        operator fun getValue(thisRef: WorldCollection, property: KProperty<*>): World {
+            check(::world.isInitialized) { "World \"${property.name}\" is not set" }
+            return world
+        }
+
+        operator fun setValue(thisRef: WorldCollection, property: KProperty<*>, value: World) {
+            check(!::world.isInitialized) { "World \"${property.name}\" already set" }
+            check(value.environment == env) {
+                "Environment of world \"${property.name}\" must be \"$env\" but it is ${value.environment}"
+            }
+        }
+    }
 }
