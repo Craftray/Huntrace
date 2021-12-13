@@ -7,7 +7,7 @@ import org.bukkit.Bukkit
 import org.bukkit.event.HandlerList
 import taboolib.common.platform.Plugin
 import taboolib.module.configuration.Config
-import taboolib.module.configuration.SecuredFile
+import taboolib.module.configuration.Configuration
 import taboolib.platform.BukkitPlugin
 import java.util.logging.Level
 
@@ -16,7 +16,7 @@ object Main : Plugin() {
     private val plugin by lazy { BukkitPlugin.getInstance() }
 
     @Config("config.yml")
-    lateinit var config: SecuredFile
+    lateinit var config: Configuration
 
     override fun onEnable() {
         this.warnCompatibility()
@@ -28,6 +28,7 @@ object Main : Plugin() {
     override fun onDisable() {
         // abort all running game and run all remain tasks in FreeTimeTaskScheduler
         Game.free()
+        ExecutorHolder.awaitTerminationAll()
         // There's shouldn't be any tasks left, so check it again and throw an exception for each of them
         Bukkit.getScheduler().pendingTasks.filter { it.owner == plugin }.forEach {
             throw RuntimeException("Task still running: " + it.taskId)

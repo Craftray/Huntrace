@@ -1,10 +1,12 @@
 package io.craftray.huntrace.io
 
+import io.craftray.huntrace.ExecutorHolder
 import java.io.File
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 
 private val executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())!!
+    .also { ExecutorHolder.add(it) }
 
 /**
  * Delete the directory and all its contents asynchronously.<br/>

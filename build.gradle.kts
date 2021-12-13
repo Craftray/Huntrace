@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     java
-    id("io.izzel.taboolib") version "1.31"
+    id("io.izzel.taboolib") version "1.32"
     id("org.jetbrains.kotlin.jvm") version "1.6.0"
     id("io.gitlab.arturbosch.detekt") version "1.19.0"
 }
@@ -14,7 +14,7 @@ taboolib {
     options("skip-kotlin")
     options("skip-kotlin-relocate")
     options("skip-plugin-file")
-    version = "6.0.4-7"
+    version = "6.0.6-24"
 
 //    description {
 //        contributors {
@@ -49,10 +49,8 @@ dependencies {
 
 allprojects {
     tasks.withType<org.gradle.jvm.tasks.Jar> {
-        /* TabooLib currently cannot exclude itself from flat jar successfully.
-         * So we need to wait for it to be fixed.
-         * Additionally, plugin.yml file also seems to disappear accidentally.
-         */
+        // TabooLib currently cannot exclude itself from flat jar successfully.
+        // So we need to wait for it to be fixed.
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 
@@ -90,7 +88,7 @@ subprojects {
         options("skip-env")
         options("skip-plugin-file")
         exclude("taboolib")
-        version = "6.0.4-7"
+        version = "6.0.6-24"
     }
 
     repositories {

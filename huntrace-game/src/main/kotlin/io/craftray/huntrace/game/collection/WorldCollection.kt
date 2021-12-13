@@ -3,8 +3,6 @@ package io.craftray.huntrace.game.collection
 import org.bukkit.World
 import kotlin.reflect.KProperty
 
-// proxy for non-null type field
-@Suppress("PropertyName")
 class WorldCollection {
     var overworld: World by TypedWorldDelegate(World.Environment.NORMAL)
 
