@@ -1,4 +1,4 @@
-##Huntrace
+## Huntrace
 
 ### What exactly is Huntrace?
 
@@ -34,3 +34,5 @@ As the warning above, you should not use this plugin in any production environme
 - [Cloud](https://github.com/Incendo/cloud): A framework to speed up development related to command.
 
 - [Multiverse](https://github.com/Multiverse/Multiverse-Core): A plugin for managing multiple worlds include many features for stuffs that are relevant to worlds.
+
+#### *Huntrace is licensed under the AGPL-3.0 license. We suggest projects indirectly or directly related to Huntrace to be open source under the same license.*
