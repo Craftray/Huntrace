@@ -1,6 +1,6 @@
 package io.craftray.huntrace.game
 
-import io.craftray.huntrace.abstracts.HuntraceLifeCycle
+import io.craftray.huntrace.abstract.HuntraceLifeCycle
 import io.craftray.huntrace.game.collection.HunterTargetCollection
 import io.craftray.huntrace.game.collection.InternalMutableSet
 import io.craftray.huntrace.game.collection.PlayerDataCollection

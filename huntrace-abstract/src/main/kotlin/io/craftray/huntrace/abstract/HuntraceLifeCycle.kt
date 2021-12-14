@@ -1,4 +1,4 @@
-package io.craftray.huntrace.abstracts
+package io.craftray.huntrace.abstract
 
 import org.bukkit.plugin.Plugin
 

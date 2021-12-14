@@ -1,6 +1,6 @@
 package io.craftray.huntrace.util.runnable
 
-import io.craftray.huntrace.abstracts.HuntraceLifeCycle
+import io.craftray.huntrace.abstract.HuntraceLifeCycle
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 

@@ -1,6 +1,6 @@
 package io.craftray.huntrace
 
-import io.craftray.huntrace.abstracts.LoadedSet
+import io.craftray.huntrace.abstract.LoadedSet
 import io.craftray.huntrace.game.Game
 import io.craftray.huntrace.interaction.InteractionBase
 import io.craftray.huntrace.util.runnable.BukkitRunnableWrapper
