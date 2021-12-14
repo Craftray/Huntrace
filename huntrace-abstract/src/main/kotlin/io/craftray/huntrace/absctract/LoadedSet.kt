@@ -1,3 +1,3 @@
 package io.craftray.huntrace.absctract
 
-object LoadedSet : MutableSet<HuntraceLifeCircle> by mutableSetOf()
+object LoadedSet : MutableSet<HuntraceLifeCycle> by mutableSetOf()

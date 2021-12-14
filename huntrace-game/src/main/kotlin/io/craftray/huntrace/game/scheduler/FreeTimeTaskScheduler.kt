@@ -1,6 +1,6 @@
 package io.craftray.huntrace.game.scheduler
 
-import io.craftray.huntrace.absctract.HuntraceLifeCircle
+import io.craftray.huntrace.absctract.HuntraceLifeCycle
 import io.craftray.huntrace.util.runnable.BukkitRunnableWrapper
 import org.bukkit.Bukkit
 import org.bukkit.event.player.PlayerJoinEvent
@@ -16,7 +16,7 @@ import kotlin.concurrent.thread
  * If the server has not server, it will start to prepare the tasks.
  */
 @Suppress("unused")
-object FreeTimeTaskScheduler : HuntraceLifeCircle {
+object FreeTimeTaskScheduler : HuntraceLifeCycle {
     private val tasks = ConcurrentLinkedQueue<Runnable>()
     private var initialized = false
     private var start = false
@@ -43,6 +43,7 @@ object FreeTimeTaskScheduler : HuntraceLifeCircle {
     }
 
     override fun onLoad(plugin: Plugin) {
+        super.onLoad(plugin)
         check(!initialized) { "FreeTimeTaskScheduler is already initialized" }
         thread = thread(true) {
             while (!Thread.interrupted()) {
@@ -50,7 +51,6 @@ object FreeTimeTaskScheduler : HuntraceLifeCircle {
             }
         }
         initialized = true
-        super.onLoad(plugin)
     }
 
     override fun onDestroy() = forceRunAndStop()

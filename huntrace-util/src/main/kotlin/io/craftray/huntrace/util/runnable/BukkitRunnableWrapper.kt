@@ -1,18 +1,18 @@
 package io.craftray.huntrace.util.runnable
 
-import io.craftray.huntrace.absctract.HuntraceLifeCircle
+import io.craftray.huntrace.absctract.HuntraceLifeCycle
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 
 /**
  * A wrapper of BukkitRunnable to submit tasks easily
  */
-object BukkitRunnableWrapper : HuntraceLifeCircle {
+object BukkitRunnableWrapper : HuntraceLifeCycle {
     private lateinit var plugin: Plugin
 
     override fun onLoad(plugin: Plugin) {
-        this.plugin = plugin
         super.onLoad(plugin)
+        this.plugin = plugin
     }
 
     @Suppress("TooGenericExceptionThrown")

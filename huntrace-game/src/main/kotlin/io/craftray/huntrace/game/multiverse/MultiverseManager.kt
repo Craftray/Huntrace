@@ -3,11 +3,11 @@ package io.craftray.huntrace.game.multiverse
 import com.onarandombox.MultiverseCore.MultiverseCore
 import com.onarandombox.MultiverseNetherPortals.MultiverseNetherPortals
 import com.onarandombox.multiverseinventories.MultiverseInventories
-import io.craftray.huntrace.absctract.HuntraceLifeCircle
+import io.craftray.huntrace.absctract.HuntraceLifeCycle
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 
-object MultiverseManager : HuntraceLifeCircle {
+object MultiverseManager : HuntraceLifeCycle {
     lateinit var MVCore: MultiverseCore
     lateinit var MVInv: MultiverseInventories
     lateinit var MVNP: MultiverseNetherPortals
@@ -36,8 +36,8 @@ object MultiverseManager : HuntraceLifeCircle {
      * Initialize Multiverse Core, Multiverse Inventories, and Multiverse Nether Portals.
      */
     override fun onLoad(plugin: Plugin) {
-        initMultiverse()
         super.onLoad(plugin)
+        initMultiverse()
     }
 
     override fun onDestroy() = Unit

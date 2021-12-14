@@ -28,14 +28,12 @@ object Command {
 
     @CommandDescription("Main InGameTargetSelector of Huntrace")
     @CommandMethod("huntrace new")
-    fun mainCommand(sender: CommandSender) {
-        if (sender !is Player) {
-            sender.sendMessage(Component.text("[Huntrace] Game can only be created by player").color(NamedTextColor.RED))
-            return
-        } else if (settingMap.containsKey(sender)) {
-            sender.sendMessage(Component.text("[Huntrace] You already have a game").color(NamedTextColor.RED))
-            return
-        } else {
+    fun mainCommand(sender: CommandSender) = when {
+        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] Game can only be created by player").color(NamedTextColor.RED))
+
+        settingMap.containsKey(sender) -> sender.sendMessage(Component.text("[Huntrace] You already have a game").color(NamedTextColor.RED))
+
+        else -> {
             settingMap[sender] = GameSetting()
             sender.sendMessage(Component.text("[Huntrace] You have created a new game").color(NamedTextColor.GREEN))
         }
@@ -46,12 +44,12 @@ object Command {
     fun seedCommand(
         sender: CommandSender,
         @Argument("input", description = "the seed") input: String
-    ) {
-        if (sender !is Player) {
-            sender.sendMessage(Component.text("[Huntrace] Game can only be configured by player").color(NamedTextColor.RED))
-        } else if (!settingMap.containsKey(sender)) {
-            sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
-        } else {
+    ) = when {
+        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] Game can only be configured by player").color(NamedTextColor.RED))
+
+        !settingMap.containsKey(sender) -> sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
+
+        else -> {
             settingMap[sender]!!.worldRule.seed = input
             sender.sendMessage(Component.text("[Huntrace] You have set the seed of the game: $input").color(NamedTextColor.GREEN))
         }
@@ -178,12 +176,12 @@ object Command {
     fun worldTypeCommand(
         sender: CommandSender,
         @Argument("type") type: WorldType
-    ) {
-        if (sender !is Player) {
-            sender.sendMessage(Component.text("[Huntrace] Game can only be configured by player").color(NamedTextColor.RED))
-        } else if (!settingMap.containsKey(sender)) {
-            sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
-        } else {
+    ) = when {
+        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] Game can only be configured by player").color(NamedTextColor.RED))
+
+        !settingMap.containsKey(sender) -> sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
+
+        else -> {
             settingMap[sender]!!.worldRule.type = type
             sender.sendMessage(Component.text("[Huntrace] You have set the world type of the game: $type").color(NamedTextColor.GREEN))
         }

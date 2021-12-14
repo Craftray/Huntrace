@@ -4,7 +4,7 @@ import cloud.commandframework.annotations.AnnotationParser
 import cloud.commandframework.execution.CommandExecutionCoordinator
 import cloud.commandframework.meta.SimpleCommandMeta
 import cloud.commandframework.paper.PaperCommandManager
-import io.craftray.huntrace.absctract.HuntraceLifeCircle
+import io.craftray.huntrace.absctract.HuntraceLifeCycle
 import io.craftray.huntrace.interaction.command.Command
 import io.craftray.huntrace.interaction.command.argument.EnumTypeArgumentParser
 import io.craftray.huntrace.interaction.invitation.InvitationType
@@ -17,7 +17,7 @@ import java.util.function.Function
  * Base class of interaction
  * Currently for initializing
  */
-object InteractionBase : HuntraceLifeCircle {
+object InteractionBase : HuntraceLifeCycle {
     private lateinit var plugin: Plugin
 
     /**
@@ -25,6 +25,7 @@ object InteractionBase : HuntraceLifeCircle {
      * @param plugin The plugin instance
      */
     override fun onLoad(plugin: Plugin) {
+        super.onLoad(plugin)
         this.plugin = plugin
         val manager = PaperCommandManager(
             plugin,
@@ -36,7 +37,6 @@ object InteractionBase : HuntraceLifeCircle {
         // register WorldType too
         EnumTypeArgumentParser.register(WorldType::class.java)
         AnnotationParser(manager, CommandSender::class.java) { SimpleCommandMeta.empty() }.parse(Command)
-        super.onLoad(plugin)
     }
 
     override fun onDestroy() = Unit

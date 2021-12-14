@@ -1,6 +1,6 @@
 package io.craftray.huntrace.game
 
-import io.craftray.huntrace.absctract.HuntraceLifeCircle
+import io.craftray.huntrace.absctract.HuntraceLifeCycle
 import io.craftray.huntrace.game.collection.HunterTargetCollection
 import io.craftray.huntrace.game.collection.InternalMutableSet
 import io.craftray.huntrace.game.collection.PlayerDataCollection
@@ -380,7 +380,7 @@ class Game(rules: RuleSet) {
             get() = this == RUNNING || this == PREPARING
     }
 
-    companion object : HuntraceLifeCircle {
+    companion object : HuntraceLifeCycle {
         val runningGame = InternalMutableSet<Game>()
 
         internal lateinit var plugin: Plugin
@@ -391,10 +391,10 @@ class Game(rules: RuleSet) {
          * @param plugin the plugin instance
          */
         override fun onLoad(plugin: Plugin) {
+            super.onLoad(plugin)
             this.plugin = plugin
             FreeTimeTaskScheduler.onLoad(plugin)
             MultiverseManager.onLoad(plugin)
-            super.onLoad(plugin)
         }
 
         override fun onDestroy() {
