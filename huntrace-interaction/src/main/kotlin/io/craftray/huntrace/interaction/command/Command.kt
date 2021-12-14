@@ -24,6 +24,7 @@ import org.bukkit.entity.Player
  * The command handler of the whole game.
  */
 object Command {
+
     private val settingMap = HashMap<Player, GameSetting>()
 
     @CommandDescription("Main InGameTargetSelector of Huntrace")

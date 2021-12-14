@@ -12,19 +12,12 @@ import kotlin.math.sqrt
  */
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 object BasicUtils {
+
     const val OVERWORLD_TO_NETHER_MULTIPLIER = 0.125
     const val NETHER_TO_OVERWORLD_MULTIPLIER = 8.0
 
     val ItemStack.owningPlayer: Player?
         get() = (itemMeta as? SkullMeta)?.owningPlayer?.toPlayer()
-
-    inline fun <T> MutableCollection<T>.pollEach(action: (T) -> Unit) {
-        val iterator = iterator()
-        for (element in iterator) {
-            action(element)
-            iterator.remove()
-        }
-    }
 
     fun skullOf(player: Player): ItemStack {
         val head = ItemStack(Material.PLAYER_HEAD)

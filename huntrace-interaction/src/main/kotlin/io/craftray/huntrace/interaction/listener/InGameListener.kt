@@ -13,6 +13,7 @@ import taboolib.common.platform.event.SubscribeEvent
  * The main listener for interacting with players in the whole server
  */
 object InGameListener {
+
     @SubscribeEvent
     fun onGameStart(event: HuntraceGameStartEvent) {
         event.game.allPlayers.forEach {

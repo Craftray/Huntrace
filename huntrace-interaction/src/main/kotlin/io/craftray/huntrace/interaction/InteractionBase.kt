@@ -4,7 +4,7 @@ import cloud.commandframework.annotations.AnnotationParser
 import cloud.commandframework.execution.CommandExecutionCoordinator
 import cloud.commandframework.meta.SimpleCommandMeta
 import cloud.commandframework.paper.PaperCommandManager
-import io.craftray.huntrace.absctract.HuntraceLifeCycle
+import io.craftray.huntrace.abstracts.HuntraceLifeCycle
 import io.craftray.huntrace.interaction.command.Command
 import io.craftray.huntrace.interaction.command.argument.EnumTypeArgumentParser
 import io.craftray.huntrace.interaction.invitation.InvitationType
@@ -18,6 +18,7 @@ import java.util.function.Function
  * Currently for initializing
  */
 object InteractionBase : HuntraceLifeCycle {
+
     private lateinit var plugin: Plugin
 
     /**

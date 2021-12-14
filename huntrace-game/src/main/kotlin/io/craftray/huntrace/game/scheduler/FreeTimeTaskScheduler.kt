@@ -1,6 +1,6 @@
 package io.craftray.huntrace.game.scheduler
 
-import io.craftray.huntrace.absctract.HuntraceLifeCycle
+import io.craftray.huntrace.abstracts.HuntraceLifeCycle
 import io.craftray.huntrace.util.runnable.BukkitRunnableWrapper
 import org.bukkit.Bukkit
 import org.bukkit.event.player.PlayerJoinEvent

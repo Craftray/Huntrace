@@ -44,6 +44,7 @@ data class Spawnpoint private constructor(
     private val y: Double?,
     private val z: Double?
 ) {
+
     fun isSet() = x != null && z != null
 
     fun getByWorld(world: World): Location {

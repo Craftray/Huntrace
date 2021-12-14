@@ -6,6 +6,7 @@ import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.entity.Player
 
 object InviteMessageBuilder {
+
     /**
      * construct a component of invitation message
      * @param invitor the invitor of the invitation

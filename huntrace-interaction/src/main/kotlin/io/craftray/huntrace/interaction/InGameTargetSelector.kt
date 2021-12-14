@@ -18,6 +18,7 @@ import taboolib.common.platform.event.SubscribeEvent
  */
 @Suppress("unused")
 object InGameTargetSelector {
+
     @SubscribeEvent
     fun onSelect(event: HuntraceGameSelectTargetEvent) {
         val survivors = event.game.survivors

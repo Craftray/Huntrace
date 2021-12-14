@@ -14,6 +14,7 @@ import java.util.*
  * Seems like cloud already implemented a parser for it, so maybe it should be removed
  */
 class EnumTypeArgumentParser<C, T : Enum<*>>(private val type: Class<T>) : ArgumentParser<C, T> {
+
     override fun parse(
         context: CommandContext<C>,
         queue: Queue<String>

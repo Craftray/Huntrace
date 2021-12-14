@@ -3,7 +3,7 @@ package io.craftray.huntrace.game.multiverse
 import com.onarandombox.MultiverseCore.MultiverseCore
 import com.onarandombox.MultiverseNetherPortals.MultiverseNetherPortals
 import com.onarandombox.multiverseinventories.MultiverseInventories
-import io.craftray.huntrace.absctract.HuntraceLifeCycle
+import io.craftray.huntrace.abstracts.HuntraceLifeCycle
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 
