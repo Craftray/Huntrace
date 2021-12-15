@@ -24,9 +24,7 @@ object FreeTimeTaskScheduler : HuntraceLifeCycle {
 
     @SubscribeEvent
     fun onPlayerQuit(event: PlayerQuitEvent) {
-        if (Bukkit.getOnlinePlayers().filterNot { it == event.player }.isEmpty()) {
-            start = true
-        }
+        Bukkit.getOnlinePlayers().filterNot { it == event.player }.ifEmpty { start = true }
     }
 
     @SubscribeEvent

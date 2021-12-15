@@ -2,6 +2,7 @@ package io.craftray.huntrace
 
 import io.craftray.huntrace.abstract.HuntraceLifeCycleManager
 import io.craftray.huntrace.checker.CompatibilityChecker
+import io.craftray.huntrace.checker.SecurityChecker
 import io.craftray.huntrace.game.Game
 import io.craftray.huntrace.interaction.InteractionBase
 import io.craftray.huntrace.util.runnable.BukkitRunnableWrapper
@@ -23,6 +24,7 @@ object Main : Plugin() {
 
     override fun onEnable() {
         CompatibilityChecker.warnCompatibility()
+        SecurityChecker.warnLog4j2Exploit()
         MainExecutor.onLoad(plugin)
         BukkitRunnableWrapper.onLoad(plugin)
         Game.onLoad(plugin)
