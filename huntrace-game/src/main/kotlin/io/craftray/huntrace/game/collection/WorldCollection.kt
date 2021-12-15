@@ -1,6 +1,7 @@
 package io.craftray.huntrace.game.collection
 
 import org.bukkit.World
+import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 class WorldCollection {
@@ -38,15 +39,15 @@ class WorldCollection {
      * Delegate to check environment of the world on setting
      * @param env Environment to check
      */
-    private inner class TypedWorldDelegate(val env: World.Environment) {
+    private inner class TypedWorldDelegate(val env: World.Environment) : ReadWriteProperty<WorldCollection, World> {
         private lateinit var world: World
 
-        operator fun getValue(thisRef: WorldCollection, property: KProperty<*>): World {
+        override operator fun getValue(thisRef: WorldCollection, property: KProperty<*>): World {
             check(::world.isInitialized) { "World \"${property.name}\" is not set" }
             return world
         }
 
-        operator fun setValue(thisRef: WorldCollection, property: KProperty<*>, value: World) {
+        override operator fun setValue(thisRef: WorldCollection, property: KProperty<*>, value: World) {
             check(!::world.isInitialized) { "World \"${property.name}\" already set" }
             check(value.environment == env) {
                 "Environment of world \"${property.name}\" must be \"$env\" but it is ${value.environment}"

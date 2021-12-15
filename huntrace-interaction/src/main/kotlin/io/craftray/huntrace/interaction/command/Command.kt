@@ -17,7 +17,6 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Bukkit
 import org.bukkit.WorldType
-import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 /**
@@ -29,9 +28,7 @@ object Command {
 
     @CommandDescription("Main InGameTargetSelector of Huntrace")
     @CommandMethod("huntrace new")
-    fun mainCommand(sender: CommandSender) = when {
-        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] Game can only be created by player").color(NamedTextColor.RED))
-
+    fun mainCommand(sender: Player) = when {
         settingMap.containsKey(sender) -> sender.sendMessage(Component.text("[Huntrace] You already have a game").color(NamedTextColor.RED))
 
         else -> {
@@ -43,11 +40,9 @@ object Command {
     @CommandDescription("Set the seed of a game")
     @CommandMethod("huntrace world seed <input>")
     fun seedCommand(
-        sender: CommandSender,
+        sender: Player,
         @Argument("input", description = "the seed") input: String
     ) = when {
-        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] Game can only be configured by player").color(NamedTextColor.RED))
-
         !settingMap.containsKey(sender) -> sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
 
         else -> {
@@ -59,13 +54,11 @@ object Command {
     @CommandDescription("Set the spawnpoint of the world")
     @CommandMethod("huntrace world spawnpoint <x> <y> <z>")
     fun spawnpointCommand(
-        sender: CommandSender,
+        sender: Player,
         @Argument("x") x: Double,
         @Argument("y", description = "specific y") y: Double,
         @Argument("z") z: Double
     ) = when {
-        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] Game can only be configured by player").color(NamedTextColor.RED))
-
         !settingMap.containsKey(sender) -> sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
 
         else -> {
@@ -78,12 +71,10 @@ object Command {
     @CommandDescription("Set the spawnpoint of the world to the highest location at the specific x and z")
     @CommandMethod("huntrace world spawnpoint <x> highest <z>")
     fun spawnpoint2DCommand(
-        sender: CommandSender,
+        sender: Player,
         @Argument("x") x: Double,
         @Argument("z") z: Double
     ) = when {
-        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] Game can only be configured by player").color(NamedTextColor.RED))
-
         !settingMap.containsKey(sender) -> sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
 
         else -> {
@@ -95,11 +86,9 @@ object Command {
     @CommandDescription("Set the maximum distance of tracking")
     @CommandMethod("huntrace compass distance <distance>")
     fun distanceCommand(
-        sender: CommandSender,
+        sender: Player,
         @Argument("distance", description = "the distance") @Range(min = "1", max = "10000000") distance: Long
     ) = when {
-        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] Game can only be configured by player").color(NamedTextColor.RED))
-
         !settingMap.containsKey(sender) -> sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
 
         else -> {
@@ -111,11 +100,9 @@ object Command {
     @CommandDescription("Set whether the cross world tracking is enabled")
     @CommandMethod("huntrace compass crossworldtrack <boolean>")
     fun crossWorldTrackCommand(
-        sender: CommandSender,
+        sender: Player,
         @Argument("boolean", description = "whether the cross world tracking is enabled") value: Boolean
     ) = when {
-        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] Game can only be configured by player").color(NamedTextColor.RED))
-
         !settingMap.containsKey(sender) -> sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
 
         else -> {
@@ -127,11 +114,9 @@ object Command {
     @CommandDescription("Set whether the deception of tracking is enabled")
     @CommandMethod("huntrace compass deception <boolean>")
     fun deceptionCommand(
-        sender: CommandSender,
+        sender: Player,
         @Argument("boolean", description = "whether the deception of tracking is enabled") value: Boolean
     ) = when {
-        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] Game can only be configured by player").color(NamedTextColor.RED))
-
         !settingMap.containsKey(sender) -> sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
 
         else -> {
@@ -143,11 +128,9 @@ object Command {
     @CommandDescription("Set the update interval of compasses")
     @CommandMethod("huntrace compass interval <interval>")
     fun updateIntervalCommand(
-        sender: CommandSender,
+        sender: Player,
         @Argument("interval", description = "the update interval") @Range(min = "20", max = "1000") interval: Long
     ) = when {
-        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] Game can only be configured by player").color(NamedTextColor.RED))
-
         !settingMap.containsKey(sender) -> sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
 
         else -> {
@@ -159,11 +142,9 @@ object Command {
     @CommandDescription("Set whether the structure will be generate")
     @CommandMethod("huntrace world structures <boolean>")
     fun structuresCommand(
-        sender: CommandSender,
+        sender: Player,
         @Argument("boolean") input: Boolean
     ) = when {
-        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] Game can only be configured by player").color(NamedTextColor.RED))
-
         !settingMap.containsKey(sender) -> sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
 
         else -> {
@@ -175,11 +156,9 @@ object Command {
     @CommandDescription("Set the world type of a game")
     @CommandMethod("huntrace world type <type>")
     fun worldTypeCommand(
-        sender: CommandSender,
+        sender: Player,
         @Argument("type") type: WorldType
     ) = when {
-        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] Game can only be configured by player").color(NamedTextColor.RED))
-
         !settingMap.containsKey(sender) -> sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
 
         else -> {
@@ -191,12 +170,10 @@ object Command {
     @CommandDescription("Invite a hunter to the game")
     @CommandMethod("huntrace invite <type> <target>")
     fun inviteCommand(
-        sender: CommandSender,
+        sender: Player,
         @Argument("type") type: InvitationType,
         @Argument("target") target: Player
     ) = when {
-        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] game can only be configured by player").color(NamedTextColor.RED))
-
         !settingMap.containsKey(sender) -> sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
 
         target in settingMap[sender]!!.hunters ->
@@ -220,11 +197,9 @@ object Command {
     @CommandDescription("Accept a invitation")
     @CommandMethod("huntrace invite accept <creator>")
     fun acceptCommand(
-        sender: CommandSender,
+        sender: Player,
         @Argument("creator") creator: Player
     ) = when {
-        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] invitation can only be accepted by player"))
-
         !settingMap.containsKey(creator) -> sender.sendMessage(Component.text("[Huntrace] ${creator.name} doesn't have a game"))
 
         !InvitationManager.contains(creator, sender) ->
@@ -246,11 +221,9 @@ object Command {
     @CommandDescription("Deny a invitation")
     @CommandMethod("huntrace invite deny <creator>")
     fun denyCommand(
-        sender: CommandSender,
+        sender: Player,
         @Argument("creator") creator: Player
     ) = when {
-        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] invitation can only be denied by player"))
-
         !settingMap.containsKey(creator) -> sender.sendMessage(Component.text("[Huntrace] ${creator.name} doesn't have a game"))
 
         !InvitationManager.contains(creator, sender) ->
@@ -269,9 +242,7 @@ object Command {
 
     @CommandDescription("Quit the game")
     @CommandMethod("huntrace quit")
-    fun quitCommand(sender: CommandSender) = when {
-        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] game can only be quit by player").color(NamedTextColor.RED))
-
+    fun quitCommand(sender: Player) = when {
         Game.findGameByPlayerOrNull(sender)?.state != Game.State.RUNNING ->
             sender.sendMessage(Component.text("[Huntrace] You are not in a running game").color(NamedTextColor.RED))
 
@@ -283,9 +254,7 @@ object Command {
 
     @CommandDescription("Start the Game")
     @CommandMethod("huntrace start")
-    fun startCommand(sender: CommandSender) = when {
-        sender !is Player -> sender.sendMessage(Component.text("[Huntrace] Game can only be started by player"))
-
+    fun startCommand(sender: Player) = when {
         !settingMap.containsKey(sender) ->
             sender.sendMessage(Component.text("[Huntrace] You don't have a game").color(NamedTextColor.RED))
 
