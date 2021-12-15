@@ -2,7 +2,7 @@ package io.craftray.huntrace.game
 
 import io.craftray.huntrace.abstract.HuntraceLifeCycle
 import io.craftray.huntrace.game.collection.HunterTargetCollection
-import io.craftray.huntrace.game.collection.InternalMutableSet
+import io.craftray.huntrace.game.collection.InternalMutableObjectSet
 import io.craftray.huntrace.game.collection.PlayerDataCollection
 import io.craftray.huntrace.game.collection.WorldCollection
 import io.craftray.huntrace.game.event.HuntraceGameFinishEvent
@@ -380,7 +380,7 @@ class Game(rules: RuleSet) {
     }
 
     companion object : HuntraceLifeCycle {
-        val runningGame = InternalMutableSet<Game>()
+        val runningGame = InternalMutableObjectSet<Game>()
 
         internal lateinit var plugin: Plugin
 

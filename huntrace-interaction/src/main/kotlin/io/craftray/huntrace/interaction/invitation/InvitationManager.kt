@@ -1,5 +1,6 @@
 package io.craftray.huntrace.interaction.invitation
 
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet
 import org.bukkit.entity.Player
 
 /**
@@ -7,7 +8,7 @@ import org.bukkit.entity.Player
  */
 internal object InvitationManager {
 
-    val invitations = mutableSetOf<Invitation>()
+    val invitations = ObjectLinkedOpenHashSet<Invitation>()
 
     /**
      * Get the invitations of certain invitor and invitee

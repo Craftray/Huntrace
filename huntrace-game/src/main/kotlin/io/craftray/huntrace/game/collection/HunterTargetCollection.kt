@@ -2,10 +2,11 @@ package io.craftray.huntrace.game.collection
 
 import io.craftray.huntrace.game.Game
 import io.craftray.huntrace.util.BasicUtils.literal2DDistanceOf
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
 import org.bukkit.entity.Player
 
 class HunterTargetCollection(val game: Game) {
-    private val targetMap = mutableMapOf<Player, Player>()
+    private val targetMap = Object2ObjectLinkedOpenHashMap<Player, Player>()
 
     /**
      * Get the target of given hunter

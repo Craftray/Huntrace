@@ -3,6 +3,7 @@ package io.craftray.huntrace.game
 import io.craftray.huntrace.util.rule.CompassRule
 import io.craftray.huntrace.util.rule.RuleSet
 import io.craftray.huntrace.util.rule.WorldRule
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet
 import org.bukkit.entity.Player
 import kotlin.jvm.Throws
 
@@ -10,8 +11,8 @@ import kotlin.jvm.Throws
 class GameBuilder {
     private lateinit var worldRule: WorldRule
     private lateinit var compassRule: CompassRule
-    private val survivors = mutableSetOf<Player>()
-    private val hunters = mutableSetOf<Player>()
+    private val survivors = ObjectLinkedOpenHashSet<Player>()
+    private val hunters = ObjectLinkedOpenHashSet<Player>()
 
     /**
      * Set the world rule.

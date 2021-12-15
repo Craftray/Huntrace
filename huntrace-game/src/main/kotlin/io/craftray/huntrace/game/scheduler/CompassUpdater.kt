@@ -7,6 +7,7 @@ import io.craftray.huntrace.util.BasicUtils
 import io.craftray.huntrace.util.BasicUtils.literal2DDistanceOf
 import io.craftray.huntrace.util.BasicUtils.transformWorld
 import io.craftray.huntrace.util.runnable.BukkitRunnableWrapper
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.World
@@ -18,7 +19,7 @@ import kotlin.random.Random
 @Suppress("PrivatePropertyName")
 class CompassUpdater(val game: Game) {
     private val rule = game.rules.compassRule
-    private val trackTaskMap = mutableMapOf<Player, BukkitTask>()
+    private val trackTaskMap = Object2ObjectLinkedOpenHashMap<Player, BukkitTask>()
     private lateinit var deceptionFindRunnable: BukkitTask
     private lateinit var deceptionRunnable: BukkitTask
     private val deceptionList = mutableListOf<Player>()

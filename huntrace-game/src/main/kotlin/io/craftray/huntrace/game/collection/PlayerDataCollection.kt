@@ -1,16 +1,17 @@
 package io.craftray.huntrace.game.collection
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import kotlin.jvm.Throws
 
 class PlayerDataCollection {
-    val hunters = InternalMutableSet<Player>()
-    val survivors = InternalMutableSet<Player>()
-    val spectators = InternalMutableSet<Player>()
+    val hunters = InternalMutableObjectSet<Player>()
+    val survivors = InternalMutableObjectSet<Player>()
+    val spectators = InternalMutableObjectSet<Player>()
 
     private var lock = false
-    private val previousLocations = mutableMapOf<Player, Location>()
+    private val previousLocations = Object2ObjectLinkedOpenHashMap<Player, Location>()
 
     /**
      * Lock the set to prevent changes during the io.craftray.huntrace.game is running

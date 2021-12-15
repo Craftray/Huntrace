@@ -1,11 +1,12 @@
 package io.craftray.huntrace.checker
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
 import org.bukkit.Bukkit
 import java.util.logging.Logger
 
 object TabooLib5PluginFinder {
 
-    private val founds = mutableMapOf<String, List<String>>()
+    private val founds = Object2ObjectLinkedOpenHashMap<String, List<String>>()
 
     fun find() {
         Bukkit.getPluginManager().plugins.toSet().parallelStream()

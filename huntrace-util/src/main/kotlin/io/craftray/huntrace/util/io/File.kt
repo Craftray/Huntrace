@@ -1,6 +1,7 @@
 package io.craftray.huntrace.util.io
 
 import io.craftray.huntrace.util.runnable.MainExecutor
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet
 import java.io.File
 import java.util.concurrent.Future
 
@@ -18,7 +19,7 @@ fun File.deepDeleteAsync(await: Boolean = false, futures: MutableSet<Future<*>>?
                 listFiles()?.let { files ->
                     // Construct another future set here
                     // Because we need all the subdirectories and files to be deleted before this directory is deleted
-                    val thisFutures = mutableSetOf<Future<*>>()
+                    val thisFutures = ObjectLinkedOpenHashSet<Future<*>>()
                     // Pass the future set to this, so we can store all the future
                     files.forEach { it.deepDeleteAsync(futures = thisFutures) }
                     // Wait for all the subdirectories and files to be deleted

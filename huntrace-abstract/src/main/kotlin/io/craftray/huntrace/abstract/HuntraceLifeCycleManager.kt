@@ -1,6 +1,8 @@
 package io.craftray.huntrace.abstract
 
-object HuntraceLifeCycleManager : MutableSet<HuntraceLifeCycle> by mutableSetOf() {
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet
+
+object HuntraceLifeCycleManager : MutableSet<HuntraceLifeCycle> by ObjectLinkedOpenHashSet() {
 
     fun destroyAll() {
         forEach { kotlin.runCatching { it.onDestroy() }.onFailure { it.printStackTrace() } }

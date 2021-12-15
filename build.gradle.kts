@@ -101,6 +101,7 @@ subprojects {
     dependencies {
         compileOnly(kotlin("stdlib"))
         compileOnly("io.papermc.paper:paper-api:1.17-R0.1-SNAPSHOT")
+        compileOnly("it.unimi.dsi:fastutil-core:8.5.6")
         compileOnly(fileTree("libs"))
     }
 

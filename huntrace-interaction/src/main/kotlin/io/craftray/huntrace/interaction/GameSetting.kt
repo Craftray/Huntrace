@@ -5,14 +5,15 @@ import io.craftray.huntrace.game.GameBuilder
 import io.craftray.huntrace.interaction.invitation.InvitationType
 import io.craftray.huntrace.util.rule.CompassRule
 import io.craftray.huntrace.util.rule.WorldRule
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet
 import org.bukkit.entity.Player
 
 /**
  * Wrapped the GameBuilder again.
  */
 internal data class GameSetting(
-    var hunters: MutableSet<Player> = mutableSetOf(),
-    var survivors: MutableSet<Player> = mutableSetOf(),
+    var hunters: MutableSet<Player> = ObjectLinkedOpenHashSet(),
+    var survivors: MutableSet<Player> = ObjectLinkedOpenHashSet(),
     var compassRule: CompassRule = CompassRule(),
     var worldRule: WorldRule = WorldRule()
 ) {

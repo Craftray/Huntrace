@@ -1,13 +1,15 @@
 package io.craftray.huntrace.game.collection
 
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet
+
 /**
  * A set that is backed by another mutable set but can be modified only in this module
  * @author Kylepoops
  */
 @Suppress("unused")
-class InternalMutableSet<T> private constructor(private val delegate: MutableSet<T>) : Set<T> by delegate {
+class InternalMutableObjectSet<T> private constructor(private val delegate: MutableSet<T>) : Set<T> by delegate {
 
-    constructor() : this(mutableSetOf())
+    constructor() : this(ObjectLinkedOpenHashSet())
 
     @JvmName("-add")
     internal fun add(element: T) {
