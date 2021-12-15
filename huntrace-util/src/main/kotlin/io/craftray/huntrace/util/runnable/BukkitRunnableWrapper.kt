@@ -3,6 +3,7 @@ package io.craftray.huntrace.util.runnable
 import io.craftray.huntrace.abstract.HuntraceLifeCycle
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
+import org.bukkit.scheduler.BukkitTask
 
 /**
  * A wrapper of BukkitRunnable to submit tasks easily
@@ -19,10 +20,10 @@ object BukkitRunnableWrapper : HuntraceLifeCycle {
     @Suppress("TooGenericExceptionThrown")
     override fun onDestroy() {
         // There's shouldn't be any tasks left, so check it again and throw an exception for each of them
-        Bukkit.getScheduler().pendingTasks.filter { it.owner == plugin }.forEach {
-            throw RuntimeException("Task still running: " + it.taskId)
-        }
-        plugin.server.scheduler.cancelTasks(plugin)
+        Bukkit.getScheduler().pendingTasks.parallelStream()
+            .filter { it.owner == plugin }
+            .peek { RuntimeException("Task still running: " + it.taskId).printStackTrace() }
+            .forEach(BukkitTask::cancel)
     }
 
     fun submitDelayed(delay: Long, runnable: Runnable) =

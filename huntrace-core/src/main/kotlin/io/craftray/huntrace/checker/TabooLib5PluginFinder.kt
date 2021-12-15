@@ -13,9 +13,7 @@ object TabooLib5PluginFinder {
             .filter { it::class.java.superclass?.name?.endsWith("boot.PluginBoot") == true }
             // Double check
             .filter {
-                kotlin.runCatching {
-                    Class.forName("${it::class.java.packageName}/util/ILoader")
-                }.isSuccess
+                kotlin.runCatching { Class.forName("${it::class.java.packageName}/util/ILoader") }.isSuccess
             }
             .forEach { founds[it.name] = it.description.authors }
     }

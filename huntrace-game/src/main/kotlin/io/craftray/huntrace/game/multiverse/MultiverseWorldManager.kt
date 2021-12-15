@@ -2,6 +2,7 @@ package io.craftray.huntrace.game.multiverse
 
 import com.onarandombox.multiverseinventories.share.Sharables
 import io.craftray.huntrace.util.io.deepDeleteAsync
+import io.craftray.huntrace.util.runnable.MainExecutor
 import org.bukkit.PortalType
 import org.bukkit.World
 
@@ -92,5 +93,13 @@ object MultiverseWorldManager {
                 this.groupManager.removeGroup(it)
             }
         }
+    }
+
+    /**
+     * Unload all given worlds in Multiverse asynchronously
+     * @param worlds the worlds to unload
+     */
+    fun unloadWorlds(vararg worlds: World) {
+        worlds.forEach { MainExecutor.submit { MultiverseManager.MVCore.mvWorldManager.unloadWorld(it.name) } }
     }
 }
