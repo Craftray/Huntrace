@@ -2,10 +2,11 @@ package io.craftray.huntrace.abstract
 
 import org.bukkit.plugin.Plugin
 
+@JvmDefaultWithoutCompatibility
 interface HuntraceLifeCycle {
 
     fun onLoad(plugin: Plugin) {
-        LoadedSet.add(this)
+        HuntraceLifeCycleManager.add(this)
     }
 
     fun onDestroy()
