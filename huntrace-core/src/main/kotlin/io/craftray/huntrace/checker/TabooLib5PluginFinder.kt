@@ -19,7 +19,7 @@ object TabooLib5PluginFinder {
             .forEach { founds[it.name] = it.description.authors }
     }
 
-    fun report(logger: Logger, prefix: String = "") {
+    fun reportAllWithAuthors(logger: Logger, prefix: String = "") {
         check(founds.isNotEmpty()) { "No TabooLib-5 relevant plugin is found" }
         for ((name, authors) in founds) {
             logger.warning("$prefix$name authored by ${authors.joinToString()}")

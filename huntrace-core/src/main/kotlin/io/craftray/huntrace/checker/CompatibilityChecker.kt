@@ -10,12 +10,12 @@ object CompatibilityChecker {
      * Warn if the plugin is running on spigot, outdated java or outdated Minecraft versions
      */
     internal fun warnCompatibility() {
-        warnPaper()
-        warnVersion()
+        warnSpigotAndCraftBukkit()
+        warnPreviousMinecraftVersion()
         warnTabooLib5()
     }
 
-    private fun warnPaper() {
+    private fun warnSpigotAndCraftBukkit() {
         if (!PaperLib.isPaper()) {
             PaperLib.suggestPaper(Main.plugin, Level.WARNING)
             Bukkit.getLogger().warning("---------------UNSUPPORTED SERVER VERSION DETECTED---------------")
@@ -26,7 +26,7 @@ object CompatibilityChecker {
         }
     }
 
-    private fun warnVersion() {
+    private fun warnPreviousMinecraftVersion() {
         if (!PaperLib.isVersion(17)) {
             Bukkit.getLogger().warning("---------------UNSUPPORTED SERVER VERSION DETECTED---------------")
             Main.plugin.logger.warning("This plugin is designed for Paper 1.17 and above")
@@ -44,9 +44,9 @@ object CompatibilityChecker {
             Main.plugin.logger.warning("This system is supposed to have series of bugs")
             Main.plugin.logger.warning("This might lead to unexpected behaviours")
             Main.plugin.logger.warning("The following plugins are found to be using TabooLib-5:")
-            TabooLib5PluginFinder.report(Main.plugin.logger, prefix = "- ")
+            TabooLib5PluginFinder.reportAllWithAuthors(Main.plugin.logger, prefix = "- ")
             Main.plugin.logger.warning("Please contact the plugin authors to update to TabooLib-6")
-            Main.plugin.logger.warning("Continues to use with TabooLib-5 means not support will be provided")
+            Main.plugin.logger.warning("Continues to use with TabooLib-5 means no support will be provided")
             Main.plugin.logger.warning("YOU HAVE BEEN WARNED")
             Bukkit.getLogger().warning("-----------------------------------------------------------------")
         }
