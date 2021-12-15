@@ -4,6 +4,7 @@ package io.craftray.huntrace.game.event
 
 import io.craftray.huntrace.game.Game
 import io.craftray.huntrace.game.GameResult
+import io.craftray.huntrace.util.runnable.MainExecutor
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -19,6 +20,15 @@ import org.bukkit.inventory.ItemStack
 // maybe should rewrite with our own implementation
 abstract class HuntraceGameEvent(val game: Game, async: Boolean) : Event(async) {
     constructor(game: Game) : this(game, false)
+
+    override fun callEvent(): Boolean {
+        return if (isAsynchronous) {
+            MainExecutor.submit { Bukkit.getPluginManager().callEvent(this) }
+            true
+        } else {
+            super.callEvent()
+        }
+    }
 }
 
 /**

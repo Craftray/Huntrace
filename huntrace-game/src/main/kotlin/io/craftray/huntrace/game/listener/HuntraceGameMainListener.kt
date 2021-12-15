@@ -13,7 +13,6 @@ import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerQuitEvent
-import kotlin.concurrent.thread
 
 class HuntraceGameMainListener(private val game: Game) : HuntraceGameListener() {
     private val targets = game.hunterTargets
@@ -102,7 +101,7 @@ class HuntraceGameMainListener(private val game: Game) : HuntraceGameListener() 
         }
 
         val target = targets.targetOf(event.player)
-        thread(true) { HuntraceGameSelectTargetEvent(game, event.player, target).callEvent() }
+        HuntraceGameSelectTargetEvent(game, event.player, target).callEvent()
     }
 
     @EventHandler

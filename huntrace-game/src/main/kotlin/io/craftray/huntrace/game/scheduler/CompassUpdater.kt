@@ -13,7 +13,6 @@ import org.bukkit.World
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitTask
-import kotlin.concurrent.thread
 import kotlin.random.Random
 
 @Suppress("PrivatePropertyName")
@@ -75,18 +74,18 @@ class CompassUpdater(val game: Game) {
                 }
                 val target = targets.targetOf(hunter)
                 if (!rule.crossWorldTrack && hunter.world != target.world) {
-                    thread(true) { HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent() }
+                    HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent()
                 }
                 if (hunter.world.environment != World.Environment.THE_END &&
                     target.world.environment == World.Environment.THE_END
                 ) {
                     restoreCompass(hunter.inventory.itemInMainHand)
-                    thread(true) { HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent() }
+                    HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent()
                     return@submitTimer
                 }
                 val distance = hunter.location.literal2DDistanceOf(target.location)
                 if (!this.isDistanceValid(distance)) {
-                    thread(true) { HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent() }
+                    HuntraceGameCompassUpdateEvent(game, Result.MISS, hunter).callEvent()
                     return@submitTimer
                 }
                 for (item in hunter.inventory) {
@@ -97,7 +96,7 @@ class CompassUpdater(val game: Game) {
                             lodestone = target.location.transformWorld(hunter.world)
                             displayName(Component.text("Tracker of ${target.name}"))
                         }
-                        thread(true) { HuntraceGameCompassUpdateEvent(game, Result.SUCCESS, hunter).callEvent() }
+                        HuntraceGameCompassUpdateEvent(game, Result.SUCCESS, hunter).callEvent()
                     }
                 }
             }
@@ -139,7 +138,7 @@ class CompassUpdater(val game: Game) {
                         val compass = item.itemMeta as org.bukkit.inventory.meta.CompassMeta
                         compass.lodestone = hunter.location.multiply(Random.nextDouble(2.0))
                         item.itemMeta = compass
-                        thread(true) { HuntraceGameCompassUpdateEvent(game, Result.DECEPTION, hunter).callEvent() }
+                        HuntraceGameCompassUpdateEvent(game, Result.DECEPTION, hunter).callEvent()
                     }
                 }
             }

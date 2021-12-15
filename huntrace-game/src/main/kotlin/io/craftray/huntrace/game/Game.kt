@@ -20,7 +20,6 @@ import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import java.util.*
-import kotlin.concurrent.thread
 import kotlin.properties.Delegates
 
 class Game(rules: RuleSet) {
@@ -102,7 +101,7 @@ class Game(rules: RuleSet) {
         this.turnGameModeTo()
         this.compassUpdater.init()
         this.startTime = System.currentTimeMillis()
-        thread(true) { HuntraceGameStartEvent(this).callEvent() }
+        HuntraceGameStartEvent(this).callEvent()
         this.state = State.PREPARING
         this.prepare()
         Bukkit.getLogger().info("Started game ${this.gameID} in ${System.currentTimeMillis() - start}ms")
@@ -143,7 +142,7 @@ class Game(rules: RuleSet) {
         this.worldController.deleteWorlds()
         this.endTime = System.currentTimeMillis()
         runningGame.remove(this)
-        thread(true) { HuntraceGameFinishEvent(this, result).callEvent() }
+        HuntraceGameFinishEvent(this, result).callEvent()
         Bukkit.getLogger().info("Finished game ${this.gameID} in ${System.currentTimeMillis() - start}ms")
         this.state = State.FINISHED
     }
@@ -176,16 +175,16 @@ class Game(rules: RuleSet) {
         } else if (player in this.hunters && this.hunters.size > 1) {
             player.teleport(this.players.getPreviousLocation(player))
             this.removeHunter(player)
-            thread(true) { HuntraceGamePlayerQuitEvent(this, player).callEvent() }
+            HuntraceGamePlayerQuitEvent(this, player).callEvent()
             true
         } else if (player in this.survivors && this.survivors.size > 1) {
             player.teleport(this.players.getPreviousLocation(player))
             this.removeSurvivor(player)
-            thread(true) { HuntraceGamePlayerQuitEvent(this, player).callEvent() }
+            HuntraceGamePlayerQuitEvent(this, player).callEvent()
             true
         } else if (player in this.spectators) {
             this.removeSpectator(player)
-            thread(true) { HuntraceGamePlayerQuitEvent(this, player).callEvent() }
+            HuntraceGamePlayerQuitEvent(this, player).callEvent()
             true
         } else {
             false

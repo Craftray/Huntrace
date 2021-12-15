@@ -23,10 +23,10 @@ object Main : Plugin() {
 
     override fun onEnable() {
         CompatibilityChecker.warnCompatibility()
+        MainExecutor.onLoad(plugin)
+        BukkitRunnableWrapper.onLoad(plugin)
         Game.onLoad(plugin)
         InteractionBase.onLoad(plugin)
-        BukkitRunnableWrapper.onLoad(plugin)
-        MainExecutor.onLoad(plugin)
     }
 
     override fun onDisable() {
