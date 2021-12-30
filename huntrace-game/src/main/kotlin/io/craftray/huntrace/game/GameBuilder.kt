@@ -18,81 +18,99 @@ class GameBuilder {
      * Set the world rule.
      * @param rule the world rule
      * @exception IllegalStateException if the world rule has already been set
+     * @return this builder for chaining calls
      */
     @Throws(IllegalStateException::class)
-    fun withRule(rule: WorldRule) = this.apply {
+    fun withRule(rule: WorldRule): GameBuilder {
         check(!this::worldRule.isInitialized) { "World rule already set" }
         this.worldRule = rule
+        return this
     }
 
     /**
      * Set the compass rule
      * @param rule the compass rule
      * @exception IllegalStateException if the compass rule has already been set
+     * @return this builder for chaining calls
      */
     @Throws(IllegalStateException::class)
-    fun withRule(rule: CompassRule) = this.apply {
+    fun withRule(rule: CompassRule): GameBuilder {
         check(!this::compassRule.isInitialized) { "Compass rule already set" }
         this.compassRule = rule
+        return this
     }
 
     /**
      * Set both world rule and compass rule with a ruleset
      * @param rules the ruleset
      * @exception IllegalStateException if either the world rule or compass rule has already been set
+     * @return this builder for chaining calls
      */
     @Throws(IllegalStateException::class)
-    fun withRules(rules: RuleSet) = this.apply {
+    fun withRules(rules: RuleSet): GameBuilder {
         this.withRule(rules.worldRule).withRule(rules.compassRule)
+        return this
     }
 
     /**
-     * Set the survivor of the io.craftray.huntrace.game
+     * Set the survivor of the game
      * @param survivor the survivor
+     * @return this builder for chaining calls
      */
     @Throws(IllegalStateException::class)
-    fun withSurvivor(survivor: Player) = this.apply {
+    fun withSurvivor(survivor: Player): GameBuilder {
         this.survivors.add(survivor)
+        return this
     }
 
     /**
-     * Add a list of survivor to the io.craftray.huntrace.game
+     * Add a list of survivor to the game
      * @param survivors the hunters
+     * @return this builder for chaining calls
      */
-    fun withSurvivors(survivors: Collection<Player>) = this.apply {
+    fun withSurvivors(survivors: Collection<Player>): GameBuilder {
         this.survivors.addAll(survivors)
+        return this
     }
 
     /**
-     * Add a list of hunters to the io.craftray.huntrace.game
+     * Add a list of hunters to the game
      * @param survivors the hunters
+     * @return this builder for chaining calls
      */
-    fun withSurvivors(vararg survivors: Player) = this.apply {
+    fun withSurvivors(vararg survivors: Player): GameBuilder {
         this.hunters.addAll(survivors)
+        return this
     }
 
     /**
-     * Add a hunter to the io.craftray.huntrace.game
+     * Add a hunter to the game
      * @param hunter the hunter
+     * @return this builder for chaining calls
      */
-    fun withHunter(hunter: Player) = this.apply {
+    fun withHunter(hunter: Player): GameBuilder {
         this.hunters.add(hunter)
+        return this
     }
 
     /**
-     * Add a list of hunters to the io.craftray.huntrace.game
+     * Add a list of hunters to the game
      * @param hunters the hunters
+     * @return this builder for chaining calls
      */
-    fun withHunters(hunters: Collection<Player>) = this.apply {
+    fun withHunters(hunters: Collection<Player>): GameBuilder {
         this.hunters.addAll(hunters)
+        return this
     }
 
     /**
-     * Add a list of hunters to the io.craftray.huntrace.game
+     * Add a list of hunters to the game
      * @param hunters the hunters
+     * @return this builder for chaining calls
      */
-    fun withHunters(vararg hunters: Player) = this.apply {
+    fun withHunters(vararg hunters: Player): GameBuilder {
         this.hunters.addAll(hunters)
+        return this
     }
 
     /**

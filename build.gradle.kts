@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     java
-    id("io.izzel.taboolib") version "1.32"
+    id("io.izzel.taboolib") version "1.33"
     id("org.jetbrains.kotlin.jvm") version "1.6.10"
     id("io.gitlab.arturbosch.detekt") version "1.19.0"
 }
@@ -14,7 +14,7 @@ taboolib {
     options("skip-kotlin")
     options("skip-kotlin-relocate")
     options("skip-plugin-file")
-    version = "6.0.6-24"
+    version = "6.0.7-6"
 
 //    description {
 //        contributors {
@@ -38,6 +38,7 @@ taboolib {
 
 repositories {
     mavenCentral()
+    maven("https://repo.tabooproject.org/storages/public/releases")
     maven("https://papermc.io/repo/repository/maven-public/")
     maven("https://repo.onarandombox.com/content/groups/public/")
 }
@@ -88,11 +89,12 @@ subprojects {
         options("skip-env")
         options("skip-plugin-file")
         exclude("taboolib")
-        version = "6.0.6-24"
+        version = "6.0.7-6"
     }
 
     repositories {
         mavenCentral()
+        maven("https://repo.tabooproject.org/storages/public/releases")
         maven("https://papermc.io/repo/repository/maven-public/")
         maven("https://repo.onarandombox.com/content/groups/public/")
         maven("https://repo.incendo.org/content/repositories/snapshots")

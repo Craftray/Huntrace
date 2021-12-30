@@ -45,10 +45,11 @@ data class Spawnpoint private constructor(
     private val z: Double?
 ) {
 
-    fun isSet() = x != null && z != null
+    val isSet
+        get() = x != null && z != null
 
     fun getByWorld(world: World): Location {
-        check(isSet()) { "cannot invoke get() on this instance because value is not set" }
+        check(isSet) { "cannot invoke get() on this instance because value is not set" }
         return y?.let { Location(world, x!!, y, z!!) }
             ?: Location(world, x!!, world.getHighestBlockYAt(x.toInt(), z!!.toInt()).toDouble(), z)
     }

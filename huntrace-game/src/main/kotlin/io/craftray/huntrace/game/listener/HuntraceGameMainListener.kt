@@ -61,9 +61,9 @@ class HuntraceGameMainListener(private val game: Game) : HuntraceGameListener() 
 //    }
 
     /**
-     * If the survivor quit, finish the io.craftray.huntrace.game with result of survivor quit.
-     * If hunter quit, remove it from the io.craftray.huntrace.game.
-     * If all hunters quit, finish the io.craftray.huntrace.game with result of hunter quit.
+     * If the survivor quit, finish the game with result of survivor quit.
+     * If hunter quit, remove it from the game.
+     * If all hunters quit, finish the game with result of hunter quit.
      * @author Kylepoops
      */
     @EventHandler

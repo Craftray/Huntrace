@@ -2,9 +2,9 @@ package io.craftray.huntrace.interaction
 
 import io.craftray.huntrace.game.event.HuntraceGameInventoryClickEvent
 import io.craftray.huntrace.game.event.HuntraceGameSelectTargetEvent
-import io.craftray.huntrace.util.BasicUtils
-import io.craftray.huntrace.util.BasicUtils.owningPlayer
+import io.craftray.huntrace.util.owningPlayer
 import io.craftray.huntrace.util.runnable.BukkitRunnableWrapper
+import io.craftray.huntrace.util.toSkull
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -51,7 +51,7 @@ object InGameTargetSelector {
         @Suppress("SpreadOperator")
         fun build(): Inventory {
             val inv = Bukkit.createInventory(Holder(), 54, Component.text(title))
-            return inv.apply { addItem(*survivors.map(BasicUtils::skullOf).toTypedArray()) }
+            return inv.apply { addItem(*survivors.map(Player::toSkull).toTypedArray()) }
         }
     }
 

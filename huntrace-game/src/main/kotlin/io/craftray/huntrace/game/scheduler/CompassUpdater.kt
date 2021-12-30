@@ -3,10 +3,10 @@ package io.craftray.huntrace.game.scheduler
 import io.craftray.huntrace.game.Game
 import io.craftray.huntrace.game.event.HuntraceGameCompassUpdateEvent
 import io.craftray.huntrace.game.event.HuntraceGameCompassUpdateEvent.Result
-import io.craftray.huntrace.util.BasicUtils
-import io.craftray.huntrace.util.BasicUtils.literal2DDistanceOf
-import io.craftray.huntrace.util.BasicUtils.transformWorld
+import io.craftray.huntrace.util.literal2DDistanceOf
+import io.craftray.huntrace.util.randomBoolean
 import io.craftray.huntrace.util.runnable.BukkitRunnableWrapper
+import io.craftray.huntrace.util.transformWorld
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
@@ -113,7 +113,7 @@ class CompassUpdater(val game: Game) {
     private fun initDeception() {
         this.deceptionFindRunnable = BukkitRunnableWrapper.submitTimerAsync(600L, rule.updateInterval) {
             for (hunter in hunters) {
-                if (!BasicUtils.randomBoolean(0.10F)) {
+                if (!randomBoolean(0.10F)) {
                     break
                 }
 
@@ -160,14 +160,13 @@ class CompassUpdater(val game: Game) {
         }
     }
 
-    private fun stopTrack() = this.trackTaskMap.forEach {
-        it.value.cancel()
-    }
+    private fun stopTrack() = this.trackTaskMap.forEach { it.value.cancel() }
 
     private fun stopDeception() {
         this.deceptionFindRunnable.cancel()
         this.deceptionRunnable.cancel()
     }
 
-    private fun isDistanceValid(distance: Double) = !(rule.distanceLimit.isLimited() && distance >= rule.distanceLimit.get())
+    private fun isDistanceValid(distance: Double) =
+        !(rule.distanceLimit.isLimited() && distance >= rule.distanceLimit.get())
 }

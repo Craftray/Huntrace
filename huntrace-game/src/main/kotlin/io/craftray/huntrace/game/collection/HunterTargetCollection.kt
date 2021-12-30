@@ -1,7 +1,7 @@
 package io.craftray.huntrace.game.collection
 
 import io.craftray.huntrace.game.Game
-import io.craftray.huntrace.util.BasicUtils.literal2DDistanceOf
+import io.craftray.huntrace.util.literal2DDistanceOf
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
 import org.bukkit.entity.Player
 
@@ -25,7 +25,7 @@ class HunterTargetCollection(val game: Game) {
     /**
      * Get the nearest survivor of given hunter
      * @author Kylepoops
-     * @exception IllegalStateException if hunter is not in io.craftray.huntrace.game
+     * @exception IllegalStateException if hunter is not in game
      * @exception IllegalStateException if no survivors are found
      */
     @Suppress("MemberVisibilityCanBePrivate")
